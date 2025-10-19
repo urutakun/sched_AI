@@ -1,0 +1,169 @@
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+import React from 'react'
+
+const TableComponent = () => {
+  return (
+    <Table className="font-dm w-full">
+      <TableHeader>
+        <TableHead>Time</TableHead>
+        <TableHead>Monday</TableHead>
+        <TableHead>Tuesday</TableHead>
+        <TableHead>Wednesday</TableHead>
+        <TableHead>Thursday</TableHead>
+        <TableHead>Friday</TableHead>
+        <TableHead>Saturday</TableHead>
+      </TableHeader>
+      <TableBody>
+        <TableRow className="cursor-default">
+          <TableCell>
+            09:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+        <TableRow className="cursor-default">
+          <TableCell>
+            10:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+        <TableRow className="cursor-default">
+          <TableCell>
+            11:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+        <TableRow className="cursor-default">
+          <TableCell>
+            1:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+        <TableRow className="cursor-default">
+          <TableCell>
+            3:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+        <TableRow className="cursor-default">
+          <TableCell>
+            2:00
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+          <TableCell>
+            COURSE
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+}
+
+export default TableComponent
