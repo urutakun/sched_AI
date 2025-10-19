@@ -4,7 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        {{-- <title inertia>{{ config('app.name', 'Laravel') }}</title> --}}
+        <title>SchedAI</title>
+        <link rel="shortcut icon" href="{{ asset('/assets/images/fav-logo.svg') }}" type="image/x-icon">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

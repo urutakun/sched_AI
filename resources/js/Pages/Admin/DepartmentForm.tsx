@@ -34,18 +34,18 @@ const DepartmentForm = ({ department }: DepartmentFormProps ) => {
 
     if(department){
       put(`/admin/departments/update/${department.id}`, {
-        onSuccess: () => toast('Department updated successfully'),
-        onError: () => toast('Failed to update department')
+        onSuccess: () => toast.success('Department updated successfully'),
+        onError: () => toast.error('Failed to update department')
       });
     }
     else{
       post('/admin/departments/create', {
         onSuccess: () => {
-          toast('Department created successfully');
+          toast.success('Department created successfully');
           reset();
         },
         onError: () => {
-          toast('Failed to create department');
+          toast.error('Failed to create department');
           reset();
         }
       });

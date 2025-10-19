@@ -19,34 +19,17 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar";
 import Logo from "@/Pages/Components/Logo";
+import { usePage } from "@inertiajs/react";
 
-const data = {
-    user: {
-        name: "John Doe",
-        role: "Admin",
-        avatar: "/avatars/shadcn.jpg",
-    },
-    navMain: [
-        // {
-        //   title: "Playground",
-        //   url: "#",
-        //   icon: Book,
-        //   isActive: true,
-        //   items: [
-        //     {
-        //       title: "History",
-        //       url: "#",
-        //     },
-        //     {
-        //       title: "Starred",
-        //       url: "#",
-        //     },
-        //     {
-        //       title: "Settings",
-        //       url: "#",
-        //     },
-        //   ],
-        // },
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const user = usePage().props.auth.user;
+    const userData = {
+      name: `${user.first_name} ${user.last_name}`,
+      role: user.role,
+      avatar: user.avatar ?? '/assets/images/avatar/default.png'
+    }
+
+    const adminNav = [
         {
             title: "Dashboard",
             url: "/admin/dashboard",
@@ -136,10 +119,32 @@ const data = {
               }
             ]
         },
-    ],
-};
+    ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const studentNav = [
+      {
+        title: "Dashboard",
+        url: '/student/dashboard',
+        icon: House
+      }
+    ]
+
+    const InstructorNav = [
+      {
+        title: "Dashboard",
+        url: '/instructor/dashboard',
+        icon: House
+      }
+    ]
+
+    const roleNavMap: Record<string, any[]> = {
+      admin: adminNav,
+      student: studentNav,
+      instructor: InstructorNav
+    }
+
+    const navMain = roleNavMap[userData.role] ?? [];
+
     return (
         <Sidebar
             collapsible="icon"
@@ -157,10 +162,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={userData} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
