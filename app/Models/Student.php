@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Instructor extends Model
+class Student extends Model
 {
-    /** @use HasFactory<\Database\Factories\InstructorFactory> */
-    use HasFactory;
-
     protected $fillable = [
-        'id',
-        'user_id',
-        'dept_id',
+      'id',
+      'user_id',
+      'year',
+      'section'
     ];
 
     public $incrementing = false;
@@ -31,7 +28,7 @@ class Instructor extends Model
     private static function generateUniqueId()
     {
         do {
-            $uniqueId = 'INST_' . mt_rand(000000, 999999);
+            $uniqueId = 'STUD_' . mt_rand(000000, 999999);
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;

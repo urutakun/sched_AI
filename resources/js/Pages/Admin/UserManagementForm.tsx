@@ -38,8 +38,8 @@ const UserManagementForm = ({ user, departments }: UserFormProps ) => {
     last_name: user?.last_name ?? '',
     year: user?.year ?? '',
     section: user?.section ?? '',
-    role: user?.section ?? '',
-    department: user?.department ?? '',
+    role: user?.role ?? '',
+    department_id: user?.department_id ?? '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -50,18 +50,18 @@ const UserManagementForm = ({ user, departments }: UserFormProps ) => {
 
     if(user){
       put(`/admin/user-management/update/${user.id}`, {
-        onSuccess: () => toast('Department updated successfully'),
-        onError: () => toast('Failed to update department')
+        onSuccess: () => toast.success('User updated successfully'),
+        onError: () => toast.error('Failed to update user')
       });
     }
     else{
-      post('/admin/departments/create', {
+      post('/admin/user-management/create', {
         onSuccess: () => {
-          toast('Department created successfully');
+          toast.success('User created successfully');
           reset();
         },
         onError: () => {
-          toast('Failed to create department');
+          toast.error('Failed to create user');
           reset();
         }
       });
@@ -123,9 +123,9 @@ const UserManagementForm = ({ user, departments }: UserFormProps ) => {
                   <Field>
                     <FieldLabel htmlFor="department">Department</FieldLabel>
                     <Select
-                      value={data.department}
+                      value={data.department_id}
                       onValueChange={(value) =>
-                          setData("department", value)
+                          setData("department_id", value)
                       }
                     >
                         <SelectTrigger className="w-[180px]">
@@ -135,7 +135,7 @@ const UserManagementForm = ({ user, departments }: UserFormProps ) => {
                           {departmentList.map(
                               (department: Department, index: number) => {
                                   return (
-                                      <SelectItem value={department.dept_id} key={index} className="capitalize">
+                                      <SelectItem value={department.id} key={index} className="capitalize">
                                           {department.name}
                                       </SelectItem>
                                   );

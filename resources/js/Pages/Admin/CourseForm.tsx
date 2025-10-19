@@ -84,7 +84,7 @@ const CourseForm = ({ departments }: CourseFormProps) => {
                                                 return (
                                                     <SelectItem
                                                         value={
-                                                            department.dept_id
+                                                            department.id
                                                         }
                                                         key={index}
                                                         className="capitalize"

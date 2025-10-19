@@ -4,7 +4,7 @@ export interface User {
   last_name: string;
   year?: number;
   section?: string;
-  department?: string; 
+  department_id?: string;
   role: string;
   email: string;
   password: string;

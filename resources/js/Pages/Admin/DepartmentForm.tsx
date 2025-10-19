@@ -61,7 +61,7 @@ const DepartmentForm = ({ department }: DepartmentFormProps ) => {
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="code">Code</FieldLabel>
-                <Input id="code" autoComplete="off" placeholder="e.g., CCE, CTE" value={data.code} onChange={(e) => setData('code', e.target.value)} />
+                <Input id="code" autoComplete="off" placeholder="e.g., CCE, CTE" maxLength={5} value={data.code} onChange={(e) => setData('code', e.target.value.toUpperCase())} />
                 <FieldError>{errors.code ?? ""}</FieldError>
               </Field>
               <Field>

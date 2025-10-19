@@ -87,6 +87,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 
   Route::get('/user-management', [UserManangementController::class, 'index'])->name('user-management.index');
   Route::get('/user-management/create', [UserManangementController::class, 'create']);
+  Route::post('/user-management/create', [UserManangementController::class, 'store']);
 });
 
 Route::middleware(['student'])->prefix('student')->group(function(){

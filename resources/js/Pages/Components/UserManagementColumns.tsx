@@ -52,36 +52,6 @@ export const UserManagementColumns = (
     },
   },
   {
-    accessorKey: "year",
-    header: ({ column }) => {
-      return(
-        <div
-        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Year Level
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
-      )
-    },
-    cell: ({ row }) => <span className={`${row.original.year ? 'text-black' : 'text-gray-300'}`}>{row.original.year ?? 'Null'}</span>
-  },
-  {
-    accessorKey: "section",
-    header: ({ column }) => {
-      return(
-        <div
-        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Section
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
-      )
-    },
-    cell: ({ row }) => <span className={`${row.original.section ? 'text-black' : 'text-gray-300'}`}>{row.original.section ?? 'Null'}</span>
-  },
-  {
     accessorKey: "role",
     header: ({ column }) => {
       return(
