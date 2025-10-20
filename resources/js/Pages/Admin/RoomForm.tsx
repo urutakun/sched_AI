@@ -38,7 +38,7 @@ const RoomForm = ({ room }: RoomFormProps) => {
         e.preventDefault();
 
         if(room){
-          put(`/admin/rooms/update/${room.room_id}`, {
+          put(`/admin/rooms/update/${room.id}`, {
             onSuccess: () => toast('Room updated successfully'),
             onError: () => toast('Failed to update room')
           })
@@ -56,7 +56,7 @@ const RoomForm = ({ room }: RoomFormProps) => {
           });
         }
     };
-    
+
     return (
         <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
             <form

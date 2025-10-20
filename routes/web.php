@@ -90,6 +90,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::post('/user-management/create', [UserManangementController::class, 'store']);
   Route::get('/user-management/edit/{id}', [UserManangementController::class, 'edit']);
   Route::put('/user-management/update/{id}', [UserManangementController::class, 'update']);
+  Route::put('/user-management/updateCredentials/{id}', [UserManangementController::class, 'updateCredentials']);
   Route::delete('/user-management/delete/{id}', [UserManangementController::class, 'destroy']);
 });
 

@@ -35,12 +35,12 @@ class RoomController extends Controller
     }
 
     public function edit($id){
-      $room = Room::where('room_id', $id)->firstOrFail();
+      $room = Room::where('id', $id)->firstOrFail();
       return Inertia::render('Admin/RoomForm', ['room' => $room]);
     }
 
     public function update(Request $request, $id){
-      $room = Room::where('room_id', $id)->firstOrFail();
+      $room = Room::where('id', $id)->firstOrFail();
 
       $validated = $request->validate([
         'room_name' => 'required|string',
@@ -52,7 +52,7 @@ class RoomController extends Controller
     }
 
     public function destroy($id){
-       $room = Room::where('room_id', $id)->first();
+       $room = Room::where('id', $id)->first();
 
       if(!$room){
         return response()->json(['message' => 'Not found']);

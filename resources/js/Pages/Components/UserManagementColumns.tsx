@@ -16,8 +16,10 @@ import {
 
 export const UserManagementColumns = (
   handleEdit: (id: string) => void,
+  handleManageCredentials: (id: string) => void,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  setDeletingId: React.Dispatch<React.SetStateAction<string>>
+  setDeletingId: React.Dispatch<React.SetStateAction<string>>,
+  setManagingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<User>[] => [
   {
     accessorKey: "id",
@@ -74,6 +76,11 @@ export const UserManagementColumns = (
     id: "actions",
     header: () => <div className="font-bold uppercase">Actions</div>,
     cell: ({ row }) => {
+      const handleManage = (id: string) => {
+        handleManageCredentials(id)
+        setManagingId(id);
+      }
+
       const handleDelete = (id: string) => {
         setDeletingId(id);
         setIsOpen(true);
@@ -88,6 +95,7 @@ export const UserManagementColumns = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleManage(row.original.id)}>Manage Credentials</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>

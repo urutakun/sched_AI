@@ -7,6 +7,8 @@ use App\Models\Instructor;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
@@ -127,6 +129,30 @@ class UserManangementController extends Controller
       }
 
       return redirect('/admin/user-management')->with('success', 'User updated successfully');
+    }
+
+    public function updateCredentials(Request $request, $id){
+      $user = User::where('id', $id)->firstOrFail();
+      \Log::info(['user' => $user]);
+
+      $validated = $request->validate([
+        'email' => [
+          'nullable',
+          'email',
+          Rule::unique('users', 'email')->ignore($user->id),
+        ],
+        'password' => ['nullable', 'confirmed', Password::defaults()]
+      ]);
+
+      $user->email = strtolower($validated['email']);
+
+      if(!empty($validated['password'])){
+        $user->password = bcrypt($validated['password']);
+      }
+
+      $user->save();
+
+      return response()->json(['message' => 'Credentials updated successfully']);
     }
 
     public function destroy($id){

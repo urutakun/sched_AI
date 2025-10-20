@@ -21,7 +21,7 @@ export const RoomColumns = (
     setDeletingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<Room>[] => [
   {
-    accessorKey: "room_id",
+    accessorKey: "id",
     header: () => <div className="font-bold uppercase">ID</div>,
   },
   {
@@ -73,8 +73,8 @@ export const RoomColumns = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleEdit(row.original.room_id)}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDelete(row.original.room_id)}>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
