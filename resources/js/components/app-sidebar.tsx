@@ -57,10 +57,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: "Instructor List",
                 url: "/admin/instructors"
               },
-              {
-                title: "Create",
-                url: "/admin/instructors/create"
-              }
             ]
         },
         {

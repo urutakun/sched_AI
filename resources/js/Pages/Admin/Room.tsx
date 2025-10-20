@@ -14,14 +14,14 @@ const Room = ({ rooms }: RoomProps) => {
   const [roomList, setRoomList] = useState<RoomType[]>(rooms);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
-  const toDelete = roomList?.find((item: RoomType) => item.room_id === deletingId);
+  const toDelete = roomList?.find((item: RoomType) => item.id === deletingId);
 
   const handleEdit = (id: string): void => {
     router.get(`/admin/rooms/edit/${id}`);
   }
 
   const onDelete = (id: string): void => {
-    const filtered_rooms = roomList.filter((item: RoomType) => item.room_id !== id);
+    const filtered_rooms = roomList.filter((item: RoomType) => item.id !== id);
     setRoomList(filtered_rooms);
   }
 
@@ -36,6 +36,7 @@ const Room = ({ rooms }: RoomProps) => {
         deletingId={deletingId}
         url={'/admin/rooms/delete'}
         nameField="room_name"
+        errorMessage="Failed to create room"
       />
     </div>
   )

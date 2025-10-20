@@ -19,7 +19,7 @@ const Login = () => {
             onSuccess: () => {
                 toast.success("Logged In");
                 reset("password");
-            },
+            }
         });
     };
 

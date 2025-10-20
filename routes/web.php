@@ -67,9 +67,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
   Route::get('/departments/create', [DepartmentController::class, 'create']);
   Route::post('/departments/create', [DepartmentController::class, 'store']);
-  Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
   Route::get('/departments/edit/{id}', [DepartmentController::class, 'edit']);
   Route::put('/departments/update/{id}', [DepartmentController::class, 'update']);
+  Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
 
   Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');;
   Route::get('/instructors/create', [InstructorController::class, 'create']);
@@ -81,13 +81,16 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');;
   Route::get('/rooms/create', [RoomController::class, 'create']);
   Route::post('/rooms/create', [RoomController::class, 'store']);
-  Route::delete('/rooms/delete/{id}', [RoomController::class, 'destroy']);
   Route::get('/rooms/edit/{id}', [RoomController::class, 'edit']);
   Route::put('/rooms/update/{id}', [RoomController::class, 'update']);
+  Route::delete('/rooms/delete/{id}', [RoomController::class, 'destroy']);
 
   Route::get('/user-management', [UserManangementController::class, 'index'])->name('user-management.index');
   Route::get('/user-management/create', [UserManangementController::class, 'create']);
   Route::post('/user-management/create', [UserManangementController::class, 'store']);
+  Route::get('/user-management/edit/{id}', [UserManangementController::class, 'edit']);
+  Route::put('/user-management/update/{id}', [UserManangementController::class, 'update']);
+  Route::delete('/user-management/delete/{id}', [UserManangementController::class, 'destroy']);
 });
 
 Route::middleware(['student'])->prefix('student')->group(function(){

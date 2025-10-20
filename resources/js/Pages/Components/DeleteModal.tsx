@@ -21,6 +21,7 @@ interface DeleteModalProps<T = any> {
   onDelete?: (id: string) => void;
   nameField: keyof T;
   deletingId: string;
+  errorMessage: string;
 }
 
 const DeleteModal = <T,>(
@@ -31,7 +32,8 @@ const DeleteModal = <T,>(
     url,
     onDelete,
     nameField,
-    deletingId
+    deletingId,
+    errorMessage
   }: DeleteModalProps
   ) => {
 
@@ -47,7 +49,7 @@ const DeleteModal = <T,>(
         setIsOpen(false);
       })
       .catch((error) => {
-        toast.error("Failed to delete department");
+        toast.error(errorMessage);
         console.log(error);
       })
   }

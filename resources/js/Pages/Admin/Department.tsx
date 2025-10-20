@@ -37,6 +37,7 @@ const Department = ({ departments }: DepartmentProps) => {
       deletingId={deletingId}
       url={'/admin/departments/delete'}
       nameField="name"
+      errorMessage="Failed to create department"
       />
     </div>
   )
