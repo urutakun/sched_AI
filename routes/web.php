@@ -6,10 +6,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InstructorController;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\UserManangementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -71,19 +71,31 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/departments/update/{id}', [DepartmentController::class, 'update']);
   Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
 
-  Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');;
+  Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');
   Route::get('/instructors/create', [InstructorController::class, 'create']);
+  Route::delete('/instructors/delete/{id}', [InstructorController::class, 'destroy']);
 
-  Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');;
+  Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
+  Route::delete('/students/delete/{id}', [StudentsController::class, 'destroy']);
+
+  Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
   Route::get('/courses/create', [CourseController::class, 'create']);
   Route::post('/courses/create', [CourseController::class, 'store']);
 
-  Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');;
+  Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
   Route::get('/rooms/create', [RoomController::class, 'create']);
   Route::post('/rooms/create', [RoomController::class, 'store']);
   Route::get('/rooms/edit/{id}', [RoomController::class, 'edit']);
   Route::put('/rooms/update/{id}', [RoomController::class, 'update']);
   Route::delete('/rooms/delete/{id}', [RoomController::class, 'destroy']);
+
+  Route::get('/programs', [ProgramController::class, 'index'])->name('programs.index');
+  Route::get('/programs/create', [ProgramController::class, 'create']);
+  Route::post('/programs/create', [ProgramController::class, 'store']);
+  Route::get('/programs/edit/{id}', [ProgramController::class, 'edit']);
+  Route::put('/programs/update/{id}', [ProgramController::class, 'update']);
+  Route::delete('/programs/delete/{id}', [ProgramController::class, 'destroy']);
+
 
   Route::get('/user-management', [UserManangementController::class, 'index'])->name('user-management.index');
   Route::get('/user-management/create', [UserManangementController::class, 'create']);
@@ -95,5 +107,5 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 });
 
 Route::middleware(['student'])->prefix('student')->group(function(){
-  Route::get('/dashboard', [StudentController::class, 'index'])->name('student.dashboard');
+  Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 });

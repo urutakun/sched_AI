@@ -56,7 +56,7 @@ const InstructorForm = ({ departments }: InstructorFormProps) => {
                     {
                       departmentList.map((department: DepartmentType, index: number) => {
                         return(
-                          <SelectItem value={department.dept_id} key={index} className='capitalize'>{department.name}</SelectItem>
+                          <SelectItem value={department.id} key={index} className='capitalize'>{department.name}</SelectItem>
                         )
                       })
                     }

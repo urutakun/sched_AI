@@ -7,6 +7,8 @@ import {
     DoorOpen,
     Calendar1,
     UserCog,
+    GraduationCap,
+    BookHeart
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -50,12 +52,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             ]
         },
         {
+            title: "Programs",
+            icon: BookHeart,
+            items: [
+              {
+                title: "Program List",
+                url: "/admin/programs"
+              },
+              {
+                title: "Create",
+                url: "/admin/programs/create"
+              }
+            ]
+        },
+        {
             title: "Instructors",
             icon: Users,
             items: [
               {
                 title: "Instructor List",
                 url: "/admin/instructors"
+              },
+            ]
+        },
+        {
+            title: "Students",
+            icon: GraduationCap,
+            items: [
+              {
+                title: "Student List",
+                url: "/admin/students"
               },
             ]
         },

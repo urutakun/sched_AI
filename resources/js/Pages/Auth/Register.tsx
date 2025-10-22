@@ -3,16 +3,24 @@ import FormInputField from "../Components/FormInputField";
 import FormLabel from "../Components/FormLabel";
 import GlassFormInput from "../Components/GlassFormInput";
 import FormSubmitButton from "../Components/FormSubmitButton";
+import GlassFormSelect from "../Components/GlassFormSelect";
 import Logo from "../Components/Logo";
 import { useForm, Link, Head, router } from "@inertiajs/react";
+import { Program } from "../Interfaces/Program";
 import { toast } from "sonner";
 
-const Register = () => {
+interface RegisterProps {
+  programs: Program[]
+}
+
+const Register = ({ programs }: RegisterProps) => {
+    console.log(programs);
     const { data, setData, errors } = useForm({
         first_name: "",
         last_name: "",
         year: "",
         section: "",
+        program_id: "",
         email: "",
         password: "",
         password_confirmation: "",
@@ -30,7 +38,14 @@ const Register = () => {
     return (
         <div className="w-screen h-screen cbg  font-dm text-black text-sm md:text-base space-y-6 flex flex-col items-center justify-center p-4">
           <div className="header">
-            <Logo color={'white'} height={30} width={30}  isVisible={true} size={'text-xl lg:text-2xl'} textColor={'text-white'}/>
+              <Logo
+                  color={"white"}
+                  height={30}
+                  width={30}
+                  isVisible={true}
+                  size={"text-xl lg:text-2xl"}
+                  textColor={"text-white"}
+              />
           </div>
           <div className="form-wrapper w-full lg:w-[600px] h-[700px] lg:h-[880px] relative bg-[linear-gradient(to_bottom,rgba(200,200,200,0.2),rgba(200,200,200,0.4))] backdrop-blur-[20px] border border-white/10 before:content-[''] before:absolute before:inset-0 before:rounded-3xl before:border before:border-white/20 before:pointer-events-none px-4 py-3 lg:px-6 lg:py-6 rounded-3xl text-white tracking-tight font-bold flex flex-col items-center justify-center space-y-8 lg:space-y-8">
             <div className="form-header text-center space-y-2 w-full">
@@ -48,7 +63,7 @@ const Register = () => {
                   <GlassFormInput id={'last_name'} type={'text'} placeholder={'Doe'} value={data.last_name} onChange={(e) => setData('last_name', e.target.value)} error={errors.last_name} className="w-full"/>
                 </FormInputField>
               </div>
-              <div className="info grid grid-cols-2 gap-x-6">
+              <div className="info grid grid-cols-3 gap-x-6">
                 <FormInputField>
                   <FormLabel htmlFor={'year'} textLabel={'Year'}/>
                   <GlassFormInput id={'year'} type={'number'} min={1} max={4} placeholder={'e.g., 1-4'} value={data.year} onChange={(e) => setData('year', e.target.value)} error={errors.year} className="w-full"/>
@@ -56,6 +71,15 @@ const Register = () => {
                 <FormInputField>
                   <FormLabel htmlFor={'section'} textLabel={'Section'}/>
                   <GlassFormInput id={'section'} type={'text'} maxLength={1} placeholder={'e.g., A, B, C'} value={data.section} onChange={(e) => setData('section', e.target.value.toUpperCase())} error={errors.section} className="w-full"/>
+                </FormInputField>
+                <FormInputField>
+                  <FormLabel htmlFor={'program'} textLabel={'Program'}/>
+                  <GlassFormSelect
+                    data={programs}
+                    valueKey="id"
+                    labelKey="code"
+                    onChange={(e) => setData('program_id', e.target.value)}
+                  />
                 </FormInputField>
               </div>
               <FormInputField>

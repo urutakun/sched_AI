@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Instructor;
+use App\Models\Program;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,7 +22,8 @@ class UserManangementController extends Controller
 
     public function create(){
       $departments = Department::all();
-      return Inertia::render('Admin/UserManagementForm', ['departments' => $departments]);
+      $programs = Program::all();
+      return Inertia::render('Admin/UserManagementForm', ['departments' => $departments, 'programs' => $programs]);
     }
 
     public function store(Request $request){
@@ -32,6 +34,7 @@ class UserManangementController extends Controller
         'department_id' => 'nullable|exists:departments,id',
         'year' => 'nullable|numeric|min:1|max:4',
         'section' => 'nullable|string|max:1',
+        'program_id' => 'nullable|exists:programs,id',
         'email' => 'required|email|unique:users,email',
         'password' => ['required', 'confirmed', Password::defaults()]
       ]);
@@ -42,9 +45,6 @@ class UserManangementController extends Controller
         'first_name' => $validated['first_name'],
         'last_name' => $validated['last_name'],
         'role' => $validated['role'],
-        'department_id' => $validated['department_id'] ?? null,
-        'year' => $validated['year'] ?? null,
-          'section' => $validated['section'] ?? null,
         'email' => $email,
         'password' => $validated['password'],
       ]);
@@ -61,6 +61,7 @@ class UserManangementController extends Controller
           'user_id' => $user->id,
           'year' => $validated['year'] ?? null,
           'section' => $validated['section'] ?? null,
+          'program_id' => $validated['program_id'] ?? null,
         ]);
       }
 
@@ -74,9 +75,10 @@ class UserManangementController extends Controller
     }
 
     public function edit($id){
-      $user = User::where('id', $id)->firstOrFail();
+      $user = User::with(['student', 'instructor'])->where('id', $id)->firstOrFail();
       $departments = Department::all();
-      return Inertia::render('Admin/UserManagementForm', ['user' => $user, 'departments' => $departments]);
+      $programs = Program::all();
+      return Inertia::render('Admin/UserManagementForm', ['user' => $user, 'departments' => $departments, 'programs' => $programs]);
     }
 
     public function update(Request $request, $id){
@@ -89,15 +91,13 @@ class UserManangementController extends Controller
         'department_id' => 'nullable|exists:departments,id',
         'year' => 'nullable|numeric|min:1|max:4',
         'section' => 'nullable|string|max:1',
+        'program_id' => 'nullable|exists:programs,id',
       ]);
 
       $user->update([
         'first_name' => $validated['first_name'],
         'last_name' => $validated['last_name'],
         'role' => $validated['role'],
-        'department_id' => $validated['department_id'] ?? null,
-        'year' => $validated['year'] ?? null,
-        'section' => $validated['section'] ?? null,
       ]);
 
       // CLEAN UP
@@ -109,14 +109,15 @@ class UserManangementController extends Controller
         $user->update([
           'department_id' => null,
           'year' => null,
-          'section' => null
+          'section' => null,
+          'program_id' => null
         ]);
       }
 
       if($validated['role'] === 'instructor'){
         Instructor::create([
           'user_id' => $user->id,
-          'dept_id' => $validated['department_id']
+          'dept_id' => $validated['department_id'] ?? null,
         ]);
       }
 
@@ -125,6 +126,7 @@ class UserManangementController extends Controller
           'user_id' => $user->id,
           'year' => $validated['year'] ?? null,
           'section' => $validated['section'] ?? null,
+          'program_id' => $validated['program_id'] ?? null,
         ]);
       }
 
@@ -133,7 +135,6 @@ class UserManangementController extends Controller
 
     public function updateCredentials(Request $request, $id){
       $user = User::where('id', $id)->firstOrFail();
-      \Log::info(['user' => $user]);
 
       $validated = $request->validate([
         'email' => [

@@ -47,7 +47,7 @@ const UserManagement = ({ users, departments }: UserManagementProps) => {
       onDelete={onDelete}
       deletingId={deletingId}
       url={'/admin/user-management/delete'}
-      nameField="last_name"
+      nameField="first_name+last_name"
       errorMessage="Failed to create user"
       />
       <ManageCredentialModal

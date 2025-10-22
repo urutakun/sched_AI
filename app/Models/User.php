@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Instructor;
 
 class User extends Authenticatable
 {
@@ -22,9 +23,6 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'role',
-        'year',
-        'section',
-        'department_id',
         'email',
         'password',
     ];
@@ -73,4 +71,13 @@ class User extends Authenticatable
 
         return $uniqueId;
     }
+
+    public function instructor(){
+      return $this->hasOne(Instructor::class, 'user_id', 'id');
+    }
+
+    public function student(){
+      return $this->hasOne(Student::class, 'user_id', 'id');
+    }
+
 }

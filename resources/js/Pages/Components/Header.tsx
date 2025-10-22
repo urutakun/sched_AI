@@ -18,7 +18,7 @@ const Header = ({ title }: HeaderProps) => {
   const crumbs = useBreadcrumbs();
 
   return (
-    <div className='space-y-2 fixed top-0 bg-custom-primary w-full py-4'>
+    <div className='space-y-2 fixed top-0 bg-custom-primary w-full py-4 z-50'>
       <div className="wrapper flex items-center space-x-3">
         <SidebarTrigger />
         <div className="divider border-r-[0.5px] border-custom-accent h-[20px]"></div>

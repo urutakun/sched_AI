@@ -43,8 +43,8 @@ class RoomController extends Controller
       $room = Room::where('id', $id)->firstOrFail();
 
       $validated = $request->validate([
-        'room_name' => 'required|string',
-        'room_type' => 'required|string|in:laboratory,classroom',
+        'room_name' => 'nullable|string',
+        'room_type' => 'nullable|string|in:laboratory,classroom',
       ]);
 
       $room->update($validated);
@@ -52,7 +52,7 @@ class RoomController extends Controller
     }
 
     public function destroy($id){
-       $room = Room::where('id', $id)->first();
+      $room = Room::where('id', $id)->first();
 
       if(!$room){
         return response()->json(['message' => 'Not found']);

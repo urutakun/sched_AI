@@ -3,62 +3,41 @@ import Layout from "@/Layouts/Layout"
 import { DataTable } from '../Components/DataTable';
 import type { Instructor as InstructorType} from '../Interfaces/Instructor';
 import { InstructorColumns } from '../Components/InstructorColumns';
+import DeleteModal from '../Components/DeleteModal';
+import { router } from '@inertiajs/react';
 
-const instructorsData: InstructorType[] = [
-  {
-    instr_id: "I-001",
-    dept_id: "D-001",
-    first_name: "Maria",
-    last_name: "Santos",
-    instr_position: "Associate Professor",
-    email: "maria.santos@university.edu",
-    password: "hashed_password_1",
-  },
-  {
-    instr_id: "I-002",
-    dept_id: "D-002",
-    first_name: "John",
-    last_name: "Reyes",
-    instr_position: "Assistant Professor",
-    email: "john.reyes@university.edu",
-    password: "hashed_password_2",
-  },
-  {
-    instr_id: "I-003",
-    dept_id: "D-003",
-    first_name: "Liza",
-    last_name: "Cruz",
-    instr_position: "Lecturer",
-    email: "liza.cruz@university.edu",
-    password: "hashed_password_3",
-  },
-  {
-    instr_id: "I-004",
-    dept_id: "D-001",
-    first_name: "Carlos",
-    last_name: "Dela Cruz",
-    instr_position: "Professor",
-    email: "carlos.delacruz@university.edu",
-    password: "hashed_password_4",
-  },
-  {
-    instr_id: "I-005",
-    dept_id: "D-002",
-    first_name: "Angela",
-    last_name: "Garcia",
-    instr_position: "Instructor I",
-    email: "angela.garcia@university.edu",
-    password: "hashed_password_5",
-  },
-]
+interface InstructorProps {
+  instructors: InstructorType[];
+}
 
+const Instructor = ({ instructors }: InstructorProps) => {
+  const [instructorList, setInstructorList] = useState<InstructorType[]>(instructors);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [deletingId, setDeletingId] = useState<string>('');
+  const toDelete = instructorList?.find((item: InstructorType) => item.id === deletingId);
 
+  const handleEdit = (id: string): void => {
+    router.get(`/admin/user-management/edit/${id}`);
+  }
 
-const Instructor = () => {
-  const [instructors, setInstructors] = useState<InstructorType[]>(instructorsData);
+  const onDelete = (id: string): void => {
+    const filtered_instructors = instructorList.filter((item: InstructorType) => item.id !== id);
+    setInstructorList(filtered_instructors);
+  }
+
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={InstructorColumns} data={instructorsData} filterLabel={"last name"} filterColumn={"last_name"} createUrl={'/admin/instructors/create'}/>
+      <DataTable columns={InstructorColumns(handleEdit, setIsOpen, setDeletingId)} data={instructorList || []} filterLabel={"last name"} filterColumn={"user.last_name"} createUrl={'/admin/user-management/create'}/>
+      <DeleteModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        toDelete={toDelete}
+        onDelete={onDelete}
+        deletingId={deletingId}
+        url={'/admin/instructors/delete'}
+        nameField="user.first_name+user.last_name"
+        errorMessage="Failed to delete instructor"
+      />
     </div>
   )
 }

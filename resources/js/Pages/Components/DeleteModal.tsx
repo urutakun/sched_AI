@@ -19,7 +19,7 @@ interface DeleteModalProps<T = any> {
   toDelete?: T;
   url: string;
   onDelete?: (id: string) => void;
-  nameField: keyof T;
+  nameField: string;
   deletingId: string;
   errorMessage: string;
 }
@@ -54,6 +54,24 @@ const DeleteModal = <T,>(
       })
   }
 
+  const getNestedValue = (obj: any, path: string): any => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  };
+
+  const getDisplayName = (obj: any, path: string): string => {
+    if (!obj) return '';
+
+    if (path.includes('+')) {
+      const fields = path.split('+').map(f => f.trim());
+      return fields
+        .map(f => getNestedValue(obj, f))
+        .filter(Boolean)
+        .join(' ');
+    }
+
+    return getNestedValue(obj, path) ?? '';
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className='text-center'>
@@ -64,7 +82,7 @@ const DeleteModal = <T,>(
           <DialogTitle className='text-xl'>Are you sure you want to delete</DialogTitle>
         </DialogHeader>
         <div>
-          <span>{toDelete ? (toDelete[nameField] as any) : ''}</span>
+          <span>{toDelete ? getDisplayName(toDelete, nameField) : ''}</span>
         </div>
         <DialogFooter className='flex flex-row justify-center mt-6'>
           <Button size={'lg'} type="submit" onClick={handleDelete}>Submit</Button>

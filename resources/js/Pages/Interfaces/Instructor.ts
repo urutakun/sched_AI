@@ -1,3 +1,6 @@
+import { User } from '../Interfaces/User';
+import { Department } from './Department';
+
 export interface Instructor {
   id: string;
   dept_id: string;
@@ -6,4 +9,6 @@ export interface Instructor {
   instr_position: string;
   email: string;
   password: string;
+  user: User;
+  department: Department;
 }

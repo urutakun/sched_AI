@@ -12,16 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type { Instructor } from "../Interfaces/Instructor"
+import type { Student } from "../Interfaces/Student"
 
-export const InstructorColumns = (
+export const StudentColumns = (
   handleEdit: (id: string) => void,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setDeletingId: React.Dispatch<React.SetStateAction<string>>,
-): ColumnDef<Instructor>[] => [
+): ColumnDef<Student>[] => [
   {
-    accessorKey: "user.id",
-    header: () => <div className="font-bold uppercase">User ID</div>,
+    accessorKey: "id",
+    header: () => <div className="font-bold uppercase">Student ID</div>,
   },
   {
     accessorKey: "user.first_name",
@@ -53,14 +53,42 @@ export const InstructorColumns = (
     },
   },
   {
-    accessorKey: "department.name",
+    accessorKey: "year",
     header: ({ column }) => {
       return(
         <div
         className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Department
+          Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "section",
+    header: ({ column }) => {
+      return(
+        <div
+        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "program.name",
+    header: ({ column }) => {
+      return(
+        <div
+        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Program
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       )

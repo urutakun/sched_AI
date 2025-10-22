@@ -10,7 +10,8 @@ class Student extends Model
       'id',
       'user_id',
       'year',
-      'section'
+      'section',
+      'program_id'
     ];
 
     public $incrementing = false;
@@ -33,4 +34,13 @@ class Student extends Model
 
         return $uniqueId;
     }
-}
+
+    public function user(){
+      return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function program(){
+      return $this->belongsTo(Program::class);
+    }
+
+  }

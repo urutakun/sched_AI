@@ -39,18 +39,18 @@ const RoomForm = ({ room }: RoomFormProps) => {
 
         if(room){
           put(`/admin/rooms/update/${room.id}`, {
-            onSuccess: () => toast('Room updated successfully'),
-            onError: () => toast('Failed to update room')
+            onSuccess: () => toast.success('Room updated successfully'),
+            onError: () => toast.error('Failed to update room')
           })
         }
         else{
           post("/admin/rooms/create", {
               onSuccess: () => {
-                  toast("Room created successfully");
+                  toast.success("Room created successfully");
                   reset();
               },
               onError: () => {
-                  toast("Failed to create room");
+                  toast.error("Failed to create room");
                   reset();
               },
           });

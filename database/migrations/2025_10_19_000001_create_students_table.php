@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('user_id');
             $table->integer('year');
             $table->string('section');
+            $table->string('program_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
         });
     }
 

@@ -37,4 +37,13 @@ class Department extends Model
 
         return $uniqueId;
     }
+
+    public function instructors(){
+      return $this->hasMany(Instructor::class, 'dept_id', 'id');
+    }
+
+    public function programs(){
+      return $this->hasMany(Program::class, 'dept_id', 'id');
+    }
+
 }

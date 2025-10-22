@@ -27,7 +27,7 @@ const Room = ({ rooms }: RoomProps) => {
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={RoomColumns(handleEdit, setIsOpen, setDeletingId)} data={roomList || []} filterLabel={"room name"} filterColumn={"name"} createUrl={'/admin/rooms/create'}/>
+      <DataTable columns={RoomColumns(handleEdit, setIsOpen, setDeletingId)} data={roomList || []} filterLabel={"room name"} filterColumn={"room_name"} createUrl={'/admin/rooms/create'}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

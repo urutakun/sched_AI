@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Program;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +23,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $programs = Program::all();
+        return Inertia::render('Auth/Register', ['programs' => $programs]);
     }
 
     /**
@@ -36,6 +39,7 @@ class RegisteredUserController extends Controller
             'last_name' => 'required|string|max:255',
             'year' => 'required|numeric|min:1|max:4',
             'section' => 'required|string|max:1',
+            'program_id' => 'required|exists:programs,id',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -45,10 +49,15 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'year' => $request->year,
-            'section' => $request->section,
             'email' => $email,
             'password' => Hash::make($request->password),
+        ]);
+
+        $student = Student::create([
+          'user_id' => $user->id,
+          'year' => $request->year,
+          'section' => $request->section,
+          'program_id' => $request->program_id
         ]);
 
         event(new Registered($user));

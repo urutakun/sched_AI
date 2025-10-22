@@ -25,21 +25,26 @@ import { Button } from '@/components/ui/button'
 import { toast } from "sonner"
 import { User } from '../Interfaces/User'
 import { Department } from '../Interfaces/Department';
+import { Program } from '../Interfaces/Program';
 
 interface UserFormProps{
   user?: User;
   departments?: Department[];
+  programs?: Program[];
 }
 
-const UserManagementForm = ({ user, departments }: UserFormProps ) => {
+const UserManagementForm = ({ user, departments, programs }: UserFormProps ) => {
   const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
+  const [programList, setProgramList] = useState<Program[]>(programs ?? []);
+
   const { data, setData, errors, post, put, reset } = useForm({
     first_name: user?.first_name ?? '',
     last_name: user?.last_name ?? '',
-    year: user?.year ?? '',
-    section: user?.section ?? '',
     role: user?.role ?? '',
-    department_id: user?.department_id ?? '',
+    year: user?.student?.year ?? '',
+    section: user?.student?.section ?? '',
+    program_id: user?.student?.program_id ?? '',
+    department_id: user?.instructor?.dept_id ?? '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -115,6 +120,31 @@ const UserManagementForm = ({ user, departments }: UserFormProps ) => {
                     <FieldLabel htmlFor="section">Section</FieldLabel>
                     <Input id="section" autoComplete="off" maxLength={1} placeholder="e.g., A, B, C" value={data.section} onChange={(e) => setData('section', e.target.value.toUpperCase())} />
                     <FieldError>{errors.section ?? ""}</FieldError>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="program">Program</FieldLabel>
+                    <Select
+                        value={data.program_id}
+                        onValueChange={(value) =>
+                            setData("program_id", value)
+                        }
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Program" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {
+                            programList.map((program: Program, index: number) => {
+                              return(
+                                <SelectItem value={program.id} key={index} className="capitalize">
+                                  {program.name}
+                                </SelectItem>
+                              )
+                            })
+                          }
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.role ?? ""}</FieldError>
                   </Field>
                 </>
               )}
