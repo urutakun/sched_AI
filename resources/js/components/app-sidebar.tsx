@@ -8,7 +8,8 @@ import {
     Calendar1,
     UserCog,
     GraduationCap,
-    BookHeart
+    BookHeart,
+    School
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -141,6 +142,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               }
             ]
         },
+        {
+            title: "Academic Management",
+            icon: School,
+            items: [
+              {
+                title: "Academic Years",
+                url: "/admin/academic-years/"
+              },
+              {
+                title: "Create Academic Year",
+                url: "/admin/academic-years/create"
+              },
+              {
+                title: "Trimesters",
+                url: "/admin/trimesters/"
+              },
+              {
+                title: "Create Trimester",
+                url: "/admin/trimesters/create"
+              }
+            ]
+        },
     ]
 
     const studentNav = [
@@ -179,7 +202,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <Logo width={20} height={20} color={'white'} isVisible={false} />
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">SchedAI</span>
+                        <span className="truncate font-bold text-xl tracking-tighter font-dm">SchedAI</span>
                     </div>
                 </SidebarMenuButton>
             </SidebarHeader>

@@ -13,6 +13,8 @@ const breadcrumbMap:Record<string, string> = {
   'rooms': 'Rooms',
   'events': 'Events',
   'user-management': 'User Management',
+  'academic-years' : 'Academic Years',
+  'trimesters' : 'Trimesters',
   'create': 'Create',
   'edit': 'Edit',
 }

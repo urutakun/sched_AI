@@ -31,7 +31,7 @@ const About = () => {
           {team.map((member: TeamMember, index: number) => {
             return(
               <div className='space-y-3' key={index}>
-                <div className="img_wrapper group relative w-[260px] h-[320px] lg:w-[300px] lg:h-[400px] overflow-hidden rounded-2xl">
+                <div className="img_wrapper group relative w-[260px] h-[320px] lg:w-[260px] lg:h-[360px] overflow-hidden rounded-2xl">
                   <img
                     src={member.img}
                     alt={member.name}

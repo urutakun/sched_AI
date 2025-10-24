@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -10,7 +11,9 @@ use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\TrimesterController;
 use App\Http\Controllers\UserManangementController;
+use App\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -45,18 +48,6 @@ Route::prefix('auth')->group(function(){
   Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
   Route::post('/login', [AuthenticatedSessionController::class, 'store']);
   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-});
-
-// quick JSON endpoint (session-based) to return current authenticated user + diagnostics
-Route::get('/user', function (Request $request) {
-    return response()->json([
-        'auth_check' => $request->user() ? true : false,
-        'auth_user' => $request->user() ? $request->user()->only('id','first_name','last_name','email','role','year','section') : null,
-        'session_id' => $request->session()->getId(),
-        'session_all' => $request->session()->all(),
-        'session_cookie' => $request->cookie(session_name()),
-        'headers' => $request->headers->all(),
-    ]);
 });
 
 // ADMIN
@@ -96,7 +87,6 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/programs/update/{id}', [ProgramController::class, 'update']);
   Route::delete('/programs/delete/{id}', [ProgramController::class, 'destroy']);
 
-
   Route::get('/user-management', [UserManangementController::class, 'index'])->name('user-management.index');
   Route::get('/user-management/create', [UserManangementController::class, 'create']);
   Route::post('/user-management/create', [UserManangementController::class, 'store']);
@@ -104,6 +94,20 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/user-management/update/{id}', [UserManangementController::class, 'update']);
   Route::put('/user-management/updateCredentials/{id}', [UserManangementController::class, 'updateCredentials']);
   Route::delete('/user-management/delete/{id}', [UserManangementController::class, 'destroy']);
+
+  Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+  Route::get('/academic-years/create', [AcademicYearController::class, 'create']);
+  Route::post('/academic-years/create', [AcademicYearController::class, 'store']);
+  Route::get('/academic-years/edit/{id}', [AcademicYearController::class, 'edit']);
+  Route::put('/academic-years/update/{id}', [AcademicYearController::class, 'update']);
+  Route::delete('/academic-years/delete/{id}', [AcademicYearController::class, 'destroy']);
+
+  Route::get('/trimesters', [TrimesterController::class, 'index'])->name('trimesters.index');
+  Route::get('/trimesters/create', [TrimesterController::class, 'create']);
+  Route::post('/trimesters/create', [TrimesterController::class, 'store']);
+  Route::get('/trimesters/edit/{id}', [TrimesterController::class, 'edit']);
+  Route::put('/trimesters/update/{id}', [TrimesterController::class, 'update']);
+  Route::delete('/trimesters/delete/{id}', [TrimesterController::class, 'destroy']);
 });
 
 Route::middleware(['student'])->prefix('student')->group(function(){

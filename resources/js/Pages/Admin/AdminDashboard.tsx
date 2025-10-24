@@ -17,7 +17,6 @@ import { usePage } from '@inertiajs/react';
 
 const AdminDashboard = () => {
   const user = usePage().props.auth.user;
-  console.log(user);
   return (
     <div className="wrapper space-y-8">
       <div className='status grid grid-cols-2 gap-3 lg:gap-0 lg:flex lg:space-x-3'>
@@ -25,7 +24,6 @@ const AdminDashboard = () => {
         <StatusCard icon={BsDoorOpenFill} label={'Rooms'} value={30} href={'/admin/rooms'} />
         <StatusCard icon={ImUsers} label={'Instructors'} value={100} href={'/admin/instructors'} />
         <StatusCard icon={FaGraduationCap} label={'Students'} value={1000} href={'/admin/students'} />
-        <StatusCard icon={AiFillWarning} label={'Conflicts'} value={5} color={'text-red-500'} href={'/admin/conflicts'} />
       </div>
       <div className="date_block grid grid-cols-4 gap-3 w-full">
         <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
