@@ -12,9 +12,13 @@ class Course extends Model
 
     protected $fillable = [
         'id',
+        'academic_years_id',
+        'trimester_id',
         'dept_id',
-        'crs_code',
-        'crs_name',
+        'code',
+        'name',
+        'units',
+        'has_lab',
     ];
 
     public $incrementing = false;
@@ -36,5 +40,17 @@ class Course extends Model
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;
+    }
+
+    public function academic_year(){
+      return $this->belongsTo(AcademicYear::class, 'academic_years_id', 'id');
+    }
+
+    public function trimester(){
+      return $this->belongsTo(Trimester::class, 'trimester_id', 'id');
+    }
+
+    public function department(){
+      return $this->belongsTo(Department::class, 'dept_id', 'id');
     }
 }

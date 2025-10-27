@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
@@ -52,9 +53,11 @@ Route::prefix('auth')->group(function(){
 
 // ADMIN
 Route::middleware(['admin'])->prefix('admin')->group(function(){
+  // Admins' Dashboard
   Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
   Route::get('/dashboard/test', [AdminController::class, 'create']);
 
+  // Departments
   Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
   Route::get('/departments/create', [DepartmentController::class, 'create']);
   Route::post('/departments/create', [DepartmentController::class, 'store']);
@@ -62,17 +65,24 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/departments/update/{id}', [DepartmentController::class, 'update']);
   Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
 
+  // Instructors' Dashboard
   Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');
   Route::get('/instructors/create', [InstructorController::class, 'create']);
   Route::delete('/instructors/delete/{id}', [InstructorController::class, 'destroy']);
 
+  // Students' Dashboard
   Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
   Route::delete('/students/delete/{id}', [StudentsController::class, 'destroy']);
 
+  // Courses
   Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
   Route::get('/courses/create', [CourseController::class, 'create']);
   Route::post('/courses/create', [CourseController::class, 'store']);
+  Route::get('/courses/edit/{id}', [CourseController::class, 'edit']);
+  Route::put('/courses/update/{id}', [CourseController::class, 'update']);
+  Route::delete('/courses/delete/{id}', [CourseController::class, 'destroy']);
 
+  // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
   Route::get('/rooms/create', [RoomController::class, 'create']);
   Route::post('/rooms/create', [RoomController::class, 'store']);
@@ -80,6 +90,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/rooms/update/{id}', [RoomController::class, 'update']);
   Route::delete('/rooms/delete/{id}', [RoomController::class, 'destroy']);
 
+  // Programs
   Route::get('/programs', [ProgramController::class, 'index'])->name('programs.index');
   Route::get('/programs/create', [ProgramController::class, 'create']);
   Route::post('/programs/create', [ProgramController::class, 'store']);
@@ -87,6 +98,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/programs/update/{id}', [ProgramController::class, 'update']);
   Route::delete('/programs/delete/{id}', [ProgramController::class, 'destroy']);
 
+  // User-Management
   Route::get('/user-management', [UserManangementController::class, 'index'])->name('user-management.index');
   Route::get('/user-management/create', [UserManangementController::class, 'create']);
   Route::post('/user-management/create', [UserManangementController::class, 'store']);
@@ -95,6 +107,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/user-management/updateCredentials/{id}', [UserManangementController::class, 'updateCredentials']);
   Route::delete('/user-management/delete/{id}', [UserManangementController::class, 'destroy']);
 
+  // Academic Years
   Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
   Route::get('/academic-years/create', [AcademicYearController::class, 'create']);
   Route::post('/academic-years/create', [AcademicYearController::class, 'store']);
@@ -102,14 +115,24 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::put('/academic-years/update/{id}', [AcademicYearController::class, 'update']);
   Route::delete('/academic-years/delete/{id}', [AcademicYearController::class, 'destroy']);
 
+  // Trimesters
   Route::get('/trimesters', [TrimesterController::class, 'index'])->name('trimesters.index');
   Route::get('/trimesters/create', [TrimesterController::class, 'create']);
   Route::post('/trimesters/create', [TrimesterController::class, 'store']);
   Route::get('/trimesters/edit/{id}', [TrimesterController::class, 'edit']);
   Route::put('/trimesters/update/{id}', [TrimesterController::class, 'update']);
   Route::delete('/trimesters/delete/{id}', [TrimesterController::class, 'destroy']);
+
+  // Events
+  Route::get('/events', [EventController::class, 'index'])->name('events.index');
+  Route::get('/events/create', [EventController::class, 'create']);
+  Route::post('/events/create', [EventController::class, 'store']);
+  Route::get('/events/edit/{id}', [EventController::class, 'edit']);
+  Route::put('/events/update/{id}', [EventController::class, 'update']);
+  Route::delete('/events/delete/{id}', [EventController::class, 'destroy']);
 });
 
+// STUDENT
 Route::middleware(['student'])->prefix('student')->group(function(){
   Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 });

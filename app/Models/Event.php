@@ -12,10 +12,14 @@ class Event extends Model
 
     protected $fillable = [
         'id',
-        'event_name',
+        'title',
+        'description',
+        'start_datetime',
+        'end_datetime',
+        'type',
+        'dept_id',
         'location',
-        'start_time',
-        'end_time',
+        'is_active'
     ];
 
     public $incrementing = false;
@@ -37,5 +41,13 @@ class Event extends Model
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;
+    }
+
+    public function department(){
+      return $this->belongsTo(Department::class, 'dept_id');
+    }
+
+    public function instructor(){
+      return $this->belongsTo(Instructor::class, 'instructor_id');
     }
 }

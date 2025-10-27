@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('crs_code', 20)->unique();
-            $table->string('crs_name');
+            $table->string('code', 20)->unique();
+            $table->string('name');
             $table->integer('units')->default(3);
-            $table->text('crs_description')->nullable();
-
-            $table->string('instr_id');
-            $table->foreign('instr_id')->references('id')->on('instructors')->onDelete('cascade');
             $table->string('dept_id');
-            $table->foreign('dept_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->string('trimester_id')->nullable();
+            $table->string('academic_years_id');
+            $table->boolean('has_lab')->default(false);
+            $table->boolean('is_assigned')->default(false);
 
-            $table->enum('semester', ['1st', '2nd', '3rd'])->nullable();
-            $table->year('school_year')->nullable();
+            $table->foreign('dept_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('trimester_id')->references('id')->on('trimesters')->onDelete('cascade');
+            $table->foreign('academic_years_id')->references('id')->on('academic_years')->onDelete('cascade');
+
 
             $table->timestamps();
         });

@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AcademicYear extends Model
+class CourseAssignment extends Model
 {
     protected $fillable = [
-        'id',
-        'year_start',
-        'year_end',
-        'status',
+      'id',
+      'course_id',
+      'instructor_id',
+      'room_id',
     ];
 
     public $incrementing = false;
@@ -28,13 +28,9 @@ class AcademicYear extends Model
     private static function generateUniqueId()
     {
         do {
-            $uniqueId = 'AY_' . mt_rand(000000, 999999);
+            $uniqueId = 'CA_' . mt_rand(000000, 999999);
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;
-    }
-
-    public function trimesters(){
-      return $this->hasMany(Trimester::class, 'academic_years_id', 'id');
     }
 }

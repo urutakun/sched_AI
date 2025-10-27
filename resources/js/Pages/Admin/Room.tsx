@@ -36,7 +36,7 @@ const Room = ({ rooms }: RoomProps) => {
         deletingId={deletingId}
         url={'/admin/rooms/delete'}
         nameField="room_name"
-        errorMessage="Failed to create room"
+        errorMessage="Failed to delete room"
       />
     </div>
   )

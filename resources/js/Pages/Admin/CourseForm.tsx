@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Layout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Link } from "@inertiajs/react";
 import {
     Field,
@@ -22,34 +22,75 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Department as DepartmentType } from "../Interfaces/Department";
+import { Switch } from "@/components/ui/switch"
+import type { Department as DepartmentType } from "../Interfaces/Department";
+import type { AcademicYear } from "../Interfaces/AcademicYear";
+import type { Trimester } from "../Interfaces/Trimester";
+import type { Course as CourseType } from "../Interfaces/Course";
 import { toast } from "sonner";
 
 interface CourseFormProps {
     departments: DepartmentType[];
+    academic_years: AcademicYear[];
+    course: CourseType;
 }
 
-const CourseForm = ({ departments }: CourseFormProps) => {
-    const [departmentList, setDepartmentList] =
-        useState<DepartmentType[]>(departments ?? []);
-    const { data, setData, errors, post, reset } = useForm({
-        dept_id: "",
-        crs_code: "",
-        crs_name: "",
+const CourseForm = ({ departments, academic_years, course }: CourseFormProps) => {
+  console.log(course);
+    const [departmentList, setDepartmentList] =useState<DepartmentType[]>(departments ?? []);
+    const [academicYearList, setAcademicYearList] =useState<AcademicYear[]>(academic_years ?? []);
+    const [trimesterList, setTrimesterList] =useState<Trimester[]>([]);
+
+    const { data, setData, errors, post, reset, put } = useForm({
+        academic_years_id: course?.academic_years_id ?? "",
+        trimester_id: course?.trimester_id ?? "",
+        dept_id: course?.dept_id ?? "",
+        code: course?.code ?? "",
+        name: course?.name ?? "",
+        units: course?.units ?? "",
+        has_lab: course?.has_lab ?? false,
+        status: course?.status ?? "",
     });
+
+    useEffect(() => {
+      const selectedYear = academicYearList.find((year) => year.id === data.academic_years_id);
+      const filteredTrimesters = selectedYear?.trimesters ?? [];
+      setTrimesterList(filteredTrimesters);
+
+      if (filteredTrimesters.length === 0) {
+        setData("trimester_id", "");
+      } else {
+        const stillValid = filteredTrimesters.some(
+          (t) => t.id === data.trimester_id
+        );
+        if (!stillValid) {
+          setData("trimester_id", "");
+        }
+      }
+    }, [data.academic_years_id, academicYearList])
+
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        post("/admin/courses/create", {
-            onSuccess: () => {
-                toast("Courses created successfully");
-                reset();
-            },
-            onError: () => {
-                toast("Failed to create courses");
-                reset();
-            },
-        });
+
+        if(course){
+           put(`/admin/courses/update/${course.id}`, {
+              onSuccess: () => toast.success('Course updated successfully'),
+              onError: () => toast.error('Failed to update course')
+            });
+        }
+        else{
+          post("/admin/courses/create", {
+              onSuccess: () => {
+                  toast.success("Course created successfully");
+                  reset();
+              },
+              onError: () => {
+                  toast.error("Failed to create course");
+                  reset();
+              },
+          });
+        }
     };
     return (
         <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
@@ -60,8 +101,58 @@ const CourseForm = ({ departments }: CourseFormProps) => {
             >
                 <FieldGroup>
                     <FieldSet>
-                        <FieldLegend>Create Course</FieldLegend>
+                        <FieldLegend>{course ? 'Update Course' : 'Create Course'}</FieldLegend>
                         <FieldGroup>
+                          <Field>
+                                <FieldLabel>
+                                    Academic Year
+                                </FieldLabel>
+                                <Select
+                                    value={data.academic_years_id}
+                                    onValueChange={(value) =>
+                                        setData("academic_years_id", value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select academic year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {academicYearList?.map((item: AcademicYear, index: number) => (
+                                          <SelectItem value={item.id} key={index} className="capitalize">
+                                            {`AY ${item.year_start} - ${item.year_end}`}
+                                          </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FieldError>
+                                    {errors.academic_years_id ?? ""}
+                                </FieldError>
+                            </Field>
+                          <Field>
+                                <FieldLabel>
+                                    Trimester
+                                </FieldLabel>
+                                <Select
+                                    value={data.trimester_id}
+                                    onValueChange={(value) =>
+                                        setData("trimester_id", value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select trimester" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {trimesterList?.map((item: Trimester, index: number) => (
+                                          <SelectItem value={item.id} key={index} className="capitalize">
+                                            {item.name}
+                                          </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FieldError>
+                                    {errors.trimester_id ?? ""}
+                                </FieldError>
+                            </Field>
                             <Field>
                                 <FieldLabel htmlFor="department">
                                     Department
@@ -106,12 +197,13 @@ const CourseForm = ({ departments }: CourseFormProps) => {
                                     id="code"
                                     autoComplete="off"
                                     placeholder="DSA"
-                                    value={data.crs_code}
+                                    value={data.code}
+                                    maxLength={8}
                                     onChange={(e) =>
-                                        setData("crs_code", e.target.value)
+                                        setData("code", e.target.value)
                                     }
                                 />
-                                <FieldError>{errors.crs_code ?? ""}</FieldError>
+                                <FieldError>{errors.code ?? ""}</FieldError>
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="name">
@@ -121,12 +213,45 @@ const CourseForm = ({ departments }: CourseFormProps) => {
                                     id="name"
                                     autoComplete="off"
                                     placeholder="Data Structures & Algorithms"
-                                    value={data.crs_name}
+                                    value={data.name}
                                     onChange={(e) =>
-                                        setData("crs_name", e.target.value)
+                                        setData("name", e.target.value)
                                     }
                                 />
-                                <FieldError>{errors.crs_name ?? ""}</FieldError>
+                                <FieldError>{errors.name ?? ""}</FieldError>
+                            </Field>
+                            <Field>
+                                <FieldLabel htmlFor="units">
+                                    Units
+                                </FieldLabel>
+                                <Input
+                                    id="units"
+                                    type="number"
+                                    autoComplete="off"
+                                    value={data.units}
+                                    onChange={(e) =>
+                                        setData("units", Number(e.target.value))
+                                    }
+                                />
+                                <FieldError>{errors.units ?? ""}</FieldError>
+                            </Field>
+                            <Field>
+                                <FieldLabel htmlFor="has_lab">
+                                  Use Lab
+                                </FieldLabel>
+                                <div className="flex item-center space-x-3">
+                                  <Switch
+                                      id="has_lab"
+                                      checked={data.has_lab}
+                                      onCheckedChange={(checked) =>
+                                          setData("has_lab", checked)
+                                      }
+                                  />
+                                  <span className="text-sm text-muted-foreground">
+                                    {data.has_lab ? "Yes, has lab" : "No lab required"}
+                                  </span>
+                                </div>
+                                <FieldError>{errors.has_lab ?? ""}</FieldError>
                             </Field>
                         </FieldGroup>
                     </FieldSet>

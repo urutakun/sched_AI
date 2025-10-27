@@ -14,13 +14,74 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const CourseColumns: ColumnDef<Course>[] = [
+export const CourseColumns = (
+    handleEdit: (id: string) => void,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setDeletingId: React.Dispatch<React.SetStateAction<string>>
+): ColumnDef<Course>[] => [
     {
-        accessorKey: "crs_id",
+        accessorKey: "id",
         header: () => <div className="font-bold uppercase">ID</div>,
     },
     {
-        accessorKey: "crs_code",
+        id: "academic_year",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Academic Year
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => (
+          <span>{`${row.original.academic_year.year_start} - ${row.original.academic_year.year_end}`}</span>
+        )
+    },
+    {
+        id: "trimester",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Trimester
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => (
+          <span>{row.original.trimester?.name}</span>
+        )
+    },
+    {
+        id: "department",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Department
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => (
+          <span>{row.original.department.name}</span>
+        )
+    },
+    {
+        accessorKey: "code",
         header: ({ column }) => {
             return (
                 <div
@@ -36,7 +97,7 @@ export const CourseColumns: ColumnDef<Course>[] = [
         },
     },
     {
-        accessorKey: "crs_name",
+        accessorKey: "name",
         header: ({ column }) => {
             return (
                 <div
@@ -52,9 +113,63 @@ export const CourseColumns: ColumnDef<Course>[] = [
         },
     },
     {
+        accessorKey: "units",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Units
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "has_lab",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Using Lab
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => {
+          const bg_colors: Record<string,string> = {
+            true: 'bg-blue-200 ',
+            false: 'bg-gray-200 ',
+          }
+
+          const text_colors: Record<string,string> = {
+            true: 'text-blue-600 ',
+            false: 'text-gray-600 ',
+          }
+
+          const hasLab = Boolean(row.original.has_lab);
+          return(
+            <div className={`${bg_colors[String(hasLab)]} ${text_colors[String(hasLab)]} max-w-[60px] px-4 py-1 rounded-2xl text-center`}>
+              <span>{row.original.has_lab ? 'Yes' : 'No'}</span>
+            </div>
+          )
+        }
+    },
+    {
         id: "actions",
         header: () => <div className="font-bold uppercase">Actions</div>,
         cell: ({ row }) => {
+            const handleDelete = (id: string) => {
+              setDeletingId(id);
+              setIsOpen(true);
+            }
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -68,8 +183,9 @@ export const CourseColumns: ColumnDef<Course>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem>Assign</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
