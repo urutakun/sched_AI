@@ -4,6 +4,7 @@ use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CourseAssignmentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventController;
@@ -81,6 +82,11 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/courses/edit/{id}', [CourseController::class, 'edit']);
   Route::put('/courses/update/{id}', [CourseController::class, 'update']);
   Route::delete('/courses/delete/{id}', [CourseController::class, 'destroy']);
+  Route::get('/courses/assign/{id}', [CourseAssignmentController::class, 'create']);
+
+  // Course Assignments
+  Route::get('/course-assignments', [CourseAssignmentController::class, 'index']);
+  Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
 
   // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');

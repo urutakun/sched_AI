@@ -10,8 +10,8 @@ export interface Course {
   name: string;
   units: number;
   has_lab: boolean;
+  is_assigned: boolean;
   academic_year: AcademicYear;
   trimester: Trimester;
   department: Department;
-  status: 'active' | 'inactive';
 }

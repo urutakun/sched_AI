@@ -17,6 +17,8 @@ const breadcrumbMap:Record<string, string> = {
   'trimesters' : 'Trimesters',
   'create': 'Create',
   'edit': 'Edit',
+  'assign': 'Assign',
+  'course-assignments': 'Course Assignments'
 }
 
 

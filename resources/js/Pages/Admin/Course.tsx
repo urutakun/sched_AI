@@ -20,6 +20,10 @@ const Course = ({ courses }: DepartmentProps) => {
       router.get(`/admin/courses/edit/${id}`);
     }
 
+    const handleAssign = (id: string): void => {
+      router.get(`/admin/courses/assign/${id}`);
+    }
+
     const onDelete = (id: string): void => {
       const filtered_courses = courseList.filter((item: CourseType) => item.id !== id);
       setCourseList(filtered_courses);
@@ -28,7 +32,7 @@ const Course = ({ courses }: DepartmentProps) => {
     return (
         <div className="w-full h-full bg-white shadow-sm rounded-2xl p-4">
             <DataTable
-                columns={CourseColumns(handleEdit, setIsOpen, setDeletingId)}
+                columns={CourseColumns(handleEdit, handleAssign, setIsOpen, setDeletingId)}
                 data={courseList || []}
                 filterLabel={"name"}
                 filterColumn={"name"}

@@ -9,7 +9,8 @@ import {
     UserCog,
     GraduationCap,
     BookHeart,
-    School
+    School,
+    CalendarCheck
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -97,7 +98,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {
                 title: "Create",
                 url: "/admin/courses/create"
+              },
+              {
+                title: "Course Assignments",
+                url: "/admin/course-assignments/"
               }
+            ]
+        },
+        {
+            title: "Schedule",
+            icon: CalendarCheck,
+            items: [
+              {
+                title: "Schedule List",
+                url: "/admin/schedules"
+              },
+              {
+                title: "Create",
+                url: "/admin/schedules/create"
+              },
             ]
         },
         {

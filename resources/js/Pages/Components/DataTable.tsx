@@ -32,7 +32,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   filterLabel: string;
   filterColumn: string;
-  createUrl: string;
+  createUrl?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -71,12 +71,14 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
           <div className="flex justify-end space-x-3 items-center">
-            <Link href={`${createUrl}`}>
-              <Button variant="default" type="button">
-                Create
-                <CirclePlus />
-              </Button>
-            </Link>
+            {createUrl && (
+              <Link href={`${createUrl}`}>
+                <Button variant="default" type="button">
+                  Create
+                  <CirclePlus />
+                </Button>
+              </Link>
+            )}
             <DataTableViewOptions table={table}/>
           </div>
       </div>

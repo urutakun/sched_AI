@@ -16,6 +16,7 @@ import {
 
 export const CourseColumns = (
     handleEdit: (id: string) => void,
+    handleAssign: (id: string) => void,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     setDeletingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<Course>[] => [
@@ -144,23 +145,45 @@ export const CourseColumns = (
             );
         },
         cell: ({ row }) => {
-          const bg_colors: Record<string,string> = {
-            true: 'bg-blue-200 ',
-            false: 'bg-gray-200 ',
-          }
-
-          const text_colors: Record<string,string> = {
-            true: 'text-blue-600 ',
-            false: 'text-gray-600 ',
-          }
-
-          const hasLab = Boolean(row.original.has_lab);
+          const has_lab = Boolean(row.original.has_lab);
           return(
-            <div className={`${bg_colors[String(hasLab)]} ${text_colors[String(hasLab)]} max-w-[60px] px-4 py-1 rounded-2xl text-center`}>
-              <span>{row.original.has_lab ? 'Yes' : 'No'}</span>
-            </div>
+              <span>{has_lab ? 'Yes' : 'No'}</span>
           )
         }
+    },
+    {
+        accessorKey: "is_assigned",
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Status
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => {
+        const bg_colors: Record<string,string> = {
+          true: 'bg-blue-200 ',
+          false: 'bg-gray-200 ',
+        }
+
+        const text_colors: Record<string,string> = {
+          true: 'text-blue-600 ',
+          false: 'text-gray-600 ',
+        }
+
+        const assigned = Boolean(row.original.is_assigned);
+        return(
+          <div className={`${bg_colors[String(assigned)]} ${text_colors[String(assigned)]} max-w-[120px] px-4 py-1 rounded-2xl text-center`}>
+            <span>{assigned ? 'Assigned' : 'Not Assigned'}</span>
+          </div>
+        )
+      }
     },
     {
         id: "actions",
@@ -183,7 +206,7 @@ export const CourseColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Assign</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAssign(row.original.id)}>Assign</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
