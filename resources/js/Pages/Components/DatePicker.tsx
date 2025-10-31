@@ -37,8 +37,8 @@ const DatePicker = () => {
           onSelect={setDate}
           captionLayout='dropdown'
           classNames={{
-            today: `bg-custom-secondary text-white rounded-xl ${defaultClassNames.today}`,
-            selected: `border-none text-white rounded-xl focus-visible:ring-0 focus-visible:outline-none ${defaultClassNames.selected}`,
+            today: `bg-muted text-foreground rounded-xl ${defaultClassNames.today}`,
+            selected: `[&_[data-selected-single=true]]:!bg-custom-secondary [&_[data-selected-single=true]]:!text-white rounded-2xl focus-visible:ring-0 focus-visible:outline-none outline-none ${defaultClassNames.selected}`,
             root: `w-full bg-transparent ${defaultClassNames.root}`
           }}
           required

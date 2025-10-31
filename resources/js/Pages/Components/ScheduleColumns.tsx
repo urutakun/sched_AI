@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Course } from "../Interfaces/Course";
+import { Schedule } from "../Interfaces/Schedule";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,18 +14,17 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const CourseColumns = (
+export const ScheduleColumns = (
     handleEdit: (id: string) => void,
-    handleAssign: (id: string) => void,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     setDeletingId: React.Dispatch<React.SetStateAction<string>>
-): ColumnDef<Course>[] => [
+): ColumnDef<Schedule>[] => [
     {
         accessorKey: "id",
         header: () => <div className="font-bold uppercase">ID</div>,
     },
     {
-        id: "academic_year",
+        id: "course_assignment_id",
         header: ({ column }) => {
             return (
                 <div
@@ -34,17 +33,17 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Academic Year
+                    Course Assignment
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );
         },
         cell: ({ row }) => (
-          <span>{`${row.original.academic_year.year_start} - ${row.original.academic_year.year_end}`}</span>
+          <span>{`${row.original.course_assignment_id} - ${row.original.course_assignment_id}`}</span>
         )
     },
     {
-        id: "trimester",
+        id: "room_id",
         header: ({ column }) => {
             return (
                 <div
@@ -53,17 +52,17 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Trimester
+                    Room
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );
         },
         cell: ({ row }) => (
-          <span>{row.original.trimester?.name}</span>
+          <span>{row.original.room_id}</span>
         )
     },
     {
-        id: "department",
+        id: "day_of_week",
         header: ({ column }) => {
             return (
                 <div
@@ -72,17 +71,17 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Department
+                    Day of Week
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );
         },
         cell: ({ row }) => (
-          <span>{row.original.department.name}</span>
+          <span>{row.original.day_of_week}</span>
         )
     },
     {
-        id: "year_level",
+        id: "start_time",
         header: ({ column }) => {
             return (
                 <div
@@ -91,17 +90,17 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Year Level
+                    Start Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );
         },
         cell: ({ row }) => (
-          <span>{row.original.year_level}</span>
+          <span>{row.original.start_time}</span>
         )
     },
     {
-        accessorKey: "code",
+        id: "end_time",
         header: ({ column }) => {
             return (
                 <div
@@ -110,99 +109,14 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Code
+                    End Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );
         },
-    },
-    {
-        accessorKey: "name",
-        header: ({ column }) => {
-            return (
-                <div
-                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: "units",
-        header: ({ column }) => {
-            return (
-                <div
-                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Units
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: "has_lab",
-        header: ({ column }) => {
-            return (
-                <div
-                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Using Lab
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </div>
-            );
-        },
-        cell: ({ row }) => {
-          const has_lab = Boolean(row.original.has_lab);
-          return(
-              <span>{has_lab ? 'Yes' : 'No'}</span>
-          )
-        }
-    },
-    {
-        accessorKey: "is_assigned",
-        header: ({ column }) => {
-            return (
-                <div
-                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Status
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </div>
-            );
-        },
-        cell: ({ row }) => {
-        const bg_colors: Record<string,string> = {
-          true: 'bg-blue-200 ',
-          false: 'bg-gray-200 ',
-        }
-
-        const text_colors: Record<string,string> = {
-          true: 'text-blue-600 ',
-          false: 'text-gray-600 ',
-        }
-
-        const assigned = Boolean(row.original.is_assigned);
-        return(
-          <div className={`${bg_colors[String(assigned)]} ${text_colors[String(assigned)]} max-w-[120px] px-4 py-1 rounded-2xl text-center`}>
-            <span>{assigned ? 'Assigned' : 'Not Assigned'}</span>
-          </div>
+        cell: ({ row }) => (
+          <span>{row.original.end_time}</span>
         )
-      }
     },
     {
         id: "actions",
@@ -225,7 +139,6 @@ export const CourseColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleAssign(row.original.id)}>Assign</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>

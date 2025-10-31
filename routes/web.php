@@ -9,8 +9,11 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\InstructorDashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\TrimesterController;
@@ -58,6 +61,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
   Route::get('/dashboard/test', [AdminController::class, 'create']);
 
+  // Profiles
+  Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
+
   // Departments
   Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
   Route::get('/departments/create', [DepartmentController::class, 'create']);
@@ -87,6 +93,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   // Course Assignments
   Route::get('/course-assignments', [CourseAssignmentController::class, 'index']);
   Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
+
+  // Schedules
+  Route::get('/schedules', [ScheduleController::class, 'index']);
 
   // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
@@ -138,7 +147,18 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::delete('/events/delete/{id}', [EventController::class, 'destroy']);
 });
 
+// INSTRUCTOR
+Route::middleware(['instructor'])->prefix('instructor')->group(function(){
+  Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
+
+  // Profiles
+  Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+});
+
 // STUDENT
 Route::middleware(['student'])->prefix('student')->group(function(){
   Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+
+  // Profiles
+  Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
 });

@@ -6,6 +6,7 @@ export interface Course {
   academic_years_id: string;
   trimester_id: string;
   dept_id: string;
+  year_level: number;
   code: string;
   name: string;
   units: number;

@@ -6,6 +6,7 @@ export interface User {
   last_name: string;
   role: string;
   email: string;
+  avatar: string; 
   password: string;
   student: Student;
   instructor: Instructor;

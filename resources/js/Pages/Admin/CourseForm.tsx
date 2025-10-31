@@ -16,7 +16,7 @@ import {
 import {
     Select,
     SelectContent,
-    SelectItem,
+  SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -45,11 +45,11 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
         academic_years_id: course?.academic_years_id ?? "",
         trimester_id: course?.trimester_id ?? "",
         dept_id: course?.dept_id ?? "",
+        year_level: course?.year_level ?? 0,
         code: course?.code ?? "",
         name: course?.name ?? "",
         units: course?.units ?? "",
         has_lab: course?.has_lab ?? false,
-        status: course?.status ?? "",
     });
 
     useEffect(() => {
@@ -198,7 +198,7 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
                                     autoComplete="off"
                                     placeholder="DSA"
                                     value={data.code}
-                                    maxLength={8}
+                                    maxLength={10}
                                     onChange={(e) =>
                                         setData("code", e.target.value)
                                     }
@@ -219,6 +219,27 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
                                     }
                                 />
                                 <FieldError>{errors.name ?? ""}</FieldError>
+                            </Field>
+                             <Field>
+                                <FieldLabel htmlFor="year_level">
+                                    Year Level
+                                </FieldLabel>
+                                <Select
+                                    value={data.year_level ? String(data.year_level) : ''}
+                                    onValueChange={(value) =>
+                                        setData("year_level", Number(value))
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select year level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="1"  className="capitalize">First Year</SelectItem>
+                                      <SelectItem value="2"  className="capitalize">Second Year</SelectItem>
+                                      <SelectItem value="3"  className="capitalize">Third Year</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FieldError>{errors.year_level ?? ""}</FieldError>
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="units">

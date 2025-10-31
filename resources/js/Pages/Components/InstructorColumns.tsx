@@ -67,6 +67,20 @@ export const InstructorColumns = (
     },
   },
   {
+    accessorKey: "max_load",
+    header: ({ column }) => {
+      return(
+        <div
+        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Max Load
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "user.email",
     header: () => <div className="font-bold uppercase">Email</div>,
   },

@@ -32,6 +32,7 @@ class UserManangementController extends Controller
         'last_name' => 'required|string|max:255',
         'role' => 'required|string|in:admin,instructor,student',
         'department_id' => 'nullable|exists:departments,id',
+        'max_load' => 'nullable|numeric|min:3|max:12',
         'year' => 'nullable|numeric|min:1|max:4',
         'section' => 'nullable|string|max:1',
         'program_id' => 'nullable|exists:programs,id',
@@ -52,7 +53,8 @@ class UserManangementController extends Controller
       if($user->role === 'instructor'){
         Instructor::create([
           'user_id' => $user->id,
-          'dept_id' => $validated['department_id']
+          'dept_id' => $validated['department_id'],
+          'max_load' => $validated['max_load']
         ]);
       }
 
@@ -89,6 +91,7 @@ class UserManangementController extends Controller
         'last_name' => 'required|string|max:255',
         'role' => 'required|string|in:admin,instructor,student',
         'department_id' => 'nullable|exists:departments,id',
+        'max_load' => 'nullable|numeric|min:3|max:12',
         'year' => 'nullable|numeric|min:1|max:4',
         'section' => 'nullable|string|max:1',
         'program_id' => 'nullable|exists:programs,id',
@@ -118,6 +121,7 @@ class UserManangementController extends Controller
         Instructor::create([
           'user_id' => $user->id,
           'dept_id' => $validated['department_id'] ?? null,
+          'max_load' => $validated['max_load'] ?? null,
         ]);
       }
 

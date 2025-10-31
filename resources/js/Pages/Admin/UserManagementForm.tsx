@@ -45,6 +45,7 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps ) => 
     section: user?.student?.section ?? '',
     program_id: user?.student?.program_id ?? '',
     department_id: user?.instructor?.dept_id ?? '',
+    max_load: user?.instructor?.max_load ?? 0,
     email: '',
     password: '',
     password_confirmation: '',
@@ -174,6 +175,21 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps ) => 
                         </SelectContent>
                     </Select>
                     <FieldError>{errors.year ?? ""}</FieldError>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="max_load">
+                        Max Load
+                    </FieldLabel>
+                    <Input
+                        id="max_load"
+                        type="number"
+                        autoComplete="off"
+                        value={data.max_load}
+                        onChange={(e) =>
+                            setData("max_load", Number(e.target.value))
+                        }
+                    />
+                    <FieldError>{errors.max_load ?? ""}</FieldError>
                   </Field>
                 </>
               )}

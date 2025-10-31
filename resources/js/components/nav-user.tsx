@@ -5,7 +5,7 @@ import {
   Bell,
   ChevronsUpDown,
   LogOut,
-  Sparkles,
+  CircleUser,
 } from "lucide-react"
 
 import {
@@ -28,7 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { router } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
 
 export function NavUser({
   user,
@@ -44,6 +44,8 @@ export function NavUser({
   const handleLogout = (): void => {
     router.post('/auth/logout');
   }
+
+  const role = usePage().props.auth.user.role;
 
   return (
     <SidebarMenu>
@@ -85,11 +87,14 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuGroup>
             <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.visit(`/${role}/profile`)}>
+                <CircleUser />
+                Profile
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
-
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

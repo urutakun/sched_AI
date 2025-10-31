@@ -6,7 +6,7 @@ export interface Instructor {
   dept_id: string;
   first_name: string;
   last_name: string;
-  instr_position: string;
+  max_load: number; 
   email: string;
   password: string;
   user: User;

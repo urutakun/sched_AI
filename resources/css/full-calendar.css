@@ -1,0 +1,86 @@
+:root {
+  --primary: #EBF8FF;
+  --secondary: #0A64EE;
+  --accent: #A2A2A2;
+}
+
+/* DM SANS */
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('/assets/fonts/woff/DMSans_Light.woff') format('woff'),
+         url('/assets/fonts/woff2/DMSans_Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('/assets/fonts/woff/DMSans_Regular.woff') format('woff'),
+         url('/assets/fonts/woff2/DMSans_Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('/assets/fonts/woff/DMSans_Medium.woff') format('woff'),
+    url('/assets/fonts/woff2/DMSans_Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('/assets/fonts/woff/DMSans_Bold.woff') format('woff'),
+    url('/assets/fonts/woff2/DMSans_Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+
+
+.fc {
+  font-family: 'DM Sans';
+}
+
+.fc-toolbar-title {
+  font-family: 'DM Sans';
+  font-weight: 700;
+  letter-spacing: -1px;
+  font-size: 1.1rem !important;
+}
+
+.fc-button {
+  background-color: var(--secondary) !important;
+  border: none !important;
+}
+
+.fc-button:hover {
+  background-color: var(--accent) !important;
+  transition: 0.3s ease-in-out;
+}
+
+.fc-day-today {
+  background-color: transparent !important;
+}
+
+.fc-today-button {
+  background-color: rgba(0,0,0,1) !important;
+  color: white !important;
+}
+
+.fc-today-button:hover {
+  background-color: var(--accent) !important;
+}
+
+@media screen and (max-width: 448px) {
+  .fc .fc-view-harness {
+    overflow-x: auto;
+  }
+
+  .fc .fc-scrollgrid {
+    min-width: 800px;
+    overflow-x: auto;
+  }
+}

@@ -15,6 +15,7 @@ class Course extends Model
         'academic_years_id',
         'trimester_id',
         'dept_id',
+        'year_level',
         'code',
         'name',
         'units',

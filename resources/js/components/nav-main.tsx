@@ -34,7 +34,6 @@ export function NavMain({
   }[]
 }) {
   const { props, url } = usePage();
-  console.log(url);
 
   return (
     <SidebarGroup>

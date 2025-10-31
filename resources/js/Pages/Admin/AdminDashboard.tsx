@@ -10,27 +10,57 @@ import { ImUsers } from "react-icons/im";
 import { AiFillWarning } from "react-icons/ai";
 import DatePicker from '../Components/DatePicker';
 import TableComponent from '../Components/TableComponent';
-import { usePage } from '@inertiajs/react';
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import '../../../css/full-calendar.css';
 
-// interface AdminDashboardProps {
-// }
+interface AdminDashboardProps {
+  departments: number;
+  instructors: number;
+  students: number;
+  rooms: number;
+}
 
-const AdminDashboard = () => {
-  const user = usePage().props.auth.user;
+const AdminDashboard = ({
+  departments,
+  instructors,
+  students,
+  rooms,
+}: AdminDashboardProps) => {
   return (
     <div className="wrapper space-y-8">
       <div className='status grid grid-cols-2 gap-3 lg:gap-0 lg:flex lg:space-x-3'>
-        <StatusCard icon={FaBuilding} label={'Departments'} value={6} href={'/admin/departments'} />
-        <StatusCard icon={BsDoorOpenFill} label={'Rooms'} value={30} href={'/admin/rooms'} />
-        <StatusCard icon={ImUsers} label={'Instructors'} value={100} href={'/admin/instructors'} />
-        <StatusCard icon={FaGraduationCap} label={'Students'} value={1000} href={'/admin/students'} />
+        <StatusCard icon={FaBuilding} label={'Departments'} value={departments} href={'/admin/departments'} />
+        <StatusCard icon={ImUsers} label={'Instructors'} value={instructors} href={'/admin/instructors'} />
+        <StatusCard icon={FaGraduationCap} label={'Students'} value={students} href={'/admin/students'} />
+        <StatusCard icon={BsDoorOpenFill} label={'Rooms'} value={rooms} href={'/admin/rooms'} />
       </div>
       <div className="date_block grid grid-cols-4 gap-3 w-full">
         <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
           <DatePicker />
         </div>
-        <div className="date_table cols-span-4 lg:col-span-3 min-h-[400px] w-full bg-white shadow-sm p-4 rounded-2xl">
-          <TableComponent />
+        <div className="date_table cols-span-4 col-span-4 lg:col-span-3 min-h-[400px] w-full bg-white shadow-sm p-4 rounded-2xl">
+           <FullCalendar
+              plugins={[timeGridPlugin, interactionPlugin]}
+              initialView="timeGridDay"
+              headerToolbar={{
+                left: "",
+                center: "",
+                right: "title"
+              }}
+              titleFormat={{
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }}
+              // events={events}
+              height="auto"
+              allDaySlot={false}
+              slotMinTime="07:00:00"
+              slotMaxTime="21:00:00"
+            />
         </div>
       </div>
     </div>

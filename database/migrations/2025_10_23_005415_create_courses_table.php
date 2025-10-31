@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('dept_id');
             $table->string('trimester_id')->nullable();
             $table->string('academic_years_id');
+            $table->unsignedTinyInteger('year_level');
             $table->boolean('has_lab')->default(false);
             $table->boolean('is_assigned')->default(false);
 
