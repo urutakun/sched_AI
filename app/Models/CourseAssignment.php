@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CourseAssignment extends Model
 {
@@ -32,5 +33,15 @@ class CourseAssignment extends Model
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;
+    }
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id');
+    }
+
+    public function instructor(): BelongsTo
+    {
+        return $this->belongsTo(Instructor::class, 'instructor_id', 'id');
     }
 }

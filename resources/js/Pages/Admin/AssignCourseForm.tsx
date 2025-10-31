@@ -30,10 +30,12 @@ import { toast } from "sonner";
 interface CourseFormProps {
     course: CourseType;
     assigned_course: AssignCourseType;
+    recommended_instructors: any[];
 }
 
-const AssignCourseForm = ({ course, assigned_course }: CourseFormProps) => {
+const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: CourseFormProps) => {
     console.log(course);
+    console.log("recommended shtis", recommended_instructors);
     const { data, setData, errors, post, reset, put } = useForm({
         course_id: course?.id ?? "",
         instructor_id: assigned_course?.instructor_id ?? "",
@@ -44,23 +46,23 @@ const AssignCourseForm = ({ course, assigned_course }: CourseFormProps) => {
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
 
-        if(assigned_course){
-           put(`/admin/course-assignments/update/${assigned_course.id}`, {
-              onSuccess: () => toast.success('Course updated successfully'),
-              onError: () => toast.error('Failed to update course')
+        if (assigned_course) {
+            put(`/admin/course-assignments/update/${assigned_course.id}`, {
+                onSuccess: () => toast.success('Course updated successfully'),
+                onError: () => toast.error('Failed to update course')
             });
         }
-        else{
-          post("/admin/course-assignments/create", {
-              onSuccess: () => {
-                  toast.success("Course created successfully");
-                  reset();
-              },
-              onError: () => {
-                  toast.error("Failed to create course");
-                  reset();
-              },
-          });
+        else {
+            post("/admin/course-assignments/create", {
+                onSuccess: () => {
+                    toast.success("Course created successfully");
+                    reset();
+                },
+                onError: () => {
+                    toast.error("Failed to create course");
+                    reset();
+                },
+            });
         }
     };
     return (
@@ -82,7 +84,7 @@ const AssignCourseForm = ({ course, assigned_course }: CourseFormProps) => {
                                     id="course_id"
                                     value={course.name}
                                     onChange={(e) =>
-                                      setData("course_id", course.id)
+                                        setData("course_id", course.id)
                                     }
                                     disabled
                                 />
@@ -102,18 +104,17 @@ const AssignCourseForm = ({ course, assigned_course }: CourseFormProps) => {
                                         <SelectValue placeholder="Select instructor" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem
-                                            value="active"
-                                            className="capitalize"
-                                        >
-                                            Prof 1
-                                        </SelectItem>
-                                        <SelectItem
-                                            value="inactive"
-                                            className="capitalize"
-                                        >
-                                            Prof 2
-                                        </SelectItem>
+                                        {recommended_instructors.length > 0 ? (
+                                            recommended_instructors.map((inst: any) => (
+                                                <SelectItem key={inst.id} value={inst.id} className="capitalize">
+                                                    {inst.first_name}
+                                                </SelectItem>
+                                            ))
+                                        ) : (
+                                            <SelectItem value="none" disabled>
+                                                No recommended instructors
+                                            </SelectItem>
+                                        )}
                                     </SelectContent>
                                 </Select>
                                 <FieldError>{errors.instructor_id ?? ""}</FieldError>
@@ -149,7 +150,7 @@ const AssignCourseForm = ({ course, assigned_course }: CourseFormProps) => {
                                 <FieldError>
                                     {errors.status ?? ""}
                                 </FieldError>
-                          </Field>
+                            </Field>
                         </FieldGroup>
                     </FieldSet>
                     <Field orientation="horizontal">
