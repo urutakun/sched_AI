@@ -13,28 +13,27 @@ class CourseAssignmentController extends Controller
 {
   public function index()
   {
-    $course_assignments = CourseAssignment::with(['course', 'instructor'])->get();
+    $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
     return Inertia::render('Admin/CourseAssignments', ['course_assignments' => $course_assignments]);
-    return Inertia::render('Admin/AssignCourseForm', ['course' => $course, 'recommended_instructors' => $recommended,]);
   }
 
   public function create($id)
   {
-    // 🔹 Get the target course
+    // Get the target course
     $course = Course::with(['academic_year', 'trimester', 'department'])
       ->findOrFail($id);
 
-    // 🔹 Get all courses and instructors for AI model input
+    // Get all courses and instructors for AI model input
     $courses = Course::with(['academic_year', 'trimester', 'department'])->get();
     $instructors = Instructor::with(['user', 'department'])->get();
 
-    // 🔹 AI service base URL (default to local)
+    // AI service base URL (default to local)
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
 
     $recommended = collect();
 
     try {
-      // 🔹 Prepare data payload (simple and JSON-serializable)
+      // Prepare data payload (simple and JSON-serializable)
       $payload = [
         'courses' => $courses->map(function ($c) {
           return [
@@ -102,7 +101,7 @@ class CourseAssignmentController extends Controller
       ]);
 
       return redirect()
-        ->route('admin.course-assignments.index')
+        ->route('course-assignments.index')
         ->with('success', 'Course assignment created successfully.');
     } catch (\Exception $e) {
       dd('Error creating course assignment: ' . $e->getMessage());

@@ -39,7 +39,7 @@ export const CourseAssignmentColumns = (
             );
         },
         cell: ({ row }) => (
-          <span></span>
+          <span>{row.original?.course.name}</span>
         )
     },
     {
@@ -57,9 +57,12 @@ export const CourseAssignmentColumns = (
                 </div>
             );
         },
-        cell: ({ row }) => (
-          <span></span>
-        )
+        cell: ({ row }) => {
+          const full_name = `${row.original.instructor.user.first_name} ${row.original.instructor.user.last_name}`;
+          return(
+            <span>{full_name}</span>
+          )
+        }
     },
     {
       accessorKey: "status",
@@ -109,7 +112,6 @@ export const CourseAssignmentColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleAssign(row.original.id)}>Assign</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>

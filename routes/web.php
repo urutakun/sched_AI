@@ -91,7 +91,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/courses/assign/{id}', [CourseAssignmentController::class, 'create']);
 
   // Course Assignments
-  Route::get('/course-assignments', [CourseAssignmentController::class, 'index']);
+  Route::get('/course-assignments', [CourseAssignmentController::class, 'index'])->name('course-assignments.index');
   Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
 
   // Schedules

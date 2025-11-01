@@ -12,6 +12,7 @@ interface CourseAssignmentsProps {
 
 const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
   const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourseType[]>(course_assignments);
+  console.log(courseAssignmentList);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = courseAssignmentList?.find((item: AssignCourseType) => item.id === deletingId);
