@@ -15,6 +15,7 @@ const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = courseAssignmentList?.find((item: AssignCourseType) => item.id === deletingId);
+  console.log(toDelete);
 
   const handleEdit = (id: string): void => {
     router.get(`/admin/course-assignments/edit/${id}`);
@@ -34,9 +35,9 @@ const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
         toDelete={toDelete}
         onDelete={onDelete}
         deletingId={deletingId}
-        url={'/admin/academic-years/delete'}
-        nameField="year_start + '-' + year_end"
-        errorMessage="Failed to delete academic year"
+        url={'/admin/course-assignments/delete'}
+        nameField="course.name"
+        errorMessage="Failed to delete course assignment year"
       />
     </div>
   )

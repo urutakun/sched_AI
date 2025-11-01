@@ -109,6 +109,11 @@ class CourseAssignmentController extends Controller
         'status' => $validated['status'],
       ]);
 
+      // Update course status
+      $course = Course::where('id', $assignment->course_id)->firstOrFail();
+      $course->is_assigned = 'assigned';
+      $course->save();
+
       return redirect()
         ->route('course-assignments.index')
         ->with('success', 'Course assignment created successfully.');
@@ -121,5 +126,17 @@ class CourseAssignmentController extends Controller
     $course_assignment = CourseAssignment::where('id', $id)->with(['course', 'instructor.user'])->firstOrFail();
     $course = $course_assignment->course;
     return Inertia::render('Admin/AssignCourseForm', ['assigned_course' => $course_assignment, 'course' => $course]);
+  }
+
+  public function destroy($id){
+    $course_assignment = CourseAssignment::where('id', $id)->firstOrFail();
+
+     if(!$course_assignment){
+        return response()->json(['message' => 'Not found']);
+      }
+
+      $course_assignment->delete();
+
+      return response()->json(['message' => 'Course assignment deleted successfully']);
   }
 }
