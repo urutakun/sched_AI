@@ -34,7 +34,7 @@ interface CourseFormProps {
 }
 
 const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: CourseFormProps) => {
-    console.log(course);
+    console.log(assigned_course);
     console.log("recommended shtis", recommended_instructors);
     const { data, setData, errors, post, reset, put } = useForm({
         course_id: course?.id ?? "",

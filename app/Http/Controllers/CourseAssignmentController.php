@@ -115,4 +115,9 @@ class CourseAssignmentController extends Controller
       dd('Error creating course assignment: ' . $e->getMessage());
     }
   }
+
+  public function edit($id){
+    $course_assignment = CourseAssignment::where('id', $id)->with(['course', 'intructor.user'])->firstOrFail();
+    return Inertia::render('Admin/AssignCourseForm', ['assigned_course' => $course_assignment]);
+  }
 }
