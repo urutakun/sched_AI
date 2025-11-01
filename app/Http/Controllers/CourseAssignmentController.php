@@ -24,8 +24,12 @@ class CourseAssignmentController extends Controller
       ->findOrFail($id);
 
     // Get all courses and instructors for AI model input
-    $courses = Course::with(['academic_year', 'trimester', 'department'])->get();
-    $instructors = Instructor::with(['user', 'department'])->get();
+    $courses = Course::with(['academic_year', 'trimester', 'department'])
+      ->where('dept_id', $course->dept_id)
+      ->get();
+    $instructors = Instructor::with(['user', 'department'])
+      ->where('dept_id', $course->dept_id)
+      ->get();
 
     // AI service base URL (default to local)
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
