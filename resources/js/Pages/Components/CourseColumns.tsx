@@ -196,7 +196,7 @@ export const CourseColumns = (
           false: 'text-gray-600 ',
         }
 
-        const assigned = Boolean(row.original.is_assigned);
+        const assigned = Boolean(row.original.is_assigned === 'assigned');
         return(
           <div className={`${bg_colors[String(assigned)]} ${text_colors[String(assigned)]} max-w-[120px] px-4 py-1 rounded-2xl text-center`}>
             <span>{assigned ? 'Assigned' : 'Not Assigned'}</span>

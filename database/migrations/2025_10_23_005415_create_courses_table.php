@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('academic_years_id');
             $table->unsignedTinyInteger('year_level');
             $table->boolean('has_lab')->default(false);
-            $table->boolean('is_assigned')->default(false);
+            $table->enum('is_assigned', ['assigned', 'not_assigned'])->default('not_assigned');
 
             $table->foreign('dept_id')->references('id')->on('departments')->onDelete('cascade');
             $table->foreign('trimester_id')->references('id')->on('trimesters')->onDelete('cascade');

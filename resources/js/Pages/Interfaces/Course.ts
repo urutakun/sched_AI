@@ -11,7 +11,7 @@ export interface Course {
   name: string;
   units: number;
   has_lab: boolean;
-  is_assigned: boolean;
+  is_assigned: 'assigned' | 'not_assigned';
   academic_year: AcademicYear;
   trimester: Trimester;
   department: Department;

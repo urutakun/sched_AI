@@ -20,6 +20,7 @@ class Course extends Model
         'name',
         'units',
         'has_lab',
+        'is_assigned'
     ];
 
     public $incrementing = false;

@@ -36,7 +36,6 @@ interface CourseFormProps {
 }
 
 const CourseForm = ({ departments, academic_years, course }: CourseFormProps) => {
-  console.log(course);
     const [departmentList, setDepartmentList] =useState<DepartmentType[]>(departments ?? []);
     const [academicYearList, setAcademicYearList] =useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] =useState<Trimester[]>([]);
@@ -50,6 +49,7 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
         name: course?.name ?? "",
         units: course?.units ?? "",
         has_lab: course?.has_lab ?? false,
+        is_assigned: course?.is_assigned ?? "",
     });
 
     useEffect(() => {
@@ -256,6 +256,40 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
                                 />
                                 <FieldError>{errors.units ?? ""}</FieldError>
                             </Field>
+                            { course && (
+                              <Field>
+                                <FieldLabel>
+                                    Status
+                                </FieldLabel>
+                                <Select
+                                    value={data.is_assigned}
+                                    onValueChange={(value) =>
+                                        setData("is_assigned", value as 'assigned' | 'not_assigned')
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem
+                                            value="assigned"
+                                            className="capitalize"
+                                        >
+                                            Assigned
+                                        </SelectItem>
+                                        <SelectItem
+                                            value="not_assigned"
+                                            className="capitalize"
+                                        >
+                                            Not Assigned
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FieldError>
+                                    {errors.is_assigned ?? ""}
+                                </FieldError>
+                              </Field>
+                            )}
                             <Field>
                                 <FieldLabel htmlFor="has_lab">
                                   Use Lab

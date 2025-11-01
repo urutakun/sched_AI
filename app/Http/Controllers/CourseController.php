@@ -72,6 +72,7 @@ class CourseController extends Controller
         'name'  => 'nullable|string',
         'units'  => 'nullable|numeric|min:1|max:3',
         'has_lab'  => 'nullable|boolean',
+        'is_assigned' => 'nullable|in:assigned,not_assigned'
       ]);
 
       $course->update($validated);
