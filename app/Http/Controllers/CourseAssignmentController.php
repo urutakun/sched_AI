@@ -74,9 +74,10 @@ class CourseAssignmentController extends Controller
               ?? $instructors->firstWhere('user_id', $rec['user_id']);
 
             return [
-              'id' => $instructor?->id,
-              'user_id' => $instructor?->user_id,
-              'first_name' => $instructor?->user?->first_name ?? 'Unknown',
+              'id' => $instructor->id,
+              'user_id' => $instructor->user_id,
+              'user' => $instructor->user
+              // 'first_name' => $instructor?->user?->first_name ?? 'Unknown',
             ];
           })
           ->filter(fn($inst) => $inst['id'] !== null)

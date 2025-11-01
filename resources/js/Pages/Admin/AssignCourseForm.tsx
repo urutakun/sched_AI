@@ -36,6 +36,7 @@ interface CourseFormProps {
 
 const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: CourseFormProps) => {
   const [recommendedInstructorList, setRecommendedInstructorList] = useState<Instructor[]>(recommended_instructors || []);
+  console.log(recommendedInstructorList);
     const { data, setData, errors, post, reset, put } = useForm({
         course_id: course?.id ?? "",
         instructor_id: assigned_course?.instructor_id ?? "",
@@ -106,7 +107,7 @@ const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: 
                                     <SelectContent>
                                         {
                                             recommendedInstructorList.map((instructor: Instructor, index: number) => {
-                                              const fullName = `${instructor.first_name} ${instructor.last_name}`;
+                                              const fullName = `${instructor.user.first_name} ${instructor.user.last_name}`;
                                               return(
                                                 <SelectItem key={index} value={instructor.id} className="capitalize">
                                                   {fullName}
