@@ -14,13 +14,47 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-          'id' => 'USR_000000',
-          'first_name' => 'Batman',
-          'last_name' => 'Deguzman',
-          'role' => 'admin',
-          'email' => 'batman@gotham.com',
-          'password' => Hash::make('batman@123')
-        ]);
+        User::insert(
+          [
+            [
+              'id' => 'USR_000000',
+              'first_name' => 'SchedAI',
+              'last_name' => 'Admin',
+              'role' => 'admin',
+              'email' => 'admin@sched.ai',
+              'password' => Hash::make('schedai@123')
+            ],
+            [
+              'id' => 'USR_000001',
+              'first_name' => 'Joel Miller',
+              'last_name' => 'Go',
+              'role' => 'instructor',
+              'dept_id' => 'DEP_111111',
+              'max_load' => 12,
+              'email' => 'joel@example.com',
+              'password' => Hash::make('joel@123')
+            ],
+            [
+              'id' => 'USR_000002',
+              'first_name' => 'Leonardo',
+              'last_name' => 'Risma',
+              'role' => 'instructor',
+              'dept_id' => 'DEP_000000',
+              'max_load' => 12,
+              'email' => 'leonardo@example.com',
+              'password' => Hash::make('leonardo@123')
+            ],
+            [
+              'id' => 'USR_000003',
+              'first_name' => 'Jane',
+              'last_name' => 'Doe',
+              'role' => 'instructor',
+              'dept_id' => 'DEP_222222',
+              'max_load' => 12,
+              'email' => 'jane@example.com',
+              'password' => Hash::make('jane@123')
+            ],
+          ]
+      );
     }
 }
