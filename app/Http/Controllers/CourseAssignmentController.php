@@ -23,43 +23,48 @@ class CourseAssignmentController extends Controller
     $course = Course::with(['academic_year', 'trimester', 'department'])
       ->findOrFail($id);
 
-    // Get all courses and instructors for AI model input
+    // Get all courses in same department
     $courses = Course::with(['academic_year', 'trimester', 'department'])
       ->where('dept_id', $course->dept_id)
       ->get();
+
+    // Get instructors in same department who have less than 12 assigned units
     $instructors = Instructor::with(['user', 'department'])
       ->where('dept_id', $course->dept_id)
-      ->get();
+      ->withSum(['courseAssignments as total_units' => function ($q) {
+        $q->join('courses', 'course_assignments.course_id', '=', 'courses.id');
+      }], 'courses.units')
+      ->get()
+      // Filter using each instructor's individual max_load
+      ->filter(fn($i) => ($i->total_units ?? 0) < ($i->max_load ?? 12))
+      ->values();
 
-    // AI service base URL (default to local)
+
+    // AI service base URL
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
 
     $recommended = collect();
 
     try {
-      // Prepare data payload (simple and JSON-serializable)
+      // Prepare payload
       $payload = [
-        'courses' => $courses->map(function ($c) {
-          return [
-            'id' => $c->id,
-            'name' => $c->name,
-            'units' => $c->units,
-            'dept_id' => $c->dept_id,
-            'trimester_id' => $c->trimester_id,
-            'academic_years_id' => $c->academic_years_id,
-          ];
-        }),
-        'instructors' => $instructors->map(function ($i) {
-          return [
-            'id' => $i->id,
-            'user_id' => $i->user_id,
-            'dept_id' => $i->dept_id,
-            'max_load' => $i->max_load ?? 12,
-          ];
-        }),
+        'courses' => $courses->map(fn($c) => [
+          'id' => $c->id,
+          'name' => $c->name,
+          'units' => $c->units,
+          'dept_id' => $c->dept_id,
+          'trimester_id' => $c->trimester_id,
+          'academic_years_id' => $c->academic_years_id,
+        ]),
+        'instructors' => $instructors->map(fn($i) => [
+          'id' => $i->id,
+          'user_id' => $i->user_id,
+          'dept_id' => $i->dept_id,
+          'max_load' => $i->max_load ?? 12,
+        ]),
       ];
 
-      // 🔹 Send data to FastAPI AI service
+      // Call FastAPI AI service
       $response = Http::post("$aiBaseURL/assign-courses", $payload);
 
       if ($response->successful()) {
@@ -81,13 +86,12 @@ class CourseAssignmentController extends Controller
       $recommended = collect();
     }
 
-    // 🔹 Render form with AI recommendations
+    // Render page
     return Inertia::render('Admin/AssignCourseForm', [
       'course' => $course,
       'recommended_instructors' => $recommended,
     ]);
   }
-
 
   public function store(Request $request)
   {

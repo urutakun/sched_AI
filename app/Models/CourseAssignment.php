@@ -44,4 +44,5 @@ class CourseAssignment extends Model
     {
         return $this->belongsTo(Instructor::class, 'instructor_id', 'id');
     }
+    
 }

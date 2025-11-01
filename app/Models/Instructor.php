@@ -45,4 +45,10 @@ class Instructor extends Model
     public function department(){
       return $this->belongsTo(Department::class, 'dept_id', 'id');
     }
+
+    public function courseAssignments()
+{
+    return $this->hasMany(\App\Models\CourseAssignment::class, 'instructor_id');
+}
+
 }
