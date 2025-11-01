@@ -26,16 +26,16 @@ import { Switch } from "@/components/ui/switch"
 import type { Course as CourseType } from "../Interfaces/Course";
 import type { AssignCourse as AssignCourseType } from "../Interfaces/AssignCourse";
 import { toast } from "sonner";
+import { Instructor } from "../Interfaces/Instructor";
 
 interface CourseFormProps {
     course: CourseType;
     assigned_course: AssignCourseType;
-    recommended_instructors: any[];
+    recommended_instructors: Instructor[];
 }
 
 const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: CourseFormProps) => {
-    console.log(assigned_course);
-    console.log("recommended shtis", recommended_instructors);
+  const [recommendedInstructorList, setRecommendedInstructorList] = useState<Instructor[]>(recommended_instructors || []);
     const { data, setData, errors, post, reset, put } = useForm({
         course_id: course?.id ?? "",
         instructor_id: assigned_course?.instructor_id ?? "",
@@ -104,17 +104,16 @@ const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: 
                                         <SelectValue placeholder="Select instructor" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {recommended_instructors.length > 0 ? (
-                                            recommended_instructors.map((inst: any) => (
-                                                <SelectItem key={inst.id} value={inst.id} className="capitalize">
-                                                    {inst.first_name}
+                                        {
+                                            recommendedInstructorList.map((instructor: Instructor, index: number) => {
+                                              const fullName = `${instructor.first_name} ${instructor.last_name}`;
+                                              return(
+                                                <SelectItem key={index} value={instructor.id} className="capitalize">
+                                                  {fullName}
                                                 </SelectItem>
-                                            ))
-                                        ) : (
-                                            <SelectItem value="none" disabled>
-                                                No recommended instructors
-                                            </SelectItem>
-                                        )}
+                                              )
+                                            })
+                                      }
                                     </SelectContent>
                                 </Select>
                                 <FieldError>{errors.instructor_id ?? ""}</FieldError>
@@ -155,7 +154,7 @@ const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: 
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Link href={"/admin/courses"}>
+                        <Link href={"/admin/course-assignments"}>
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>

@@ -35,14 +35,14 @@ class CourseAssignment extends Model
         return $uniqueId;
     }
 
-    public function course(): BelongsTo
+    public function course()
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
 
-    public function instructor(): BelongsTo
+    public function instructor()
     {
         return $this->belongsTo(Instructor::class, 'instructor_id', 'id');
     }
-    
+
 }

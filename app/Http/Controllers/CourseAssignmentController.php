@@ -117,7 +117,8 @@ class CourseAssignmentController extends Controller
   }
 
   public function edit($id){
-    $course_assignment = CourseAssignment::where('id', $id)->with(['course', 'intructor.user'])->firstOrFail();
-    return Inertia::render('Admin/AssignCourseForm', ['assigned_course' => $course_assignment]);
+    $course_assignment = CourseAssignment::where('id', $id)->with(['course', 'instructor.user'])->firstOrFail();
+    $course = $course_assignment->course;
+    return Inertia::render('Admin/AssignCourseForm', ['assigned_course' => $course_assignment, 'course' => $course]);
   }
 }
