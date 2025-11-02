@@ -49,7 +49,6 @@ class CourseController extends Controller
 
     public function edit( $id ){
       $course = Course::where('id', $id)->with(['academic_year', 'trimester', 'department'])->firstOrFail();
-
       $departments = Department::all();
       $academic_years = AcademicYear::with('trimesters')->get();
 

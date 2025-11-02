@@ -98,6 +98,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 
   // Schedules
   Route::get('/schedules', [ScheduleController::class, 'index']);
+  Route::get('/schedules/create', [ScheduleController::class, 'create']);
 
   // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
