@@ -94,6 +94,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/course-assignments', [CourseAssignmentController::class, 'index'])->name('course-assignments.index');
   Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
   Route::get('/course-assignments/edit/{id}', [CourseAssignmentController::class, 'edit']);
+  Route::put('/course-assignments/update/{id}', [CourseAssignmentController::class, 'update']);
   Route::delete('/course-assignments/delete/{id}', [CourseAssignmentController::class, 'destroy']);
 
   // Schedules

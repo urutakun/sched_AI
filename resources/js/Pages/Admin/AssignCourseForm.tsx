@@ -49,18 +49,18 @@ const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: 
 
         if (assigned_course) {
             put(`/admin/course-assignments/update/${assigned_course.id}`, {
-                onSuccess: () => toast.success('Course updated successfully'),
-                onError: () => toast.error('Failed to update course')
+                onSuccess: () => toast.success('Course assignment updated successfully'),
+                onError: () => toast.error('Failed to update course assignment')
             });
         }
         else {
             post("/admin/course-assignments/create", {
                 onSuccess: () => {
-                    toast.success("Course created successfully");
+                    toast.success("Course assignment created successfully");
                     reset();
                 },
                 onError: () => {
-                    toast.error("Failed to create course");
+                    toast.error("Failed to create course assignment");
                     reset();
                 },
             });

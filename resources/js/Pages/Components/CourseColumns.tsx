@@ -225,7 +225,9 @@ export const CourseColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleAssign(row.original.id)}>Assign</DropdownMenuItem>
+                        { row.original.is_assigned !== 'assigned' && (
+                          <DropdownMenuItem onClick={() => handleAssign(row.original.id)}>Assign</DropdownMenuItem>
+                        )}
                         <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>

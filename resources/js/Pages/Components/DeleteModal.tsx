@@ -84,8 +84,8 @@ const DeleteModal = <T,>(
         <div>
           <span>{toDelete ? getDisplayName(toDelete, nameField) : ''}</span>
         </div>
-        <DialogFooter className='flex flex-row justify-center mt-6'>
-          <Button size={'lg'} type="submit" onClick={handleDelete}>Submit</Button>
+        <DialogFooter className='flex flex-row justify-center mt-6 w-full'>
+          <Button size={'lg'} type="submit"  onClick={handleDelete}>Submit</Button>
           <Button size={'lg'} variant="outline" type="button" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>

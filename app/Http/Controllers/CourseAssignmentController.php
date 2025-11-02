@@ -97,18 +97,19 @@ class CourseAssignmentController extends Controller
 
   public function store(Request $request)
   {
-    try {
       $validated = $request->validate([
         'course_id' => 'required|exists:courses,id',
         'instructor_id' => 'required|exists:instructors,id',
         'status' => 'required|in:active,inactive',
       ]);
 
-      $assignment = CourseAssignment::create([
-        'course_id' => $validated['course_id'],
-        'instructor_id' => $validated['instructor_id'],
-        'status' => $validated['status'],
-      ]);
+      $assignment = CourseAssignment::create($validated);
+
+      if(!$assignment){
+        return redirect()->back()->with([
+          'message' => 'Failed to create course assignment'
+        ]);
+      }
 
       // Update course status
       $course = Course::where('id', $assignment->course_id)->firstOrFail();
@@ -118,9 +119,6 @@ class CourseAssignmentController extends Controller
       return redirect()
         ->route('course-assignments.index')
         ->with('success', 'Course assignment created successfully.');
-    } catch (\Exception $e) {
-      dd('Error creating course assignment: ' . $e->getMessage());
-    }
   }
 
   public function edit($id)
@@ -202,6 +200,19 @@ class CourseAssignmentController extends Controller
       'course' => $course,
       'recommended_instructors' => $recommended,
     ]);
+  }
+
+  public function update(Request $request, $id){
+    $course_assignment = CourseAssignment::where('id', $id)->firstOrFail();
+
+    $validated = $request->validate([
+      'course_id' => 'required|exists:courses,id',
+      'instructor_id' => 'required|exists:instructors,id',
+      'status' => 'required|in:active,inactive',
+    ]);
+
+    $course_assignment->update($validated);
+    return redirect('/admin/course-assignments')->with('success', 'Course assignment updated successfully');
   }
 
 
