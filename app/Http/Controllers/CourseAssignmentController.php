@@ -123,14 +123,15 @@ class CourseAssignmentController extends Controller
     }
   }
 
-  public function edit($id){
-    $course_assignment = CourseAssignment::where('id', $id)->with(['course', 'instructor.user'])->firstOrFail();
-    // $course = $course_assignment->course;
-    // return Inertia::render('Admin/AssignCourseForm', ['assigned_course' => $course_assignment, 'course' => $course]);
+  public function edit($id)
+  {
+    $course_assignment = CourseAssignment::where('id', $id)
+      ->with(['course', 'instructor.user'])
+      ->firstOrFail();
 
     // Get the target course
     $course = Course::with(['academic_year', 'trimester', 'department'])
-    ->findOrFail($course_assignment->course->id);
+      ->findOrFail($course_assignment->course->id);
 
     // Get all courses in same department
     $courses = Course::with(['academic_year', 'trimester', 'department'])
@@ -144,11 +145,9 @@ class CourseAssignmentController extends Controller
         $q->join('courses', 'course_assignments.course_id', '=', 'courses.id');
       }], 'courses.units')
       ->get()
-      // Filter using each instructor's individual max_load
       ->filter(fn($i) => ($i->total_units ?? 0) < ($i->max_load ?? 12))
       ->unique('id')
       ->values();
-
 
     // AI service base URL
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
@@ -186,10 +185,11 @@ class CourseAssignmentController extends Controller
             return [
               'id' => $instructor->id,
               'user_id' => $instructor->user_id,
-              'user' => $instructor->user
+              'user' => $instructor->user,
             ];
           })
           ->filter(fn($inst) => $inst['id'] !== null)
+          ->unique('id') // ✅ ensures no duplicate instructors
           ->values();
       }
     } catch (\Exception $e) {
@@ -204,20 +204,22 @@ class CourseAssignmentController extends Controller
     ]);
   }
 
-  public function destroy($id){
+
+  public function destroy($id)
+  {
     $course_assignment = CourseAssignment::where('id', $id)->firstOrFail();
 
-     if(!$course_assignment){
-        return response()->json(['message' => 'Not found']);
-      }
+    if (!$course_assignment) {
+      return response()->json(['message' => 'Not found']);
+    }
 
-      $course_assignment->delete();
+    $course_assignment->delete();
 
-      // Update course status
-      $course = Course::where('id', $course_assignment->course_id)->firstOrFail();
-      $course->is_assigned = 'not_assigned';
-      $course->save();
+    // Update course status
+    $course = Course::where('id', $course_assignment->course_id)->firstOrFail();
+    $course->is_assigned = 'not_assigned';
+    $course->save();
 
-      return response()->json(['message' => 'Course assignment deleted successfully']);
+    return response()->json(['message' => 'Course assignment deleted successfully']);
   }
 }
