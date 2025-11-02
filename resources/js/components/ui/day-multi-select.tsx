@@ -12,7 +12,7 @@ interface DayMultiSelectProps {
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const DayMultiSelect = ({ value, onChange}: DayMultiSelectProps) => {
+export const DayMultiSelect = ({ value, onChange}: DayMultiSelectProps) => {
   const [open, setOpen] = useState(false);
   const selected = value || [];
 
@@ -65,5 +65,3 @@ const DayMultiSelect = ({ value, onChange}: DayMultiSelectProps) => {
     </div>
   )
 }
-
-export default DayMultiSelect

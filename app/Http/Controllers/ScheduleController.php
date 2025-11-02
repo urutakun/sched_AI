@@ -27,4 +27,8 @@ class ScheduleController extends Controller
         'rooms' => $rooms
       ]);
     }
+
+    public function store(Request $request){
+      dd($request->all());
+    }
 }

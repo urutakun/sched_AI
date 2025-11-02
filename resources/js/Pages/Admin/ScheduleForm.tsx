@@ -28,7 +28,8 @@ import type { Department } from "../Interfaces/Department";
 import type { AcademicYear } from "../Interfaces/AcademicYear";
 import type { Trimester } from "../Interfaces/Trimester";
 import type { Room } from "../Interfaces/Room";
-import DayMultiSelect from "../Components/DayMultiSelect";
+import { DayMultiSelect } from "../../components/ui/day-multi-select";
+import { TimePicker } from "../../components/ui/time-picker";
 import { toast } from "sonner";
 
 interface RoomFormProps {
@@ -51,7 +52,9 @@ const ScheduleForm = ({
     const [academicYearList, setAcademicYearList] =useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] =useState<Trimester[]>([]);
     const [roomList, setRoomList] =useState<Room[]>(rooms ?? []);
+    console.log('Course Assignments: ');
     console.log(courseAssignmentList);
+
 
     const { data, setData, errors, post, put, reset } = useForm({
         course_assignment_id: schedule?.course_assignment_id ?? "",
@@ -64,6 +67,7 @@ const ScheduleForm = ({
         end_time: schedule?.end_time ?? "",
     });
 
+    // Filter trimesters
     useEffect(() => {
       const selectedYear = academicYearList.find((year) => year.id === data.academic_years_id);
       const filteredTrimesters = selectedYear?.trimesters ?? [];
@@ -80,6 +84,23 @@ const ScheduleForm = ({
         }
       }
     }, [data.academic_years_id, academicYearList])
+
+    // Filter course assignments
+    useEffect(() => {
+      if(!data.trimester_id || !data.department_id) {
+        setCourseAssignmentList(course_assignments);
+        return;
+      }
+
+      const filteredCourseAssignments = course_assignments.filter((course_assignment) => {
+        return(
+          course_assignment.course.trimester_id === data.trimester_id &&
+          course_assignment.course.dept_id === data.department_id
+        )
+      });
+
+      setCourseAssignmentList(filteredCourseAssignments);
+    }, [data.trimester_id, data.department_id, course_assignments]);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
@@ -103,6 +124,7 @@ const ScheduleForm = ({
           });
         }
     };
+
 
     return (
         <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
@@ -267,14 +289,41 @@ const ScheduleForm = ({
                                   onChange={(days) => setData("days", days)}
                                 />
                                 <FieldError>
-                                    {errors.course_assignment_id ?? ""}
+                                    {errors.days ?? ""}
                                 </FieldError>
                             </Field>
+                            <FieldGroup className="grid grid-cols-2">
+                              <Field>
+                                  <FieldLabel>
+                                      Start Time
+                                  </FieldLabel>
+                                  <TimePicker
+                                    value={data.start_time}
+                                    onChange={(value) => setData("start_time", value)}
+                                  />
+                                  <FieldError>
+                                      {errors.start_time ?? ""}
+                                  </FieldError>
+                              </Field>
+                              <Field>
+                                  <FieldLabel>
+                                      End Time
+                                  </FieldLabel>
+                                  <TimePicker
+                                    value={data.end_time}
+                                    onChange={(value) => setData("end_time", value)}
+                                  />
+                                  <FieldError>
+                                      {errors.end_time ?? ""}
+                                  </FieldError>
+                              </Field>
+
+                            </FieldGroup>
                         </FieldGroup>
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Link href={"/admin/rooms"}>
+                        <Link href={"/admin/schedules"}>
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>
