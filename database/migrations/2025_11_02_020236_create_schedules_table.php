@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('days');
             $table->time('start_time');
             $table->time('end_time');
+            $table->enum('status', ['active', 'pending_cancel', 'cancelled', 'completed'])->default('active');
 
             $table->timestamps();
 

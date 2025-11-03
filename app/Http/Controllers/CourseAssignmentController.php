@@ -127,6 +127,8 @@ class CourseAssignmentController extends Controller
       ->with(['course', 'instructor.user'])
       ->firstOrFail();
 
+    $assignedInstructorId = $course_assignment->instructor_id;
+
     // Get the target course
     $course = Course::with(['academic_year', 'trimester', 'department'])
       ->findOrFail($course_assignment->course->id);
@@ -146,6 +148,18 @@ class CourseAssignmentController extends Controller
       ->filter(fn($i) => ($i->total_units ?? 0) < ($i->max_load ?? 12))
       ->unique('id')
       ->values();
+
+    // Fetch the assigned instructor separately (even if they’re at max load)
+    $assignedInstructor = Instructor::with(['user', 'department'])
+      ->withSum(['courseAssignments as total_units' => function ($q) {
+        $q->join('courses', 'course_assignments.course_id', '=', 'courses.id');
+      }], 'courses.units')
+      ->find($assignedInstructorId);
+
+    // Merge them conditionally (if not already in list)
+    if ($assignedInstructor && !$instructors->contains('id', $assignedInstructor->id)) {
+        $instructors->push($assignedInstructor);
+    }
 
     // AI service base URL
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');

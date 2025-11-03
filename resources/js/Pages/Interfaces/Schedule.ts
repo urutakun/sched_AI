@@ -8,4 +8,5 @@ export interface Schedule {
   days: string[];
   start_time: string;
   end_time: string;
+  status: 'active' | 'pending_cancel' | 'cancelled' | 'completed';
 }

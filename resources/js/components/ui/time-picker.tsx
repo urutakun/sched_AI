@@ -97,7 +97,7 @@ export function TimePicker({ value, onChange }: TimePickerProps) {
       <PopoverContent className="w-[220px] p-3">
         <div className="flex justify-between gap-2">
           {/* Hour list */}
-          <ScrollArea className="h-[150px] w-[60px] rounded-md border">
+          <ScrollArea className="h-[200px] w-[60px] rounded-md border">
             {hours.map((h) => (
               <div
                 key={h}
@@ -116,7 +116,7 @@ export function TimePicker({ value, onChange }: TimePickerProps) {
           </ScrollArea>
 
           {/* Minute list */}
-          <ScrollArea className="h-[150px] w-[60px] rounded-md border">
+          <ScrollArea className="h-[200px] w-[60px] rounded-md border">
             {minutes.map((m) => (
               <div
                 key={m}
