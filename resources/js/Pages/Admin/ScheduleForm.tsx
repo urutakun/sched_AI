@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { Schedule as ScheduleType} from '../Interfaces/Schedule';
+import type { Schedule as ScheduleType } from '../Interfaces/Schedule';
 import type { AssignCourse } from "../Interfaces/AssignCourse";
 import type { Department } from "../Interfaces/Department";
 import type { AcademicYear } from "../Interfaces/AcademicYear";
@@ -33,32 +33,32 @@ import { TimePicker } from "../../components/ui/time-picker";
 import { toast } from "sonner";
 
 interface RoomFormProps {
-  schedule?: ScheduleType;
-  course_assignments: AssignCourse[];
-  departments: Department[];
-  academic_years: AcademicYear[];
-  rooms: Room[];
+    schedule?: ScheduleType;
+    course_assignments: AssignCourse[];
+    departments: Department[];
+    academic_years: AcademicYear[];
+    rooms: Room[];
 }
 
 const ScheduleForm = ({
-  schedule,
-  course_assignments,
-  academic_years,
-  departments,
-  rooms,
+    schedule,
+    course_assignments,
+    academic_years,
+    departments,
+    rooms,
 }: RoomFormProps) => {
     const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourse[]>(course_assignments);
-    const [departmentList, setDepartmentList] =useState<Department[]>(departments ?? []);
-    const [academicYearList, setAcademicYearList] =useState<AcademicYear[]>(academic_years ?? []);
-    const [trimesterList, setTrimesterList] =useState<Trimester[]>([]);
-    const [roomList, setRoomList] =useState<Room[]>(rooms ?? []);
+    const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
+    const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>(academic_years ?? []);
+    const [trimesterList, setTrimesterList] = useState<Trimester[]>([]);
+    const [roomList, setRoomList] = useState<Room[]>(rooms ?? []);
     console.log('Course Assignments: ');
     console.log(courseAssignmentList);
 
 
     const { data, setData, errors, post, put, reset } = useForm({
         course_assignment_id: schedule?.course_assignment_id ?? "",
-        academic_years_id: schedule?.academic_years_id ?? "",
+        academic_year_id: schedule?.academic_year_id ?? "",
         trimester_id: schedule?.trimester_id ?? "",
         department_id: schedule?.department_id ?? "",
         room_id: schedule?.room_id ?? "",
@@ -67,64 +67,79 @@ const ScheduleForm = ({
         end_time: schedule?.end_time ?? "",
     });
 
+
+
     // Filter trimesters
     useEffect(() => {
-      const selectedYear = academicYearList.find((year) => year.id === data.academic_years_id);
-      const filteredTrimesters = selectedYear?.trimesters ?? [];
-      setTrimesterList(filteredTrimesters);
+        const selectedYear = academicYearList.find((year) => year.id === data.academic_year_id);
+        const filteredTrimesters = selectedYear?.trimesters ?? [];
+        setTrimesterList(filteredTrimesters);
 
-      if (filteredTrimesters.length === 0) {
-        setData("trimester_id", "");
-      } else {
-        const stillValid = filteredTrimesters.some(
-          (t) => t.id === data.trimester_id
-        );
-        if (!stillValid) {
-          setData("trimester_id", "");
+        if (filteredTrimesters.length === 0) {
+            setData("trimester_id", "");
+        } else {
+            const stillValid = filteredTrimesters.some(
+                (t) => t.id === data.trimester_id
+            );
+            if (!stillValid) {
+                setData("trimester_id", "");
+            }
         }
-      }
-    }, [data.academic_years_id, academicYearList])
+    }, [data.academic_year_id, academicYearList])
 
     // Filter course assignments
     useEffect(() => {
-      if(!data.trimester_id || !data.department_id) {
-        setCourseAssignmentList(course_assignments);
-        return;
-      }
+        if (!data.trimester_id || !data.department_id) {
+            setCourseAssignmentList(course_assignments);
+            return;
+        }
 
-      const filteredCourseAssignments = course_assignments.filter((course_assignment) => {
-        return(
-          course_assignment.course.trimester_id === data.trimester_id &&
-          course_assignment.course.dept_id === data.department_id
-        )
-      });
+        const filteredCourseAssignments = course_assignments.filter((course_assignment) => {
+            return (
+                course_assignment.course.trimester_id === data.trimester_id &&
+                course_assignment.course.dept_id === data.department_id
+            )
+        });
 
-      setCourseAssignmentList(filteredCourseAssignments);
+        setCourseAssignmentList(filteredCourseAssignments);
     }, [data.trimester_id, data.department_id, course_assignments]);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
 
-        if(schedule){
-          put(`/admin/schedules/update/${schedule.id}`, {
-            onSuccess: () => toast.success('Schedule updated successfully'),
-            onError: () => toast.error('Failed to update schedule')
-          })
-        }
-        else{
-          post("/admin/schedules/create", {
-              onSuccess: () => {
-                  toast.success("Schedule created successfully");
-                  reset();
-              },
-              onError: () => {
-                  toast.error("Failed to create schedule");
-                  reset();
-              },
-          });
+        if (schedule) {
+            put(`/admin/schedules/update/${schedule.id}`, {
+                onSuccess: () => toast.success('Schedule updated successfully'),
+                onError: (errors: any) => {
+                    // ✅ FIX: Handle Inertia validation errors properly
+                    const errorMessage = errors?.message ||
+                        errors?.error ||
+                        'Failed to update schedule';
+                    toast.error(errorMessage);
+                },
+            });
+        } else {
+            post("/admin/schedules/create", {
+                onSuccess: (page) => {
+                    const message = (page?.props?.flash?.success ?? "Schedule created successfully");
+                    toast.success(message);
+                    reset(); // Optional: clear form on success
+                },
+                onError: (errors: any) => {
+                    // ✅ FIX: Handle Inertia validation errors properly
+                    console.log('Error response:', errors); // Debug log
+
+                    if (errors?.message) {
+                        toast.error(errors.message);
+                    } else if (typeof errors === 'string') {
+                        toast.error(errors);
+                    } else {
+                        toast.error("Failed to create schedule");
+                    }
+                },
+            });
         }
     };
-
 
     return (
         <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
@@ -135,16 +150,16 @@ const ScheduleForm = ({
             >
                 <FieldGroup>
                     <FieldSet>
-                        <FieldLegend>{ schedule ? 'Update Schedule' : 'Create Schedule'}</FieldLegend>
+                        <FieldLegend>{schedule ? 'Update Schedule' : 'Create Schedule'}</FieldLegend>
                         <FieldGroup>
                             <Field>
                                 <FieldLabel>
                                     Academic Year
                                 </FieldLabel>
                                 <Select
-                                    value={data.academic_years_id}
+                                    value={data.academic_year_id}
                                     onValueChange={(value) =>
-                                        setData("academic_years_id", value)
+                                        setData("academic_year_id", value)
                                     }
                                 >
                                     <SelectTrigger className="w-[180px]">
@@ -152,14 +167,14 @@ const ScheduleForm = ({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {academicYearList?.map((item: AcademicYear, index: number) => (
-                                          <SelectItem value={item.id} key={index} className="capitalize">
-                                            {`AY ${item.year_start} - ${item.year_end}`}
-                                          </SelectItem>
+                                            <SelectItem value={item.id} key={index} className="capitalize">
+                                                {`AY ${item.year_start} - ${item.year_end}`}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                                 <FieldError>
-                                    {errors.academic_years_id ?? ""}
+                                    {errors.academic_year_id ?? ""}
                                 </FieldError>
                             </Field>
                             <Field>
@@ -177,9 +192,9 @@ const ScheduleForm = ({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {trimesterList?.map((item: Trimester, index: number) => (
-                                          <SelectItem value={item.id} key={index} className="capitalize">
-                                            {item.name}
-                                          </SelectItem>
+                                            <SelectItem value={item.id} key={index} className="capitalize">
+                                                {item.name}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -237,16 +252,16 @@ const ScheduleForm = ({
                                         <SelectValue placeholder="Select course assignment" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {courseAssignmentList.map((assignment: AssignCourse, index: number) => {
-                                        console.log(assignment);
-                                        const course = assignment.course.name;
-                                        const instructor = `${assignment.instructor.user.first_name} ${assignment.instructor.user.last_name}`;
-                                        return(
-                                          <SelectItem value={assignment.course_id} className="capitalize">
-                                              {`${course} - ${instructor}`}
-                                          </SelectItem>
-                                        )
-                                      })}
+                                        {courseAssignmentList.map((assignment: AssignCourse, index: number) => {
+                                            console.log(assignment);
+                                            const course = assignment.course.name;
+                                            const instructor = `${assignment.instructor.user.first_name} ${assignment.instructor.user.last_name}`;
+                                            return (
+                                                <SelectItem value={assignment.id} className="capitalize">
+                                                    {`${course} - ${instructor}`}
+                                                </SelectItem>
+                                            )
+                                        })}
                                     </SelectContent>
                                 </Select>
                                 <FieldError>
@@ -267,13 +282,13 @@ const ScheduleForm = ({
                                         <SelectValue placeholder="Select room" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {roomList.map((room: Room, index: number) => {
-                                        return(
-                                          <SelectItem value={room.id} className="capitalize">
-                                              {room.room_name}
-                                          </SelectItem>
-                                        )
-                                      })}
+                                        {roomList.map((room: Room, index: number) => {
+                                            return (
+                                                <SelectItem value={room.id} className="capitalize">
+                                                    {room.room_name}
+                                                </SelectItem>
+                                            )
+                                        })}
                                     </SelectContent>
                                 </Select>
                                 <FieldError>
@@ -285,38 +300,38 @@ const ScheduleForm = ({
                                     Days
                                 </FieldLabel>
                                 <DayMultiSelect
-                                  value={data.days}
-                                  onChange={(days) => setData("days", days)}
+                                    value={data.days}
+                                    onChange={(days) => setData("days", days)}
                                 />
                                 <FieldError>
                                     {errors.days ?? ""}
                                 </FieldError>
                             </Field>
                             <FieldGroup className="grid grid-cols-2">
-                              <Field>
-                                  <FieldLabel>
-                                      Start Time
-                                  </FieldLabel>
-                                  <TimePicker
-                                    value={data.start_time}
-                                    onChange={(value) => setData("start_time", value)}
-                                  />
-                                  <FieldError>
-                                      {errors.start_time ?? ""}
-                                  </FieldError>
-                              </Field>
-                              <Field>
-                                  <FieldLabel>
-                                      End Time
-                                  </FieldLabel>
-                                  <TimePicker
-                                    value={data.end_time}
-                                    onChange={(value) => setData("end_time", value)}
-                                  />
-                                  <FieldError>
-                                      {errors.end_time ?? ""}
-                                  </FieldError>
-                              </Field>
+                                <Field>
+                                    <FieldLabel>
+                                        Start Time
+                                    </FieldLabel>
+                                    <TimePicker
+                                        value={data.start_time}
+                                        onChange={(value) => setData("start_time", value)}
+                                    />
+                                    <FieldError>
+                                        {errors.start_time ?? ""}
+                                    </FieldError>
+                                </Field>
+                                <Field>
+                                    <FieldLabel>
+                                        End Time
+                                    </FieldLabel>
+                                    <TimePicker
+                                        value={data.end_time}
+                                        onChange={(value) => setData("end_time", value)}
+                                    />
+                                    <FieldError>
+                                        {errors.end_time ?? ""}
+                                    </FieldError>
+                                </Field>
 
                             </FieldGroup>
                         </FieldGroup>

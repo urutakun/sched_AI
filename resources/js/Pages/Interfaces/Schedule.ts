@@ -1,7 +1,7 @@
 export interface Schedule {
   id: string;
   course_assignment_id: string;
-  academic_years_id: string;
+  academic_year_id: string;
   trimester_id: string;
   department_id: string;
   room_id: string;

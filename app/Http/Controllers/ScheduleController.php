@@ -8,44 +8,131 @@ use App\Models\Department;
 use App\Models\Room;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class ScheduleController extends Controller
 {
-    public function index(){
-      return Inertia::render('Admin/Schedule');
-    }
+  public function index()
+  {
+    return Inertia::render('Admin/Schedule');
+  }
 
-    public function create(){
-      $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
-      $departments = Department::all();
-      $academic_years = AcademicYear::with('trimesters')->get();
-      $rooms = Room::all();
-      return Inertia::render('Admin/ScheduleForm', [
-        'course_assignments' => $course_assignments,
-        'academic_years' => $academic_years,
-        'departments' => $departments,
-        'rooms' => $rooms
+  public function create()
+  {
+    $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
+    $departments = Department::all();
+    $academic_years = AcademicYear::with('trimesters')->get();
+    $rooms = Room::all();
+    return Inertia::render('Admin/ScheduleForm', [
+      'course_assignments' => $course_assignments,
+      'academic_years' => $academic_years,
+      'departments' => $departments,
+      'rooms' => $rooms
+    ]);
+  }
+
+  public function store(Request $request)
+  {
+    $validated = $request->validate([
+      'course_assignment_id' => 'required|exists:course_assignments,id',
+      'academic_year_id' => 'required|exists:academic_years,id',
+      'trimester_id' => 'required|exists:trimesters,id',
+      'department_id' => 'required|exists:departments,id',
+      'room_id' => 'required|exists:rooms,id',
+      'days' => 'required|array|min:1',
+      'start_time' => 'required|date_format:H:i',
+      'end_time' => 'required|date_format:H:i|after:start_time',
+    ]);
+
+    $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
+
+    $courseAssignment = CourseAssignment::with(['course', 'instructor'])
+      ->findOrFail($validated['course_assignment_id']);
+
+    $newSchedule = [
+      'id' => 'new',
+      'academic_year_id' => $validated['academic_year_id'],
+      'trimester_id' => $validated['trimester_id'],
+      'room_id' => $validated['room_id'],
+      'instructor_id' => $courseAssignment->instructor_id,
+      'days' => $validated['days'],
+      'start_time' => $validated['start_time'],
+      'end_time' => $validated['end_time'],
+    ];
+
+    $existingSchedules = Schedule::with('courseAssignment.instructor')
+      ->where('academic_year_id', $validated['academic_year_id'])
+      ->where('trimester_id', $validated['trimester_id'])
+      ->get()
+      ->map(function ($s) {
+        return [
+          'id' => $s->id,
+          'academic_year_id' => $s->academic_year_id,
+          'trimester_id' => $s->trimester_id,
+          'room_id' => $s->room_id,
+          'instructor_id' => $s->courseAssignment->instructor_id ?? null,
+          'days' => is_array($s->days) ? $s->days : json_decode($s->days, true),
+          'start_time' => $s->start_time,
+          'end_time' => $s->end_time,
+        ];
+      })
+      ->toArray();
+
+    try {
+      $response = Http::post("{$aiBaseURL}/check_schedule_conflict", [
+        'new_schedule' => $newSchedule,
+        'existing_schedules' => $existingSchedules,
+      ]);
+
+      if ($response->failed()) {
+        return redirect()->back()
+          ->withErrors(['error' => 'AI service is unreachable. Please try again later.']);
+      }
+
+      $result = $response->json();
+
+      if (!empty($result['conflict']) && $result['conflict'] === true) {
+        // ✅ FIX: Return as validation error that Inertia can properly handle
+        return back()->withErrors([
+          'message' => $result['message'] ?? 'Scheduling conflict detected.'
+        ]);
+      }
+
+      // ✅ PLACE THE CREATION HERE (after conflict check)
+      $schedule = Schedule::create([
+        'course_assignment_id' => $validated['course_assignment_id'],
+        'academic_year_id' => $validated['academic_year_id'],
+        'trimester_id' => $validated['trimester_id'],
+        'department_id' => $validated['department_id'],
+        'room_id' => $validated['room_id'],
+        'days' => $validated['days'],
+        'start_time' => $validated['start_time'],
+        'end_time' => $validated['end_time'],
+      ]);
+
+      return redirect()->back()->with('success', 'Schedule created successfully.');
+    } catch (\Exception $e) {
+      return redirect()->back()->withErrors([
+        'message' => 'AI service communication failed: ' . $e->getMessage()
       ]);
     }
+  }
 
-    public function store(Request $request){
-      dd($request->all());
-    }
+  public function edit($id)
+  {
+    $schedule = Schedule::where('id', $id)->firstOrFail();
+    $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
+    $departments = Department::all();
+    $academic_years = AcademicYear::with('trimesters')->get();
+    $rooms = Room::all();
 
-    public function edit($id){
-      $schedule = Schedule::where('id', $id)->firstOrFail();
-      $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
-      $departments = Department::all();
-      $academic_years = AcademicYear::with('trimesters')->get();
-      $rooms = Room::all();
-
-      return Inertia::render('Admin/ScheduleForm', [
-        'course_assignments' => $course_assignments,
-        'academic_years' => $academic_years,
-        'departments' => $departments,
-        'rooms' => $rooms,
-        'schedule' => $schedule
-      ]);
-    }
+    return Inertia::render('Admin/ScheduleForm', [
+      'course_assignments' => $course_assignments,
+      'academic_years' => $academic_years,
+      'departments' => $departments,
+      'rooms' => $rooms,
+      'schedule' => $schedule
+    ]);
+  }
 }

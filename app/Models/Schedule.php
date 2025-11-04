@@ -6,19 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
+
     protected $fillable = [
-      'id',
-      'user_id',
-      'year',
-      'section',
-      'program_id'
+        'id',
+        'course_assignment_id',
+        'academic_year_id',
+        'trimester_id',
+        'department_id',
+        'room_id',
+        'days',
+        'start_time',
+        'end_time',
     ];
+
+    protected $casts = [
+        'days' => 'array',
+    ];
+
 
     public $incrementing = false;
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
-    protected static function boot(){
+    protected static function boot()
+    {
         parent::boot();
 
         static::creating(function ($request) {
@@ -33,5 +44,30 @@ class Schedule extends Model
         } while (self::where('id', $uniqueId)->exists());
 
         return $uniqueId;
+    }
+
+    public function courseAssignment()
+    {
+        return $this->belongsTo(CourseAssignment::class, 'course_assignment_id');
+    }
+
+    public function academicYear()
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
+
+    public function trimester()
+    {
+        return $this->belongsTo(Trimester::class, 'trimester_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }

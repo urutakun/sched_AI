@@ -26,11 +26,11 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign Keys
-            $table->foreign('academic_year_id')->references('id')->on('academic_years')->onDelete('cascasde');
-            $table->foreign('trimester_id')->references('id')->on('trimesters')->onDelete('cascasde');
-            $table->foreign('department_id')->references('id')->on('deparments')->onDelete('cascasde');
-            $table->foreign('course_assignment_id')->references('id')->on('course_assignments')->onDelete('cascasde');
-            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascasde');
+            $table->foreign('academic_year_id')->references('id')->on('academic_years')->onDelete('cascade');
+            $table->foreign('trimester_id')->references('id')->on('trimesters')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('course_assignment_id')->references('id')->on('course_assignments')->onDelete('cascade');
+            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
         });
     }
 
