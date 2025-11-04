@@ -83,7 +83,7 @@ const ProgramForm = ({ program, departments }: ProgramFormProps) => {
                                     }
                                 >
                                     <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select room type" />
+                                        <SelectValue placeholder="Select department" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {departmentList.map((item: DepartmentType, index: number) => (

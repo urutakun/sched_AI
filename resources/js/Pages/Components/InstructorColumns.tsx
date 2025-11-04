@@ -20,7 +20,7 @@ export const InstructorColumns = (
   setDeletingId: React.Dispatch<React.SetStateAction<string>>,
 ): ColumnDef<Instructor>[] => [
   {
-    accessorKey: "user.id",
+    accessorKey: "id",
     header: () => <div className="font-bold uppercase">User ID</div>,
   },
   {

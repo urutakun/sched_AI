@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AcademicYear;
 use App\Models\CourseAssignment;
 use App\Models\Department;
+use App\Models\Program;
 use App\Models\Room;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
@@ -15,30 +16,43 @@ class ScheduleController extends Controller
 {
   public function index()
   {
-    return Inertia::render('Admin/Schedule');
+    $schedules = Schedule::with([
+      'courseAssignment.course',
+      'courseAssignment.instructor.user',
+      'academicYear',
+      'trimester',
+      'department',
+      'room'
+    ])->get();
+    return Inertia::render('Admin/Schedule', ['schedules' => $schedules]);
   }
 
   public function create()
   {
     $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
     $departments = Department::all();
+    $programs = Program::with('department')->get();
     $academic_years = AcademicYear::with('trimesters')->get();
     $rooms = Room::all();
     return Inertia::render('Admin/ScheduleForm', [
       'course_assignments' => $course_assignments,
       'academic_years' => $academic_years,
       'departments' => $departments,
-      'rooms' => $rooms
+      'programs' => $programs,
+      'rooms' => $rooms,
     ]);
   }
 
   public function store(Request $request)
   {
+    dd($request);
     $validated = $request->validate([
       'course_assignment_id' => 'required|exists:course_assignments,id',
       'academic_year_id' => 'required|exists:academic_years,id',
       'trimester_id' => 'required|exists:trimesters,id',
       'department_id' => 'required|exists:departments,id',
+      'program_id' => 'required|exist:programs,id',
+      'section' => 'required|string|size:1',
       'room_id' => 'required|exists:rooms,id',
       'days' => 'required|array|min:1',
       'start_time' => 'required|date_format:H:i',

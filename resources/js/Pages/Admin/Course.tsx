@@ -34,7 +34,7 @@ const Course = ({ courses }: DepartmentProps) => {
             <DataTable
                 columns={CourseColumns(handleEdit, handleAssign, setIsOpen, setDeletingId)}
                 data={courseList || []}
-                filterLabel={"name"}
+                filterLabel={"course name"}
                 filterColumn={"name"}
                 createUrl={"/admin/courses/create"}
             />

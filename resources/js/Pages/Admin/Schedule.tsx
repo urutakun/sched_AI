@@ -6,12 +6,13 @@ import type { Schedule as ScheduleType } from "../Interfaces/Schedule";
 import { router } from "@inertiajs/react";
 import DeleteModal from '../Components/DeleteModal';
 
-interface DepartmentProps {
+interface ScheduleProps {
     schedules: ScheduleType[];
 }
 
-const Schedule = ({ schedules }: DepartmentProps) => {
-    const [scheduleList, setScheduleList] = useState<ScheduleType[]>(schedules);
+const Schedule = ({ schedules }: ScheduleProps) => {
+  const [scheduleList, setScheduleList] = useState<ScheduleType[]>(schedules || []);
+  console.log(scheduleList);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [deletingId, setDeletingId] = useState<string>('');
     const toDelete = scheduleList?.find((item: ScheduleType) => item.id === deletingId);
@@ -30,8 +31,8 @@ const Schedule = ({ schedules }: DepartmentProps) => {
             <DataTable
                 columns={ScheduleColumns(handleEdit, setIsOpen, setDeletingId)}
                 data={scheduleList || []}
-                filterLabel={"day"}
-                filterColumn={"day_of_week"}
+                filterLabel={"department"}
+                filterColumn={"department_name"}
                 createUrl={"/admin/schedules/create"}
             />
             <DeleteModal

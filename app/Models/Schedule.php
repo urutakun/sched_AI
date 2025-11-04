@@ -13,6 +13,8 @@ class Schedule extends Model
         'academic_year_id',
         'trimester_id',
         'department_id',
+        'program_id',
+        'section',
         'room_id',
         'days',
         'start_time',
@@ -64,6 +66,11 @@ class Schedule extends Model
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
     }
 
     public function room()

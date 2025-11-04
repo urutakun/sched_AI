@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('academic_year_id', 20);
             $table->string('trimester_id', 20);
             $table->string('department_id', 20);
+            $table->string('program_id', 20);
             $table->string('course_assignment_id', 20);
             $table->string('room_id', 20);
             $table->json('days');
+            $table->string('section', 1);
             $table->time('start_time');
             $table->time('end_time');
             $table->enum('status', ['active', 'pending_cancel', 'cancelled', 'completed'])->default('active');

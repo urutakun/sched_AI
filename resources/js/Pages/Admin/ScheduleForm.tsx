@@ -27,6 +27,7 @@ import type { AssignCourse } from "../Interfaces/AssignCourse";
 import type { Department } from "../Interfaces/Department";
 import type { AcademicYear } from "../Interfaces/AcademicYear";
 import type { Trimester } from "../Interfaces/Trimester";
+import type { Program } from "../Interfaces/Program";
 import type { Room } from "../Interfaces/Room";
 import { DayMultiSelect } from "../../components/ui/day-multi-select";
 import { TimePicker } from "../../components/ui/time-picker";
@@ -38,6 +39,7 @@ interface RoomFormProps {
     departments: Department[];
     academic_years: AcademicYear[];
     rooms: Room[];
+    programs: Program[];
 }
 
 const ScheduleForm = ({
@@ -46,14 +48,16 @@ const ScheduleForm = ({
     academic_years,
     departments,
     rooms,
+    programs
 }: RoomFormProps) => {
     const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourse[]>(course_assignments);
     const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
+    const [programtList, setProgramList] = useState<Program[]>(programs ?? []);
     const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] = useState<Trimester[]>([]);
     const [roomList, setRoomList] = useState<Room[]>(rooms ?? []);
-    console.log('Course Assignments: ');
-    console.log(courseAssignmentList);
+    console.log('Programs: ');
+    console.log(programtList);
 
 
     const { data, setData, errors, post, put, reset } = useForm({
@@ -61,6 +65,8 @@ const ScheduleForm = ({
         academic_year_id: schedule?.academic_year_id ?? "",
         trimester_id: schedule?.trimester_id ?? "",
         department_id: schedule?.department_id ?? "",
+        program_id: schedule?.program_id ?? "",
+        section: schedule?.section ?? "",
         room_id: schedule?.room_id ?? "",
         days: schedule?.days ?? [] as string[],
         start_time: schedule?.start_time ?? "",
@@ -104,6 +110,17 @@ const ScheduleForm = ({
         setCourseAssignmentList(filteredCourseAssignments);
     }, [data.trimester_id, data.department_id, course_assignments]);
 
+    // Filter Programs
+    useEffect(() => {
+      if(!data.department_id){
+        setProgramList(programs);
+        return;
+      }
+
+      const filteredPrograms = programs.filter((program) => program.dept_id === data.department_id);
+      setProgramList(filteredPrograms);
+    }, [data.department_id])
+
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
 
@@ -111,7 +128,7 @@ const ScheduleForm = ({
             put(`/admin/schedules/update/${schedule.id}`, {
                 onSuccess: () => toast.success('Schedule updated successfully'),
                 onError: (errors: any) => {
-                    // ✅ FIX: Handle Inertia validation errors properly
+                    // Handle Inertia validation errors properly
                     const errorMessage = errors?.message ||
                         errors?.error ||
                         'Failed to update schedule';
@@ -126,8 +143,8 @@ const ScheduleForm = ({
                     reset(); // Optional: clear form on success
                 },
                 onError: (errors: any) => {
-                    // ✅ FIX: Handle Inertia validation errors properly
-                    console.log('Error response:', errors); // Debug log
+                    // Handle Inertia validation errors properly
+                    console.log('Error response:', errors);
 
                     if (errors?.message) {
                         toast.error(errors.message);
@@ -239,6 +256,58 @@ const ScheduleForm = ({
                                 <FieldError>{errors.department_id ?? ""}</FieldError>
                             </Field>
                             <Field>
+                                <FieldLabel htmlFor="program">
+                                    Program
+                                </FieldLabel>
+                                <Select
+                                    value={data.program_id}
+                                    onValueChange={(value) =>
+                                        setData("program_id", value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select Program" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {programtList.map(
+                                            (
+                                                program: Program,
+                                                index: number
+                                            ) => {
+                                                return (
+                                                    <SelectItem
+                                                        value={ program.id}
+                                                        key={index}
+                                                        className="capitalize"
+                                                    >
+                                                        {program.name}
+                                                    </SelectItem>
+                                                );
+                                            }
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                                <FieldError>{errors.program_id ?? ""}</FieldError>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Section
+                                </FieldLabel>
+                                 <Input
+                                    id="section"
+                                    autoComplete="off"
+                                    placeholder="e.g., A, B"
+                                    maxLength={1}
+                                    value={data.section}
+                                    onChange={(e) =>
+                                        setData("section", e.target.value.toUpperCase())
+                                    }
+                                />
+                                <FieldError>
+                                    {errors.section ?? ""}
+                                </FieldError>
+                            </Field>
+                            <Field>
                                 <FieldLabel>
                                     Course Assignment
                                 </FieldLabel>
@@ -253,7 +322,6 @@ const ScheduleForm = ({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {courseAssignmentList.map((assignment: AssignCourse, index: number) => {
-                                            console.log(assignment);
                                             const course = assignment.course.name;
                                             const instructor = `${assignment.instructor.user.first_name} ${assignment.instructor.user.last_name}`;
                                             return (
