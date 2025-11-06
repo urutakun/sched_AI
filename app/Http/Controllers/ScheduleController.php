@@ -45,13 +45,12 @@ class ScheduleController extends Controller
 
   public function store(Request $request)
   {
-    dd($request);
     $validated = $request->validate([
       'course_assignment_id' => 'required|exists:course_assignments,id',
       'academic_year_id' => 'required|exists:academic_years,id',
       'trimester_id' => 'required|exists:trimesters,id',
       'department_id' => 'required|exists:departments,id',
-      'program_id' => 'required|exist:programs,id',
+      'program_id' => 'required|exists:programs,id',
       'section' => 'required|string|size:1',
       'room_id' => 'required|exists:rooms,id',
       'days' => 'required|array|min:1',
@@ -61,31 +60,58 @@ class ScheduleController extends Controller
 
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
 
-    $courseAssignment = CourseAssignment::with(['course', 'instructor'])
+    $courseAssignment = CourseAssignment::with(['course', 'instructor.user'])
       ->findOrFail($validated['course_assignment_id']);
+
+    // Get instructor name safely for NEW schedule using first_name and last_name
+    $instructorName = 'Unknown Instructor';
+    if ($courseAssignment->instructor && $courseAssignment->instructor->user) {
+      $firstName = $courseAssignment->instructor->user->first_name ?? '';
+      $lastName = $courseAssignment->instructor->user->last_name ?? '';
+      $instructorName = trim("{$firstName} {$lastName}");
+    }
+
+    // Get room name for NEW schedule
+    $room = Room::find($validated['room_id']);
+    $roomName = $room ? $room->room_name : 'Unknown Room';
 
     $newSchedule = [
       'id' => 'new',
       'academic_year_id' => $validated['academic_year_id'],
       'trimester_id' => $validated['trimester_id'],
       'room_id' => $validated['room_id'],
+      'room_name' => $roomName, // ✅ Added room name
       'instructor_id' => $courseAssignment->instructor_id,
+      'instructor_name' => $instructorName,
       'days' => $validated['days'],
       'start_time' => $validated['start_time'],
       'end_time' => $validated['end_time'],
     ];
 
-    $existingSchedules = Schedule::with('courseAssignment.instructor')
+    $existingSchedules = Schedule::with(['courseAssignment.instructor.user', 'room'])
       ->where('academic_year_id', $validated['academic_year_id'])
       ->where('trimester_id', $validated['trimester_id'])
       ->get()
       ->map(function ($s) {
+        // Get instructor name safely for EXISTING schedules using first_name and last_name
+        $existingInstructorName = 'Unknown Instructor';
+        if ($s->courseAssignment && $s->courseAssignment->instructor && $s->courseAssignment->instructor->user) {
+          $firstName = $s->courseAssignment->instructor->user->first_name ?? '';
+          $lastName = $s->courseAssignment->instructor->user->last_name ?? '';
+          $existingInstructorName = trim("{$firstName} {$lastName}");
+        }
+
+        // Get room name for EXISTING schedules
+        $existingRoomName = $s->room ? $s->room->room_name : 'Unknown Room';
+
         return [
           'id' => $s->id,
           'academic_year_id' => $s->academic_year_id,
           'trimester_id' => $s->trimester_id,
           'room_id' => $s->room_id,
+          'room_name' => $existingRoomName, // ✅ Added room name
           'instructor_id' => $s->courseAssignment->instructor_id ?? null,
+          'instructor_name' => $existingInstructorName,
           'days' => is_array($s->days) ? $s->days : json_decode($s->days, true),
           'start_time' => $s->start_time,
           'end_time' => $s->end_time,
@@ -107,18 +133,19 @@ class ScheduleController extends Controller
       $result = $response->json();
 
       if (!empty($result['conflict']) && $result['conflict'] === true) {
-        // ✅ FIX: Return as validation error that Inertia can properly handle
         return back()->withErrors([
           'message' => $result['message'] ?? 'Scheduling conflict detected.'
         ]);
       }
 
-      // ✅ PLACE THE CREATION HERE (after conflict check)
+      // Create the schedule
       $schedule = Schedule::create([
         'course_assignment_id' => $validated['course_assignment_id'],
         'academic_year_id' => $validated['academic_year_id'],
         'trimester_id' => $validated['trimester_id'],
         'department_id' => $validated['department_id'],
+        'program_id' => $validated['program_id'],
+        'section' => $validated['section'],
         'room_id' => $validated['room_id'],
         'days' => $validated['days'],
         'start_time' => $validated['start_time'],
@@ -128,7 +155,7 @@ class ScheduleController extends Controller
       return redirect()->back()->with('success', 'Schedule created successfully.');
     } catch (\Exception $e) {
       return redirect()->back()->withErrors([
-        'message' => 'AI service communication failed: ' . $e->getMessage()
+        'message' => 'Failed to create schedule: ' . $e->getMessage()
       ]);
     }
   }
