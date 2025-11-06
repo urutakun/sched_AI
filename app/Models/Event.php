@@ -19,7 +19,7 @@ class Event extends Model
         'type',
         'dept_id',
         'location',
-        'is_active'
+        'status'
     ];
 
     public $incrementing = false;
@@ -45,9 +45,5 @@ class Event extends Model
 
     public function department(){
       return $this->belongsTo(Department::class, 'dept_id');
-    }
-
-    public function instructor(){
-      return $this->belongsTo(Instructor::class, 'instructor_id');
     }
 }

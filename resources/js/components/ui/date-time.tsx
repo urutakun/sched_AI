@@ -4,8 +4,7 @@ import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { TimePicker } from "./time-picker";
 import {
   Popover,
   PopoverContent,
@@ -14,7 +13,7 @@ import {
 
 interface DateTimePickerProps {
   id?: string;
-  value?: string; // expected format: 'YYYY-MM-DD HH:mm:ss'
+  value?: string;
   onChange?: (value: string) => void;
 }
 
@@ -24,17 +23,28 @@ export function DateTimePicker({ id, value, onChange }: DateTimePickerProps) {
   // parse existing value or default to now
   const initialDate = value ? new Date(value) : new Date();
   const [date, setDate] = React.useState<Date | undefined>(initialDate);
-  const [time, setTime] = React.useState<string>(
-    value ? initialDate.toTimeString().slice(0, 8) : "00:00:00"
+  const [time, setTime] = React.useState<string>(() =>
+    {
+      if (value) return value.split(" ")[1].slice(0, 5);
+      return initialDate.toTimeString().slice(0, 5);
+    }
   );
 
   // combine date and time into a single datetime string
   React.useEffect(() => {
     if (date && time && onChange) {
-      const [hours, minutes, seconds] = time.split(":").map(Number);
+      const [hours, minutes, seconds = 0] = time.split(":").map(Number);
       const combined = new Date(date);
       combined.setHours(hours, minutes, seconds);
-      const formatted = combined.toISOString().slice(0, 19).replace("T", " ");
+      const formatted = `${combined.getFullYear()}-${(combined.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${combined.getDate().toString().padStart(2, "0")} ${combined
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${combined.getMinutes().toString().padStart(2, "0")}:${combined
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
       onChange(formatted);
     }
   }, [date, time]);
@@ -50,7 +60,7 @@ export function DateTimePicker({ id, value, onChange }: DateTimePickerProps) {
               id={id}
               className="w-full justify-between font-normal"
             >
-              {date ? date.toLocaleDateString() : "Select date"}
+              {date ? date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric'}) : "Select date"}
               <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -68,12 +78,9 @@ export function DateTimePicker({ id, value, onChange }: DateTimePickerProps) {
         </Popover>
 
         {/* Time Picker */}
-        <Input
-          type="time"
-          step="1"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          className="w-96"
+        <TimePicker
+            value={time}
+            onChange={(value) => setTime(value)}
         />
       </div>
     </div>

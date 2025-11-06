@@ -98,10 +98,12 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::delete('/course-assignments/delete/{id}', [CourseAssignmentController::class, 'destroy']);
 
   // Schedules
-  Route::get('/schedules', [ScheduleController::class, 'index']);
+  Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
   Route::get('/schedules/create', [ScheduleController::class, 'create']);
   Route::post('/schedules/create', [ScheduleController::class, 'store']);
   Route::get('/schedules/edit/{id}', [ScheduleController::class, 'edit']);
+  Route::put('/schedules/update/{id}', [ScheduleController::class, 'update']);
+  Route::delete('/schedules/delete/{id}', [ScheduleController::class, 'destroy']);
 
   // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');

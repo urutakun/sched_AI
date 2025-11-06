@@ -21,11 +21,10 @@ return new class extends Migration
             $table->string('dept_id', 20)->nullable();
             $table->string('instructor_id', 20)->nullable();
             $table->string('location')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->enum('status', ['upcoming', 'ongoing', 'finished', 'cancelled'])->default('upcoming');
             $table->timestamps();
 
             $table->foreign('dept_id')->references('id')->on('departments')->onDelete('set null');
-            $table->foreign('instructor_id')->references('id')->on('instructors')->onDelete('set null');
         });
     }
 

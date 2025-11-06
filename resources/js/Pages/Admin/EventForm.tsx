@@ -45,6 +45,7 @@ const EventForm = ({ event, departments }: EventFormProps) => {
       type: event?.type ?? "",
       dept_id: event?.dept_id ?? "",
       location: event?.location ?? "",
+      status: event?.status ?? "",
     });
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -126,11 +127,11 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                                 <FieldLabel htmlFor="end_datetime">End Date & Time</FieldLabel>
                                 <DateTimePicker
                                   id="end_datetime"
-                                  value={data.start_datetime}
+                                  value={data.end_datetime}
                                   onChange={(value) => setData("end_datetime", value)}
                                 />
                                 <FieldError>
-                                    {errors.start_datetime ?? ""}
+                                    {errors.end_datetime ?? ""}
                                 </FieldError>
                             </Field>
                             <Field>
@@ -209,6 +210,32 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                                     {errors.description ?? ""}
                                 </FieldError>
                             </Field>
+                            { event && (
+                              <Field>
+                                  <FieldLabel>
+                                      Status
+                                  </FieldLabel>
+                                  <Select
+                                      value={data.status}
+                                      onValueChange={(value) =>
+                                          setData("status", value as 'upcoming' | 'ongoing' | 'finished' | 'cancelled')
+                                      }
+                                  >
+                                      <SelectTrigger className="w-[180px]">
+                                          <SelectValue placeholder="Select status" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          <SelectItem value="upcoming" className="capitalize">Upcoming</SelectItem>
+                                          <SelectItem value="ongoing" className="capitalize">Ongoing</SelectItem>
+                                          <SelectItem value="finished" className="capitalize">Finished</SelectItem>
+                                          <SelectItem value="cancelled" className="capitalize">Cancelled</SelectItem>
+                                      </SelectContent>
+                                  </Select>
+                                  <FieldError>
+                                      {errors.status ?? ""}
+                                  </FieldError>
+                              </Field>
+                            )}
                         </FieldGroup>
                     </FieldSet>
                     <Field orientation="horizontal">
@@ -226,6 +253,6 @@ const EventForm = ({ event, departments }: EventFormProps) => {
 };
 
 EventForm.layout = (page: React.ReactNode) => (
-    <Layout title="Rooms">{page}</Layout>
+    <Layout title="Events">{page}</Layout>
 );
 export default EventForm;

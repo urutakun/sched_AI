@@ -56,8 +56,6 @@ const ScheduleForm = ({
     const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] = useState<Trimester[]>([]);
     const [roomList, setRoomList] = useState<Room[]>(rooms ?? []);
-    console.log('Programs: ');
-    console.log(programtList);
 
 
     const { data, setData, errors, post, put, reset } = useForm({
@@ -117,7 +115,7 @@ const ScheduleForm = ({
         return;
       }
 
-      const filteredPrograms = programs.filter((program) => program.dept_id === data.department_id);
+      const filteredPrograms = programs?.filter((program) => program.dept_id === data.department_id);
       setProgramList(filteredPrograms);
     }, [data.department_id])
 
@@ -269,7 +267,7 @@ const ScheduleForm = ({
                                         <SelectValue placeholder="Select Program" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {programtList.map(
+                                        {programtList?.map(
                                             (
                                                 program: Program,
                                                 index: number

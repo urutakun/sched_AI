@@ -12,6 +12,7 @@ interface EventProps {
 
 const Event = ({ events }: EventProps) => {
   const [eventList, setEventList] = useState<EventType[]>(events);
+  console.log(events);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = eventList?.find((item: EventType) => item.id === deletingId);
@@ -35,7 +36,7 @@ const Event = ({ events }: EventProps) => {
         onDelete={onDelete}
         deletingId={deletingId}
         url={'/admin/events/delete'}
-        nameField="name"
+        nameField="title"
         errorMessage="Failed to delete event"
       />
     </div>

@@ -166,14 +166,28 @@ class ScheduleController extends Controller
     $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
     $departments = Department::all();
     $academic_years = AcademicYear::with('trimesters')->get();
+    $programs = Program::with('department')->get();
     $rooms = Room::all();
 
     return Inertia::render('Admin/ScheduleForm', [
       'course_assignments' => $course_assignments,
       'academic_years' => $academic_years,
       'departments' => $departments,
+      'programs' => $programs,
       'rooms' => $rooms,
       'schedule' => $schedule
     ]);
+  }
+
+  public function destroy($id){
+    $schedule = Schedule::where('id', $id)->firstOrFail();
+
+    if(!$schedule){
+        return response()->json(['message' => 'Not found']);
+      }
+
+    $schedule->delete();
+
+    return response()->json(['message' => 'Schedule deleted successfully']);
   }
 }

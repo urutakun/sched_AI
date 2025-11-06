@@ -24,7 +24,8 @@ export const CourseAssignmentColumns = (
         header: () => <div className="font-bold uppercase">ID</div>,
     },
     {
-        id: "course",
+        id: "course_name",
+        accessorFn: (row) => row.course.name ?? "N/A",
         header: ({ column }) => {
             return (
                 <div

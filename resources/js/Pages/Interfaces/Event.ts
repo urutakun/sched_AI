@@ -8,8 +8,7 @@ export interface Event {
   end_datetime: string;
   type: 'school' | 'department';
   dept_id: string;
-  instructor_id: string;
   location: string;
-  is_active: boolean;
+  status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
   department: Department;
 }

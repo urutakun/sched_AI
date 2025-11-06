@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch"
 import type { Course as CourseType } from "../Interfaces/Course";
 import type { AssignCourse as AssignCourseType } from "../Interfaces/AssignCourse";
 import { toast } from "sonner";
@@ -36,7 +35,6 @@ interface CourseFormProps {
 
 const AssignCourseForm = ({ course, assigned_course, recommended_instructors }: CourseFormProps) => {
   const [recommendedInstructorList, setRecommendedInstructorList] = useState<Instructor[]>(recommended_instructors || []);
-  console.log(recommendedInstructorList);
     const { data, setData, errors, post, reset, put } = useForm({
         course_id: course?.id ?? "",
         instructor_id: assigned_course?.instructor_id ?? "",

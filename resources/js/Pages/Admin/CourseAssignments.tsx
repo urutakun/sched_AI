@@ -28,7 +28,7 @@ const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={CourseAssignmentColumns(handleEdit, setIsOpen, setDeletingId)} data={courseAssignmentList || []} filterLabel={"course"} filterColumn={"status"}/>
+      <DataTable columns={CourseAssignmentColumns(handleEdit, setIsOpen, setDeletingId)} data={courseAssignmentList || []} filterLabel={"course"} filterColumn={"course_name"}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

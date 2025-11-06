@@ -74,6 +74,18 @@
   background-color: var(--accent) !important;
 }
 
+.fc .fc-timegrid {
+  border: none;
+}
+
+.fc .fc-timegrid .fc-timegrid-slot-label {
+  border-bottom: none;
+}
+
+.fc .fc-timegrid .fc-timegrid-slots table tbody tr:nth-child(even) {
+  border: 1px solid transparent;
+}
+
 @media screen and (max-width: 448px) {
   .fc .fc-view-harness {
     overflow-x: auto;
