@@ -2,6 +2,10 @@
   --primary: #EBF8FF;
   --secondary: #0A64EE;
   --accent: #A2A2A2;
+  --light-gray: oklch(92.8% 0.006 264.531);
+  --light-green: oklch(92.5% 0.084 155.995);
+  --light-red: oklch(88.5% 0.062 18.334);
+  --light-blue: oklch(88.2% 0.059 254.128);
 }
 
 /* DM SANS */
@@ -83,8 +87,13 @@
 }
 
 .fc .fc-timegrid .fc-timegrid-slots table tbody tr:nth-child(even) {
-  border: 1px solid transparent;
+  border: 1px dashed --accent;
 }
+
+.fc-event.status-upcoming { background-color: var(--light-gray) !important; }
+.fc-event.status-ongoing { background-color: var(--light-blue) !important; }
+.fc-event.status-completed { background-color: var(--light-green) !important; }
+.fc-event.status-cancelled { background-color: var(--light-green) !important; }
 
 @media screen and (max-width: 448px) {
   .fc .fc-view-harness {

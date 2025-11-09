@@ -42,8 +42,8 @@ const Schedule = ({ schedules }: ScheduleProps) => {
               onDelete={onDelete}
               deletingId={deletingId}
               url={'/admin/schedules/delete'}
-              nameField="name"
-              errorMessage="Failed to delete course"
+              nameField="course_assignment.course.name"
+              errorMessage="Failed to delete schedule"
             />
         </div>
     );

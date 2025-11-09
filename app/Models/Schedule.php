@@ -77,4 +77,8 @@ class Schedule extends Model
     {
         return $this->belongsTo(Room::class, 'room_id');
     }
+
+    public function sessions(){
+      return $this->hasMany(ScheduleSession::class);
+    }
 }

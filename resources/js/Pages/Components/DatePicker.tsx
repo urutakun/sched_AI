@@ -24,17 +24,27 @@ const events = [
   },
 ]
 
+interface DatePickerProps {
+  setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>
+}
 
-const DatePicker = () => {
+
+const DatePicker = ({ setSelectedDate }: DatePickerProps) => {
   const defaultClassNames = getDefaultClassNames();
   const [date, setDate] = useState<Date | undefined>(new Date());
+
+  const handleChange = (newDate: any): void => {
+    setDate(newDate);
+    setSelectedDate(newDate ? newDate.toISOString() : null);
+  }
+
   return (
     <Card className="w-full py-4 border-none shadow-none font-dm">
       <CardContent className="px-4">
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleChange}
           captionLayout='dropdown'
           classNames={{
             today: `bg-muted text-foreground rounded-xl ${defaultClassNames.today}`,

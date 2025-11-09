@@ -8,9 +8,13 @@ use App\Models\Department;
 use App\Models\Program;
 use App\Models\Room;
 use App\Models\Schedule;
+use App\Models\ScheduleSession;
+use App\Models\Trimester;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
+use DB;
 
 class ScheduleController extends Controller
 {
@@ -152,7 +156,47 @@ class ScheduleController extends Controller
         'end_time' => $validated['end_time'],
       ]);
 
-      return redirect()->back()->with('success', 'Schedule created successfully.');
+      // Create the schedule sessions
+
+      // Create day mapping
+      $day_map = [
+        'Sun' => 0,
+        'Mon' => 1,
+        'Tue' => 2,
+        'Wed' => 3,
+        'Thu' => 4,
+        'Fri' => 5,
+        'Sat' => 6,
+      ];
+
+      $trimester = Trimester::find($schedule->trimester_id);
+      $start = Carbon::parse($trimester->start_date);
+      $end = Carbon::parse($trimester->end_date);
+
+      $dayNames  = $schedule->days;
+      $days = collect($dayNames)->map(fn($d) => $day_map[$d] ?? null)->filter()->toArray();
+
+      DB::transaction(function() use ($schedule, $start, $end, $days){
+        $sessions = [];
+        for($date = $start->copy(); $date->lte($end); $date->addDay()){
+          if(in_array($date->dayOfWeek(), $days)){
+            $sessions[] = [
+              'id' => 'SS_' . str_pad(mt_rand(0,999999), 6, '0', STR_PAD_LEFT),
+              'schedule_id' => $schedule->id,
+              'session_date' => $date->toDateString(),
+              'status' => 'upcoming',
+              'created_at' => now(),
+              'updated_at' => now(),
+            ];
+          }
+        }
+
+        if (!empty($sessions)) {
+          ScheduleSession::upsert($sessions, ['schedule_id', 'session_date'], ['status', 'updated_at']);
+        }
+      });
+
+      return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
     } catch (\Exception $e) {
       return redirect()->back()->withErrors([
         'message' => 'Failed to create schedule: ' . $e->getMessage()

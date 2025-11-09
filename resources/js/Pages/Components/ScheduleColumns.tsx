@@ -21,6 +21,7 @@ export const ScheduleColumns = (
 ): ColumnDef<Schedule>[] => [
     {
         id: "academic_year",
+        accessorKey: "academic_year",
         header: ({ column }) => {
             return (
                 <div
@@ -40,6 +41,7 @@ export const ScheduleColumns = (
     },
     {
         id: "trimester",
+        accessorKey: "trimester",
         header: ({ column }) => {
             return (
                 <div
@@ -79,6 +81,7 @@ export const ScheduleColumns = (
     },
     {
         id: "course_assignment_course",
+        accessorFn: (row) => row.course_assignment.course.name,
         header: ({ column }) => {
             return (
                 <div
@@ -98,6 +101,7 @@ export const ScheduleColumns = (
     },
     {
         id: "course_assignment_instructor",
+        accessorFn: (row) => row.course_assignment.instructor.last_name,
         header: ({ column }) => {
             return (
                 <div
@@ -120,6 +124,7 @@ export const ScheduleColumns = (
     },
     {
         id: "room_id",
+        accessorFn: (row) => row.room.room_name,
         header: ({ column }) => {
             return (
                 <div
@@ -161,6 +166,7 @@ export const ScheduleColumns = (
     },
     {
         id: "start_time",
+        accessorKey: "start_time",
         header: ({ column }) => {
             return (
                 <div
@@ -205,6 +211,7 @@ export const ScheduleColumns = (
     },
     {
         id: "end_time",
+        accessorKey: "end_time",
         header: ({ column }) => {
             return (
                 <div

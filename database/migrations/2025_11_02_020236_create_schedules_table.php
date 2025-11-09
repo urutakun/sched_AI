@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('section', 1);
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('status', ['active', 'pending_cancel', 'cancelled', 'completed'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
 
             $table->timestamps();
 

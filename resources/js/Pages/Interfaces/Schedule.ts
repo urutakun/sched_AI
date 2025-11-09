@@ -12,12 +12,12 @@ export interface Schedule {
   trimester_id: string;
   department_id: string;
   program_id: string;
-  section: string; 
+  section: string;
   room_id: string;
   days: string[];
   start_time: string;
   end_time: string;
-  status: 'active' | 'pending_cancel' | 'cancelled' | 'completed';
+  status: 'active' | 'inactive';
   academic_year: AcademicYear;
   trimester: Trimester;
   course_assignment: AssignCourse;

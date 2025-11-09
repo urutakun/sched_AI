@@ -21,11 +21,8 @@ export const CourseColumns = (
     setDeletingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<Course>[] => [
     {
-        accessorKey: "id",
-        header: () => <div className="font-bold uppercase">ID</div>,
-    },
-    {
         id: "academic_year",
+        accessorKey: "academic_year",
         header: ({ column }) => {
             return (
                 <div
@@ -45,6 +42,7 @@ export const CourseColumns = (
     },
     {
         id: "trimester",
+        accessorKey: "trimester",
         header: ({ column }) => {
             return (
                 <div
@@ -64,6 +62,7 @@ export const CourseColumns = (
     },
     {
         id: "department",
+        accessorKey: "department",
         header: ({ column }) => {
             return (
                 <div
@@ -83,6 +82,7 @@ export const CourseColumns = (
     },
     {
         id: "year_level",
+        accessorKey: "year_level",
         header: ({ column }) => {
             return (
                 <div
