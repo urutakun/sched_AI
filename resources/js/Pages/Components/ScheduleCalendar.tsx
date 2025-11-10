@@ -41,12 +41,6 @@ useEffect(() => {
   }
 }, [selectedView])
 
-useEffect(() => {
-  if(filters){
-    console.log(filters);
-  }
-}, [filters]);
-
   return (
       <div className="date_table cols-span-4 col-span-4 lg:col-span-3 min-h-[400px] w-full bg-white shadow-sm p-4 rounded-2xl">
           {/* HEADER */}

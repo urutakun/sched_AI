@@ -8,17 +8,17 @@ import { getDefaultClassNames  } from 'react-day-picker'
 
 const events = [
   {
-    title: "Team Sync Meeting",
+    title: "Christmas Party",
     from: "2025-06-12T09:00:00",
     to: "2025-06-12T10:00:00",
   },
   {
-    title: "Design Review",
+    title: "Hangout with Spiderman",
     from: "2025-06-12T11:30:00",
     to: "2025-06-12T12:30:00",
   },
   {
-    title: "Client Presentation",
+    title: "Shat session with lola Flora",
     from: "2025-06-12T14:00:00",
     to: "2025-06-12T15:00:00",
   },

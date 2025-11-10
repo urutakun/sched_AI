@@ -17,6 +17,8 @@ return new class extends Migration
             $table->date('session_date');
             $table->enum('status', ['upcoming', 'ongoing', 'completed', 'cancelled'])->default('upcoming');
             $table->timestamps();
+
+            $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });
     }
 

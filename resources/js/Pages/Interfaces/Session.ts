@@ -5,6 +5,8 @@ export interface Session {
   end: string;
   extendedProps: {
     instructor: string;
+    instructor_id: string | any;
+    course_year_level: string; 
     department_id: string;
     program_id: string;
     program_name: string;

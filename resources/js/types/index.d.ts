@@ -1,7 +1,19 @@
+import { Program } from "@/Pages/Interfaces/Program";
+import { Student } from "@/Pages/Interfaces/Student";
+
 export interface User {
     id: number;
     first_name: string;
     last_name: string;
+    instructor_id: string;
+    instructor: {
+      dept_id: string;
+    }
+    student: {
+      section: string;
+      program: Program;
+      year: string; 
+    }
     role: string;
     avatar?: string;
     email: string;

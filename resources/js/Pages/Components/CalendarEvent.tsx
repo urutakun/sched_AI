@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { spawn } from 'child_process';
 
 type statusType = 'upcoming' | 'ongoing' | 'completed' |'cancelled';
 
@@ -51,8 +52,7 @@ const CalendarEvent = ({
         </>
       ) : (
         <>
-          <p>[ {instructor} ]</p>
-          <p>{program}</p>
+          <p>{instructor} | {program}</p>
         </>
       )}
 

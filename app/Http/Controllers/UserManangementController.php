@@ -86,6 +86,10 @@ class UserManangementController extends Controller
     public function update(Request $request, $id){
       $user = User::where('id', $id)->firstOrFail();
 
+      if(!$user){
+        return redirect()->with('error', 'User not found');
+      }
+
       $validated = $request->validate([
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
