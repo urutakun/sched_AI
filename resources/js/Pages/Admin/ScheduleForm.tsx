@@ -110,13 +110,13 @@ const ScheduleForm = ({
 
     // Filter Programs
     useEffect(() => {
-      if(!data.department_id){
-        setProgramList(programs);
-        return;
-      }
+        if (!data.department_id) {
+            setProgramList(programs);
+            return;
+        }
 
-      const filteredPrograms = programs?.filter((program) => program.dept_id === data.department_id);
-      setProgramList(filteredPrograms);
+        const filteredPrograms = programs?.filter((program) => program.dept_id === data.department_id);
+        setProgramList(filteredPrograms);
     }, [data.department_id])
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -138,18 +138,36 @@ const ScheduleForm = ({
                 onSuccess: (page) => {
                     const message = (page?.props?.flash?.success ?? "Schedule created successfully");
                     toast.success(message);
+                    console.log('Error response:', errors);
                     reset(); // Optional: clear form on success
                 },
                 onError: (errors: any) => {
-                    // Handle Inertia validation errors properly
                     console.log('Error response:', errors);
+                    console.log()
 
-                    if (errors?.message) {
-                        toast.error(errors.message);
-                    } else if (typeof errors === 'string') {
-                        toast.error(errors);
-                    } else {
-                        toast.error("Failed to create schedule");
+                    if (errors?.suggestions_message) {
+                        toast.success(errors.suggestions_message, {
+                            duration: 8000,
+                        });
+                    }
+
+                    // Show conflict message as error toast
+                    if (errors?.conflict_message) {
+                        toast.error(errors.conflict_message);
+                    }
+
+                    // Show suggestions message as success toast (blue color in Sonner)
+
+
+                    // Fallback for other error types
+                    if (!errors?.conflict_message && !errors?.suggestions_message) {
+                        if (errors?.message) {
+                            toast.error(errors.message);
+                        } else if (typeof errors === 'string') {
+                            toast.error(errors);
+                        } else {
+                            toast.error("Failed to create schedule");
+                        }
                     }
                 },
             });
@@ -274,7 +292,7 @@ const ScheduleForm = ({
                                             ) => {
                                                 return (
                                                     <SelectItem
-                                                        value={ program.id}
+                                                        value={program.id}
                                                         key={index}
                                                         className="capitalize"
                                                     >
@@ -291,7 +309,7 @@ const ScheduleForm = ({
                                 <FieldLabel>
                                     Section
                                 </FieldLabel>
-                                 <Input
+                                <Input
                                     id="section"
                                     autoComplete="off"
                                     placeholder="e.g., A, B"

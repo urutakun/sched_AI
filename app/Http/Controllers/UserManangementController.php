@@ -94,11 +94,11 @@ class UserManangementController extends Controller
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
         'role' => 'required|string|in:admin,instructor,student',
-        'department_id' => 'nullable|exists:departments,id',
-        'max_load' => 'nullable|numeric|min:3|max:12',
-        'year' => 'nullable|numeric|min:1|max:4',
-        'section' => 'nullable|string|max:1',
-        'program_id' => 'nullable|exists:programs,id',
+        // 'department_id' => 'nullable|exists:departments,id',
+        // 'max_load' => 'nullable|numeric|min:3|max:12',
+        // 'year' => 'nullable|numeric|min:1|max:4',
+        // 'section' => 'nullable|string|max:1',
+        // 'program_id' => 'nullable|exists:programs,id',
       ]);
 
       $user->update([
