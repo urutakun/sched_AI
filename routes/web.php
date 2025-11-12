@@ -14,6 +14,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ScheduleSessionController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\TrimesterController;
@@ -104,6 +106,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/schedules/edit/{id}', [ScheduleController::class, 'edit']);
   Route::put('/schedules/update/{id}', [ScheduleController::class, 'update']);
   Route::delete('/schedules/delete/{id}', [ScheduleController::class, 'destroy']);
+
+  // Sessions
+  Route::put('/schedule-session/update/{id}', [ScheduleSessionController::class, 'update']);
 
   // Rooms
   Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');

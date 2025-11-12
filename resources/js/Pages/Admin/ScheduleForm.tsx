@@ -40,6 +40,7 @@ interface RoomFormProps {
     academic_years: AcademicYear[];
     rooms: Room[];
     programs: Program[];
+    schedules: ScheduleType[];
 }
 
 const ScheduleForm = ({
@@ -48,7 +49,8 @@ const ScheduleForm = ({
     academic_years,
     departments,
     rooms,
-    programs
+    programs,
+    schedules,
 }: RoomFormProps) => {
     const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourse[]>(course_assignments);
     const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
@@ -56,7 +58,7 @@ const ScheduleForm = ({
     const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] = useState<Trimester[]>([]);
     const [roomList, setRoomList] = useState<Room[]>(rooms ?? []);
-
+    const [scheduleList, setScheduleList] = useState<ScheduleType[]>(schedules || []);
 
     const { data, setData, errors, post, put, reset } = useForm({
         course_assignment_id: schedule?.course_assignment_id ?? "",
@@ -70,7 +72,6 @@ const ScheduleForm = ({
         start_time: schedule?.start_time ?? "",
         end_time: schedule?.end_time ?? "",
     });
-
 
 
     // Filter trimesters
@@ -99,14 +100,19 @@ const ScheduleForm = ({
         }
 
         const filteredCourseAssignments = course_assignments.filter((course_assignment) => {
+            const alreadyHasSchedule = scheduleList.some(
+              (schedule) => schedule.course_assignment_id === course_assignment.id
+            );
+
             return (
                 course_assignment.course.trimester_id === data.trimester_id &&
-                course_assignment.course.dept_id === data.department_id
+                course_assignment.course.dept_id === data.department_id &&
+                !alreadyHasSchedule
             )
         });
 
         setCourseAssignmentList(filteredCourseAssignments);
-    }, [data.trimester_id, data.department_id, course_assignments]);
+    }, [data.trimester_id, data.department_id, course_assignments, scheduleList]);
 
     // Filter Programs
     useEffect(() => {

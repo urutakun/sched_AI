@@ -100,10 +100,15 @@ class UserManangementController extends Controller
         ]);
 
         $user->update([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'role' => $validated['role'],
+          'first_name' => $validated['first_name'],
+          'last_name' => $validated['last_name'],
+          'role' => $validated['role'],
         ]);
+
+        // CLEAN UP
+
+        Instructor::where('user_id', $user->id)->delete();
+        Student::where('user_id', $user->id)->delete();
 
         // Clean existing role-related models
         Instructor::where('user_id', $user->id)->delete();

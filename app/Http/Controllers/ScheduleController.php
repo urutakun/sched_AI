@@ -38,17 +38,20 @@ class ScheduleController extends Controller
     $programs = Program::with('department')->get();
     $academic_years = AcademicYear::with('trimesters')->get();
     $rooms = Room::all();
+    $schedules = Schedule::with('courseAssignment')->get();
+
     return Inertia::render('Admin/ScheduleForm', [
       'course_assignments' => $course_assignments,
       'academic_years' => $academic_years,
       'departments' => $departments,
       'programs' => $programs,
       'rooms' => $rooms,
+      'schedules' => $schedules,
     ]);
   }
 
   public function store(Request $request)
-{
+  {
     $validated = $request->validate([
       'course_assignment_id' => 'required|exists:course_assignments,id',
       'academic_year_id' => 'required|exists:academic_years,id',
@@ -139,17 +142,17 @@ class ScheduleController extends Controller
       if (!empty($result['conflict']) && $result['conflict'] === true) {
         // ✅ FIXED: Return separate error keys for each message
         $errors = [];
-        
+
         // Always include the conflict message
         if (!empty($result['message'])) {
             $errors['conflict_message'] = $result['message'];
         }
-        
+
         // Include suggestions if available
         if (!empty($result['suggestions'])) {
             $errors['suggestions_message'] = $result['suggestions'];
         }
-        
+
         // Fallback if no specific messages
         if (empty($errors)) {
             $errors['message'] = 'Scheduling conflict detected.';

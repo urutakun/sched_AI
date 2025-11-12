@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\ScheduleSessionController;
 use App\Http\Controllers\SessionController;
 use App\Models\ScheduleSession;
 use Illuminate\Console\Command;
@@ -28,7 +29,7 @@ class UpdateScheduleSessionStatus extends Command
 
     public function handle()
     {
-        SessionController::updateStatus();
+        ScheduleSessionController::updateStatus();
         $this->info('Schedule session status updated successfully');
     }
 }

@@ -279,16 +279,12 @@ export const ScheduleColumns = (
 
         const text_colors: Record<string,string> = {
           active: 'text-blue-600',
-          pending_cancel: 'text-gray-600',
-          cancelled: 'text-red-600',
-          completed: 'text-green-600'
+          inactive: 'text-gray-600',
         }
 
         const formattedStatus = {
           active: 'Active',
-          pending_cancel: 'Pending',
-          cancelled: 'Cancelled',
-          completed: 'Completed'
+          inactive: 'Inactive',
         }
 
         return(
