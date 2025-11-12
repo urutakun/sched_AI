@@ -83,17 +83,19 @@ const CalendarEvent = ({
   }
 
   return (
-    <div className={`${text[status]} p-1 w-full h-full cursor-pointer relative`} >
-      <p className='font-semibold'>{title}</p>
-      {view === 'timeGridWeek' ? (
-        <>
-          <p>{code}</p>
-        </>
-      ) : (
-        <>
-          <p>{instructor} | {program}</p>
-        </>
-      )}
+    <div className={`${text[status]} p-1 w-full h-full cursor-pointer relative ${view === 'timeGridWeek' ? 'text-xs' : ''}`} >
+      <div>
+        <p className='font-semibold'>{view === 'timeGridWeek' ? title.slice(0, 13) + '...' :title}</p>
+        {view === 'timeGridWeek' ? (
+          <>
+            <p>{code}</p>
+          </>
+        ) : (
+          <>
+            <p>{instructor} | {program}</p>
+          </>
+        )}
+      </div>
 
       <div className="actions absolute right-1 top-2">
         <DropdownMenu>
