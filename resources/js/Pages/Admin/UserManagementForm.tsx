@@ -3,230 +3,183 @@ import React, { useState } from 'react'
 import { useForm, Link } from '@inertiajs/react'
 import {
   Field,
-  FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from "sonner"
 import { User } from '../Interfaces/User'
-import { Department } from '../Interfaces/Department';
-import { Program } from '../Interfaces/Program';
+import { Department } from '../Interfaces/Department'
+import { Program } from '../Interfaces/Program'
 
-interface UserFormProps{
-  user?: User;
-  departments?: Department[];
-  programs?: Program[];
+interface UserFormProps {
+  user?: User
+  departments?: Department[]
+  programs?: Program[]
 }
 
-const UserManagementForm = ({ user, departments, programs }: UserFormProps ) => {
-  const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
-  const [programList, setProgramList] = useState<Program[]>(programs ?? []);
-
+const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
   const { data, setData, errors, post, put, reset } = useForm({
     first_name: user?.first_name ?? '',
     last_name: user?.last_name ?? '',
     role: user?.role ?? '',
     year: user?.student?.year ?? '',
     section: user?.student?.section ?? '',
-    program_id: user?.student?.program_id ?? '',
-    department_id: user?.instructor?.dept_id ?? '',
-    max_load: user?.instructor?.max_load ?? 0,
+    program_id: user?.student?.program_id?.toString() ?? '',
+    department_id: user?.instructor?.dept_id?.toString() ?? '',
+    max_load: user?.instructor?.max_load ?? '',
     email: '',
     password: '',
     password_confirmation: '',
   })
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
 
-    if(user){
-      put(`/admin/user-management/update/${user.id}`, {
-        onSuccess: () => toast.success('User updated successfully'),
-        onError: () => toast.error('Failed to update user')
-      });
+    const onSuccess = () => {
+      toast.success(user ? 'User updated successfully' : 'User created successfully')
+      if (!user) reset()
     }
-    else{
-      post('/admin/user-management/create', {
-        onSuccess: () => {
-          toast.success('User created successfully');
-          reset();
-        },
-        onError: () => {
-          toast.error('Failed to create user');
-          reset();
-        }
-      });
+
+    const onError = () => toast.error('Something went wrong. Please check the form.')
+
+    if (user) {
+      put(`/admin/user-management/update/${user.id}`, { onSuccess, onError })
+    } else {
+      post('/admin/user-management/create', { onSuccess, onError })
     }
   }
 
   return (
-    <div className='h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center'>
-      <form onSubmit={handleFormSubmit} className='w-full lg:w-[500px] font-dm lg:border border-custom-accent/50 lg:p-4 rounded-2xl'>
-        <FieldGroup>
-          <FieldSet>
-            <FieldLegend>{ user ? 'Update User' : 'Create User'}</FieldLegend>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="first_name">First Name</FieldLabel>
-                <Input id="first_name" autoComplete="off" placeholder="John" value={data.first_name} onChange={(e) => setData('first_name', e.target.value)} />
-                <FieldError>{errors.first_name ?? ""}</FieldError>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="last_name">Last Name</FieldLabel>
-                <Input id="last_name" autoComplete="off" placeholder="Doe" value={data.last_name} onChange={(e) => setData('last_name', e.target.value)} />
-                <FieldError>{errors.last_name ?? ""}</FieldError>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="role">Role</FieldLabel>
-                <Select
-                    value={data.role}
-                    onValueChange={(value) =>
-                        setData("role", value)
-                    }
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select Role" />
-                    </SelectTrigger>
+    <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
+      <form onSubmit={handleSubmit} className="w-full lg:w-[500px] font-dm lg:border border-custom-accent/50 lg:p-4 rounded-2xl">
+        <FieldSet>
+          <FieldLegend>{user ? 'Update User' : 'Create User'}</FieldLegend>
+          <FieldGroup>
+            <Field>
+              <FieldLabel>First Name</FieldLabel>
+              <Input value={data.first_name} placeholder='Jone' onChange={(e) => setData('first_name', e.target.value)} />
+              <FieldError>{errors.first_name}</FieldError>
+            </Field>
+
+            <Field>
+              <FieldLabel>Last Name</FieldLabel>
+              <Input value={data.last_name} placeholder='Doe' onChange={(e) => setData('last_name', e.target.value)} />
+              <FieldError>{errors.last_name}</FieldError>
+            </Field>
+
+            <Field>
+              <FieldLabel>Role</FieldLabel>
+              <Select value={data.role} onValueChange={(val) => setData('role', val)}>
+                <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="instructor">Instructor</SelectItem>
+                  <SelectItem value="student">Student</SelectItem>
+                </SelectContent>
+              </Select>
+              <FieldError>{errors.role}</FieldError>
+            </Field>
+
+            {data.role === 'student' && (
+              <>
+                <Field>
+                  <FieldLabel>Year</FieldLabel>
+                  <Input type="number" value={data.year} placeholder='1 - 4' onChange={(e) => setData('year', e.target.value)} />
+                  <FieldError>{errors.year}</FieldError>
+                </Field>
+                <Field>
+                  <FieldLabel>Section</FieldLabel>
+                  <Input value={data.section} maxLength={1} placeholder='A, B, C, ...' onChange={(e) => setData('section', e.target.value.toUpperCase())} />
+                  <FieldError>{errors.section}</FieldError>
+                </Field>
+                <Field>
+                  <FieldLabel>Program</FieldLabel>
+                  <Select
+                    value={data.program_id}
+                    onValueChange={(val) => setData('program_id', val)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select Program" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admin" className="capitalize">Admin</SelectItem>
-                      <SelectItem value="instructor" className="capitalize">Instructor</SelectItem>
-                      <SelectItem value="student" className="capitalize">Student</SelectItem>
+                      {programs?.map((p) => (
+                        <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
+                      ))}
                     </SelectContent>
-                </Select>
-                <FieldError>{errors.role ?? ""}</FieldError>
-              </Field>
-              {data.role === 'student' && (
-                <>
-                  <Field>
-                    <FieldLabel htmlFor="year">Year</FieldLabel>
-                    <Input id="year" type='number' min="0" max="4" autoComplete="off" placeholder="e.g., 1 - 4" value={data.year} onChange={(e) => setData('year', e.target.value)} />
-                    <FieldError>{errors.year ?? ""}</FieldError>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="section">Section</FieldLabel>
-                    <Input id="section" autoComplete="off" maxLength={1} placeholder="e.g., A, B, C" value={data.section} onChange={(e) => setData('section', e.target.value.toUpperCase())} />
-                    <FieldError>{errors.section ?? ""}</FieldError>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="program">Program</FieldLabel>
-                    <Select
-                        value={data.program_id}
-                        onValueChange={(value) =>
-                            setData("program_id", value)
-                        }
-                    >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select Program" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {
-                            programList.map((program: Program, index: number) => {
-                              return(
-                                <SelectItem value={program.id} key={index} className="capitalize">
-                                  {program.name}
-                                </SelectItem>
-                              )
-                            })
-                          }
-                        </SelectContent>
-                    </Select>
-                    <FieldError>{errors.role ?? ""}</FieldError>
-                  </Field>
-                </>
-              )}
-              {data.role === 'instructor' && (
-                <>
-                  <Field>
-                    <FieldLabel htmlFor="department">Department</FieldLabel>
-                    <Select
-                      value={data.department_id}
-                      onValueChange={(value) =>
-                          setData("department_id", value)
-                      }
-                    >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select Deparment"/>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {departmentList.map(
-                              (department: Department, index: number) => {
-                                  return (
-                                      <SelectItem value={department.id} key={index} className="capitalize">
-                                          {department.name}
-                                      </SelectItem>
-                                  );
-                              }
-                          )}
-                        </SelectContent>
-                    </Select>
-                    <FieldError>{errors.year ?? ""}</FieldError>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="max_load">
-                        Max Load
-                    </FieldLabel>
-                    <Input
-                        id="max_load"
-                        type="number"
-                        autoComplete="off"
-                        value={data.max_load}
-                        onChange={(e) =>
-                            setData("max_load", Number(e.target.value))
-                        }
-                    />
-                    <FieldError>{errors.max_load ?? ""}</FieldError>
-                  </Field>
-                </>
-              )}
-              {!user && (
-                <>
-                  <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
-                    <Input id="email" type='email' autoComplete="off" placeholder="johndoe@example.com" value={data.email} onChange={(e) => setData('email', e.target.value)} />
-                    <FieldError>{errors.email ?? ""}</FieldError>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input id="password" type='password' value={data.password} onChange={(e) => setData('password', e.target.value)} />
-                    <FieldError>{errors.password ?? ""}</FieldError>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="password_confirmation">Confirm Password</FieldLabel>
-                    <Input id="password_confirmation" type='password' value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} />
-                    <FieldError>{errors.password_confirmation ?? ""}</FieldError>
-                  </Field>
-                </>
-              )}
-            </FieldGroup>
-          </FieldSet>
-          <Field orientation="horizontal">
-          <Button type="submit">Submit</Button>
-          <Link href={'/admin/user-management'}>
-            <Button variant="outline" type="button">
-              Cancel
-            </Button>
-          </Link>
-          </Field>
-        </FieldGroup>
+                  </Select>
+                  <FieldError>{errors.program_id}</FieldError>
+                </Field>
+              </>
+            )}
+
+            {data.role === 'instructor' && (
+              <>
+                <Field>
+                  <FieldLabel>Department</FieldLabel>
+                  <Select
+                    value={data.department_id}
+                    onValueChange={(val) => setData('department_id', val)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select Department" /></SelectTrigger>
+                    <SelectContent>
+                      {departments?.map((d) => (
+                        <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError>{errors.department_id}</FieldError>
+                </Field>
+
+                <Field>
+                  <FieldLabel>Max Load</FieldLabel>
+                  <Input type="number" value={data.max_load} placeholder='12' onChange={(e) => setData('max_load', e.target.value)} />
+                  <FieldError>{errors.max_load}</FieldError>
+                </Field>
+              </>
+            )}
+
+            {!user && (
+              <>
+                <Field>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input type="email" value={data.email} placeholder='example@sched.ai' onChange={(e) => setData('email', e.target.value)} />
+                  <FieldError>{errors.email}</FieldError>
+                </Field>
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} />
+                  <FieldError>{errors.password}</FieldError>
+                </Field>
+                <Field>
+                  <FieldLabel>Confirm Password</FieldLabel>
+                  <Input type="password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} />
+                  <FieldError>{errors.password_confirmation}</FieldError>
+                </Field>
+              </>
+            )}
+
+            <div className="flex gap-2 mt-4">
+              <Button type="submit">Submit</Button>
+              <Link href="/admin/user-management">
+                <Button variant="outline" type="button">Cancel</Button>
+              </Link>
+            </div>
+          </FieldGroup>
+        </FieldSet>
       </form>
     </div>
   )
 }
 
-UserManagementForm.layout = (page:React.ReactNode) => <Layout title="User Management">{page}</Layout>
+UserManagementForm.layout = (page: React.ReactNode) => <Layout title="User Management">{page}</Layout>
 export default UserManagementForm
