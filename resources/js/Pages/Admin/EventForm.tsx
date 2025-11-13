@@ -98,11 +98,11 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                                 </FieldError>
                             </Field>
                             <Field>
-                                <FieldLabel htmlFor="name">Title</FieldLabel>
+                                <FieldLabel htmlFor="name">Description</FieldLabel>
                                 <Textarea
                                     id="name"
                                     autoComplete="off"
-                                    placeholder="e.g., Foundation Week"
+                                    placeholder="e.g., Enjoy student life to the fullest"
                                     value={data.description}
                                     onChange={(e) =>
                                         setData("description", e.target.value)

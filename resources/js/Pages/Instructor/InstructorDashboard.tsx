@@ -11,11 +11,13 @@ import { User } from '../Interfaces/User';
 interface InstructorDashboardProps {
   sessions: Session[];
   programs: Program[];
+  events: any[];
 }
 
 const InstructorDashboard = ({
   sessions,
   programs,
+  events
 }: InstructorDashboardProps) => {
   const user = usePage().props.auth.user;
 
@@ -30,23 +32,26 @@ const InstructorDashboard = ({
 
 
   return (
-     <div className="date_block grid grid-cols-4 gap-3 w-full">
-        <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
-          <DatePicker setSelectedDate={setSelectedDate}/>
-        </div>
-        <ScheduleCalendar
-          selectedView={selectedView}
-          setSelectedView={setSelectedView}
-          selectedDate={selectedDate || new Date()}
-          sessionList={filteredSessionList}
-          filters={
-            <SessionFilter
-              programs={filteredPrograms}
-              onProgramChange={setSelectedProgram}
-            />
-          }
-        />
+    <div className="date_block grid grid-cols-4 gap-3 w-full">
+      <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
+        <DatePicker
+          setSelectedDate={setSelectedDate}
+          events={events} />
       </div>
+      <ScheduleCalendar
+        selectedView={selectedView}
+        setSelectedView={setSelectedView}
+        selectedDate={selectedDate || new Date()}
+        sessionList={filteredSessionList}
+        events={events}
+        filters={
+          <SessionFilter
+            programs={filteredPrograms}
+            onProgramChange={setSelectedProgram}
+          />
+        }
+      />
+    </div>
   )
 }
 

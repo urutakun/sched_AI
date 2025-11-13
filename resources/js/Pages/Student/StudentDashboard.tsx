@@ -9,10 +9,12 @@ import DatePicker from '../Components/DatePicker';
 import { User } from '../Interfaces/User';
 interface StudentDashboardProps {
   sessions: Session[];
+  events: any[];
 }
 
 const StudentDashboard = ({
   sessions,
+  events
 }: StudentDashboardProps) => {
   const user = usePage().props.auth.user;
   console.log(user);
@@ -31,17 +33,21 @@ const StudentDashboard = ({
   console.log(filteredSessionList);
 
   return (
-      <div className="date_block grid grid-cols-4 gap-3 w-full">
-        <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
-          <DatePicker setSelectedDate={setSelectedDate}/>
-        </div>
-        <ScheduleCalendar
-          selectedView={selectedView}
-          setSelectedView={setSelectedView}
-          selectedDate={selectedDate || new Date()}
-          sessionList={filteredSessionList}
+    <div className="date_block grid grid-cols-4 gap-3 w-full">
+      <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
+        <DatePicker
+          setSelectedDate={setSelectedDate}
+          events={events}
         />
       </div>
+      <ScheduleCalendar
+        selectedView={selectedView}
+        setSelectedView={setSelectedView}
+        selectedDate={selectedDate || new Date()}
+        sessionList={filteredSessionList}
+        events={events}
+      />
+    </div>
   )
 }
 

@@ -5,7 +5,7 @@ import {
   FaBuilding,
   FaGraduationCap
 } from "react-icons/fa";
-import { BsDoorOpenFill } from "react-icons/bs";
+import { BsCalendarFill, BsDoorOpenFill } from "react-icons/bs";
 import { ImUsers } from "react-icons/im";
 import DatePicker from '../Components/DatePicker';
 import type { Session } from '../Interfaces/Session';
@@ -13,23 +13,27 @@ import { Department } from '../Interfaces/Department';
 import { Program } from '../Interfaces/Program';
 import ScheduleCalendar from '../Components/ScheduleCalendar';
 import SessionFilter from '../Components/SessionFilter';
+import { CalendarIcon } from 'lucide-react';
 
 interface AdminDashboardProps {
   department_count: number;
   instructor_count: number;
   student_count: number;
   room_count: number;
+  event_count: number;
   sessions: Session[];
   departments: Department[];
+  events: any[];
 }
-
 const AdminDashboard = ({
   department_count,
   instructor_count,
   student_count,
   room_count,
+  event_count,
   sessions,
-  departments
+  departments,
+  events
 }: AdminDashboardProps) => {
   const [sessionList, setSessionList] = useState<Session[]>(sessions || []);
   const [departmentList, setDepartmentList] = useState<Department[]>(departments);
@@ -46,10 +50,8 @@ const AdminDashboard = ({
     return matchDept && matchProg;
   })
 
-
-
   useEffect(() => {
-    if(selectedDepartment){
+    if (selectedDepartment) {
       const selDept = departments.find((department: Department) => department.id === selectedDepartment);
       setFilteredPrograms(selDept ? selDept.programs : []);
       setSelectedProgram(null);
@@ -67,16 +69,21 @@ const AdminDashboard = ({
         <StatusCard icon={ImUsers} label={'Instructors'} value={instructor_count} href={'/admin/instructors'} />
         <StatusCard icon={FaGraduationCap} label={'Students'} value={student_count} href={'/admin/students'} />
         <StatusCard icon={BsDoorOpenFill} label={'Rooms'} value={room_count} href={'/admin/rooms'} />
+        <StatusCard icon={BsCalendarFill} label={'Events'} value={event_count} href={'/admin/events'} />
       </div>
       <div className="date_block grid grid-cols-4 gap-3 w-full">
-        <div className="calendar col-span-4  h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
-          <DatePicker setSelectedDate={setSelectedDate}/>
+        <div className="calendar col-span-4 h-full w-full lg:col-span-1 bg-white rounded-2xl shadow-sm p-4 min-h-[400px]">
+          <DatePicker
+            setSelectedDate={setSelectedDate}
+            events={events}
+          />
         </div>
         <ScheduleCalendar
           selectedView={selectedView}
           setSelectedView={setSelectedView}
           selectedDate={selectedDate || new Date()}
           sessionList={filteredSessionList}
+          events={events}
           filters={
             <SessionFilter
               departments={departmentList}

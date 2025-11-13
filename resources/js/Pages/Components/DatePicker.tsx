@@ -4,38 +4,58 @@ import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getDefaultClassNames  } from 'react-day-picker'
+import { getDefaultClassNames } from 'react-day-picker'
 
-const events = [
-  {
-    title: "Christmas Party",
-    from: "2025-06-12T09:00:00",
-    to: "2025-06-12T10:00:00",
-  },
-  {
-    title: "Hangout with Spiderman",
-    from: "2025-06-12T11:30:00",
-    to: "2025-06-12T12:30:00",
-  },
-  {
-    title: "Shat session with lola Flora",
-    from: "2025-06-12T14:00:00",
-    to: "2025-06-12T15:00:00",
-  },
-]
-
-interface DatePickerProps {
-  setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  start_datetime: string;
+  end_datetime: string;
+  type: string;
+  dept_id: string;
+  location: string;
+  status: string;
+  department: {
+    id: string;
+    name: string;
+  } | null;
 }
 
+interface DatePickerProps {
+  setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>;
+  events: Event[];
+}
 
-const DatePicker = ({ setSelectedDate }: DatePickerProps) => {
+const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
   const defaultClassNames = getDefaultClassNames();
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   const handleChange = (newDate: any): void => {
     setDate(newDate);
     setSelectedDate(newDate ? newDate.toISOString() : null);
+  }
+
+  // Filter events that occur on the selected date (including multi-day events)
+  const eventsForSelectedDate = events.filter(event => {
+    if (!date) return false;
+
+    const selectedDateStart = new Date(date);
+    selectedDateStart.setHours(0, 0, 0, 0);
+    
+    const selectedDateEnd = new Date(date);
+    selectedDateEnd.setHours(23, 59, 59, 999);
+
+    const eventStart = new Date(event.start_datetime);
+    const eventEnd = new Date(event.end_datetime);
+
+    // Check if the event overlaps with the selected date
+    return eventStart <= selectedDateEnd && eventEnd >= selectedDateStart;
+  });
+
+  // Format event date range for display
+  const formatEventTime = (start: string, end: string) => {
+    return formatDateRange(new Date(start), new Date(end));
   }
 
   return (
@@ -55,6 +75,7 @@ const DatePicker = ({ setSelectedDate }: DatePickerProps) => {
         />
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-3 border-t px-4 !pt-4">
+        <h1 className='font-bold text-lg'>Events</h1>
         <div className="flex w-full items-center justify-between px-1">
           <div className="text-sm font-medium">
             {date?.toLocaleDateString("en-US", {
@@ -74,17 +95,33 @@ const DatePicker = ({ setSelectedDate }: DatePickerProps) => {
           </Button>
         </div>
         <div className="flex w-full flex-col gap-2">
-          {events.map((event) => (
-            <div
-              key={event.title}
-              className="bg-custom-primary after:bg-custom-secondary relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full"
-            >
-              <div className="font-medium">{event.title}</div>
-              <div className="text-muted-foreground text-xs">
-                {formatDateRange(new Date(event.from), new Date(event.to))}
+          {eventsForSelectedDate.length > 0 ? (
+            eventsForSelectedDate.map((event) => (
+              <div
+                key={event.id}
+                className="bg-custom-primary after:bg-custom-secondary relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full"
+              >
+                <div className="font-medium">{event.title}</div>
+                <div className="text-muted-foreground text-xs">
+                  {formatEventTime(event.start_datetime, event.end_datetime)}
+                </div>
+                {event.location && (
+                  <div className="text-muted-foreground text-xs">
+                    Location: {event.location}
+                  </div>
+                )}
+                {event.department && (
+                  <div className="text-muted-foreground text-xs">
+                    Department: {event.department.name}
+                  </div>
+                )}
               </div>
+            ))
+          ) : (
+            <div className="text-muted-foreground text-sm text-center py-4">
+              No events for this date
             </div>
-          ))}
+          )}
         </div>
       </CardFooter>
     </Card>
