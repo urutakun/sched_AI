@@ -126,7 +126,7 @@ export const CourseColumns = (
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Name
+                    Descriptive Title
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </div>
             );

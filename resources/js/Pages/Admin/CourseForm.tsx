@@ -206,8 +206,8 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
                                 <FieldError>{errors.code ?? ""}</FieldError>
                             </Field>
                             <Field>
-                                <FieldLabel htmlFor="name">
-                                    Course Name
+                                <FieldLabel htmlFor="description">
+                                    Descriptive Title
                                 </FieldLabel>
                                 <Input
                                     id="name"
