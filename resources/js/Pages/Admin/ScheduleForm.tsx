@@ -77,7 +77,7 @@ const ScheduleForm = ({
     // Filter trimesters
     useEffect(() => {
         const selectedYear = academicYearList.find((year) => year.id === data.academic_year_id);
-        const filteredTrimesters = selectedYear?.trimesters ?? [];
+        const filteredTrimesters = (selectedYear?.trimesters ?? []).filter((trimester) => trimester.status !== 'inactive');
         setTrimesterList(filteredTrimesters);
 
         if (filteredTrimesters.length === 0) {

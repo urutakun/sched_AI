@@ -8,28 +8,41 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Calendar,
-  UserRound,
-  BookHeart,
-  DoorOpen
-} from 'lucide-react';
+import type { SessionModalEvent, EventModal, ModalSession } from '../Interfaces/ModalTypes';
+// interface SessionModalEvent {
+//   title: string;
+//   eventType: 'session' | 'event',
+//   extendedProps: {
+//     instructor: string;
+//     room: string;
+//     program_name: string;
+//     section: string;
+//     status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+//   }
+// }
 
-interface SessionModalEvent {
-  title: string;
-  extendedProps: {
-    instructor: string;
-    room: string;
-    program_name: string;
-    section: string;
-    status: string;
-  }
-}
+// interface EventModal {
+//   title: string;
+//   eventType: 'session' | 'event',
+//   extendedProps: {
+//     status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
+//     description: string;
+//     location: string;
+//     start: Date;
+//     end: Date;
+//   }
+// }
 
 interface SessionModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedSession: SessionModalEvent | null;
+  selectedSession: ModalSession | null;
+}
+
+function isSessionEvent(
+  session: SessionModalEvent | EventModal | null
+): session is SessionModalEvent {
+  return session?.eventType === 'session';
 }
 
 const SessionModal = ({
@@ -62,11 +75,20 @@ const SessionModal = ({
         </DialogHeader>
          <div className='space-y-4'>
             <div className="space-y-3 text-sm text-gray-700">
-              <p><strong>Instructor:</strong> {selectedSession?.extendedProps?.instructor}</p>
-              <p><strong>Room:</strong> {selectedSession?.extendedProps?.room}</p>
-              <p><strong>Program:</strong> {selectedSession?.extendedProps?.program_name}</p>
-              <p><strong>Section:</strong> {selectedSession?.extendedProps?.section}</p>
-              </div>
+             {isSessionEvent(selectedSession) ? (
+                <>
+                  <p><strong>Instructor:</strong> {selectedSession?.extendedProps?.instructor}</p>
+                  <p><strong>Room:</strong> {selectedSession?.extendedProps?.room}</p>
+                  <p><strong>Program:</strong> {selectedSession?.extendedProps?.program_name}</p>
+                  <p><strong>Section:</strong> {selectedSession?.extendedProps?.section}</p>
+                </>
+              ) : (
+                <>
+                  <p><strong>Description:</strong> {selectedSession?.extendedProps?.description}</p>
+                  <p><strong>Location:</strong> {selectedSession?.extendedProps?.location}</p>
+                </>
+              )}
+            </div>
         </div>
       </DialogContent>
     </Dialog>

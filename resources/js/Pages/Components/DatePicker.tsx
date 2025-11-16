@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { getDefaultClassNames } from 'react-day-picker'
+import { router } from '@inertiajs/react'
 
 interface Event {
   id: string;
@@ -42,7 +43,7 @@ const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
 
     const selectedDateStart = new Date(date);
     selectedDateStart.setHours(0, 0, 0, 0);
-    
+
     const selectedDateEnd = new Date(date);
     selectedDateEnd.setHours(23, 59, 59, 999);
 
@@ -56,6 +57,10 @@ const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
   // Format event date range for display
   const formatEventTime = (start: string, end: string) => {
     return formatDateRange(new Date(start), new Date(end));
+  }
+
+  const handleEventCreation = (): void => {
+    router.get('/admin/events/create');
   }
 
   return (
@@ -89,6 +94,7 @@ const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
             size="icon"
             className="size-6 hover:text-custom-secondary"
             title="Add Event"
+            onClick={handleEventCreation}
           >
             <PlusIcon />
             <span className="sr-only">Add Event</span>

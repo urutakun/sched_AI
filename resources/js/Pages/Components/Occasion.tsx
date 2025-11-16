@@ -29,33 +29,29 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { usePage } from '@inertiajs/react';
 
-type statusType = 'upcoming' | 'ongoing' | 'completed' |'cancelled';
+type statusType = 'upcoming' | 'ongoing' | 'completed' | 'cancelled'
 
-interface CalendarEventProps {
+interface OccasionProps {
   id: string;
   title: string;
-  instructor: string;
-  room: string;
-  program: string;
-  code: string;
-  section: string;
+  description: string;
+  start: Date | null;
+  end: Date | null;
+  location: string;
   status: statusType;
   view: 'timeGridWeek' | 'timeGridDay',
-  onEventStatusChange: (id: string, newStatus: Status) => void;
 }
 
-type Status = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-
-const CalendarEvent = ({
+const Occasion = ({
   id,
   title,
-  instructor,
-  program,
-  code,
+  description,
+  start,
+  end,
+  location,
   status,
-  view,
-  onEventStatusChange
-}: CalendarEventProps) => {
+  view
+ }: OccasionProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [updatedStatus, setUpdatedStatus] = useState<string>("");
   const role = usePage().props.auth.user.role;
@@ -72,34 +68,35 @@ const CalendarEvent = ({
     return;
   }
 
-  const handleSubmit = (id: string) => {
-    axios.put(`/admin/schedule-session/update/${id}`, { 'status' : updatedStatus })
-      .then((res) => {
-        onEventStatusChange(id, updatedStatus as Status);
-        toast.success(res.data.message);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      })
-    setIsOpen(false);
-  }
+  // const handleSubmit = (id: string) => {
+  //   axios.put(`/admin/schedule-session/update/${id}`, { 'status' : updatedStatus })
+  //     .then((res) => {
+  //       onEventStatusChange(id, updatedStatus as Status);
+  //       toast.success(res.data.message);
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error.message);
+  //     })
+  //   setIsOpen(false);
+  // }
 
   return (
     <div className={`${text[status]} p-1 w-full h-full cursor-pointer relative ${view === 'timeGridWeek' ? 'text-xs' : ''}`} >
       <div>
-        <p className='font-semibold'>{view === 'timeGridWeek' ? title.slice(0, 13) + '...' :title}</p>
+        <p className='font-semibold'>{view === 'timeGridWeek' ? (title.slice(0, 13) + '...') : title}</p>
         {view === 'timeGridWeek' ? (
           <>
-            <p>{code}</p>
+            <p>{location}</p>
           </>
         ) : (
           <>
-            <p>{instructor} | {program}</p>
+            <p>{description}</p>
+            <p>{location}</p>
           </>
         )}
       </div>
 
-      { role !== 'student' && (
+      {/* { role !== 'student' && (
         <div className="actions absolute right-1 top-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -114,10 +111,10 @@ const CalendarEvent = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      )}
+      )} */}
 
       {/* Modal */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className='space-y-4'>
           <DialogHeader className='flex flex-row items-center space-x-4'>
             <div className="icon bg-blue-200 text-white p-2 rounded-lg">
@@ -150,9 +147,9 @@ const CalendarEvent = ({
             </Button>
           </DialogFooter >
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   )
 }
 
-export default CalendarEvent
+export default Occasion

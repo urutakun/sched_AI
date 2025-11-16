@@ -38,7 +38,7 @@ const SessionFilter = ({
     <div className='lg:flex items-center space-y-2 lg:space-y-0 lg:space-x-3'>
       {departments && (
         <Select
-          value={selectedDept || ''}
+          value={selectedDept ?? ''}
           onValueChange={(val) => {
             setSelectedDept(val);
             if(onDepartmentChange) onDepartmentChange(val);
@@ -58,7 +58,7 @@ const SessionFilter = ({
       )}
       {programs && (
        <Select
-        value={selectedProgram || ''}
+        value={selectedProgram ?? ''}
         onValueChange={(val) => {
           setSelectedProgram(val);
           if(onProgramChange) onProgramChange(val);

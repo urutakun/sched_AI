@@ -10,6 +10,8 @@ import FullCalendar from "@fullcalendar/react";
 import '../../../css/full-calendar.css';
 import { format } from 'date-fns';
 import SessionModal from './SessionModal';
+import Occasion from './Occasion';
+import type { SessionModalEvent, EventModal, ModalSession } from '../Interfaces/ModalTypes';
 
 interface ScheduleCalendarProps {
   selectedView: 'timeGridWeek' | 'timeGridDay';
@@ -20,16 +22,29 @@ interface ScheduleCalendarProps {
   events: any[]
 }
 
-interface SessionModalEvent {
-  title: string;
-  extendedProps: {
-    instructor: string;
-    room: string;
-    program_name: string;
-    section: string;
-    status: string;
-  }
-}
+// interface SessionModalEvent {
+//   title: string;
+//   eventType: 'session' | 'event',
+//   extendedProps: {
+//     instructor: string;
+//     room: string;
+//     program_name: string;
+//     section: string;
+//     status: string;
+//   }
+// }
+
+// interface EventModal {
+//   title: string;
+//   eventType: 'event' | 'occasion',
+//   extendedProps: {
+//     status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
+//     description: string;
+//     location: string;
+//     start: Date;
+//     end: Date;
+//   }
+// }
 
 type Status = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
@@ -42,7 +57,7 @@ const ScheduleCalendar = ({
   filters,
 }: ScheduleCalendarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedSession, setSelectedSession] = useState<SessionModalEvent | null>(null);
+  const [selectedSession, setSelectedSession] = useState<SessionModalEvent | EventModal |null>(null);
   const [sessions, setSessions] = useState<Session[]>(sessionList || []);
   const calendarRef = useRef<FullCalendar | null>(null);
 
@@ -80,7 +95,7 @@ const ScheduleCalendar = ({
         description: event.description,
         location: event.location,
         department: event.department,
-        status: 'event', // Events have special status
+        status: event.status
       },
       backgroundColor: 'var(--event-color)', // Use a distinct color for events
       borderColor: 'var(--event-color)',
@@ -158,24 +173,28 @@ const ScheduleCalendar = ({
 
   const handleEventClick = (evt: any) => {
     const event = evt.event;
+
     const eventType = event.extendedProps.type;
 
     if (eventType === 'event') {
       // Handle event click - show event details
+      console.log(event);
       setSelectedSession({
         title: event.title,
+        eventType: 'event',
         extendedProps: {
-          instructor: event.extendedProps.department?.name || 'Event',
-          room: event.extendedProps.location || 'N/A',
-          program_name: event.extendedProps.description || 'Event',
-          section: 'Event',
-          status: 'event',
+          description: event.extendedProps.description,
+          location: event.extendedProps.location,
+          start: event.extendedProps.start_datetime,
+          end: event.extendedProps.end_datetime,
+          status: event.extendedProps.status,
         }
       });
     } else {
       // Handle session click
       setSelectedSession({
         title: event.title,
+        eventType: 'session',
         extendedProps: {
           instructor: event.extendedProps.instructor,
           room: event.extendedProps.room,
@@ -228,14 +247,16 @@ const ScheduleCalendar = ({
           if (eventType === 'event') {
             // Render event differently
             return (
-              <div className="calendar-event-priority-content p-1">
-                <div className="font-semibold text-white text-sm">
-                  {evt.event.title}
-                </div>
-                <div className="text-white/90 text-xs">
-                  {extendedProps.location && `📍 ${extendedProps.location}`}
-                </div>
-              </div>
+              <Occasion
+                id={evt.event.id}
+                title={evt.event.title}
+                description={extendedProps.description}
+                start={extendedProps.start_datetime}
+                end={extendedProps.end_datetime}
+                location={extendedProps.location}
+                status={extendedProps.status}
+                view={selectedView}
+              />
             );
           }
 
@@ -257,19 +278,15 @@ const ScheduleCalendar = ({
         }}
         eventClick={handleEventClick}
         eventDidMount={(info) => {
-          // Only style sessions, events are already styled
-          if (info.event.extendedProps.type !== 'event') {
-            const status = info.event.extendedProps.status;
-            const color = getStatusColor(status);
-            info.el.style.backgroundColor = color;
-            info.el.style.borderColor = color;
-          }
-
-          // Add priority class for events
-          if (info.event.extendedProps.type === 'event') {
-            info.el.classList.add('calendar-event-priority');
-            info.el.style.zIndex = '999'; // Ensure events appear on top
-          }
+          const status = info.event.extendedProps.status;
+          const colors: Record<string, string> = {
+            upcoming: "var(--light-gray)",
+            ongoing: "var(--light-blue)",
+            completed: "var(--light-green)",
+            cancelled: "var(--light-red)",
+          };
+          info.el.style.backgroundColor = colors[status] || "#e5e7eb";
+          info.el.style.borderColor = colors[status] || "#e5e7eb";
         }}
       />
 
