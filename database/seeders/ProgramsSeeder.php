@@ -17,19 +17,13 @@ class ProgramsSeeder extends Seeder
           [
             [
               'id' =>  'PROG_000000',
-              'dept_id' => 'DEP_111111',
+              'dept_id' => 'DEP_000000',
               'code' => 'BSIT',
               'name' => 'Bachelor of Science in Information Technology'
             ],
             [
-              'id' =>  'PROG_000001',
-              'dept_id' => 'DEP_000000',
-              'code' => 'DIT',
-              'name' => 'Diploma in Information Technology'
-            ],
-            [
               'id' =>  'PROG_000002',
-              'dept_id' => 'DEP_111111',
+              'dept_id' => 'DEP_000000',
               'code' => 'BSCS',
               'name' => 'Bachelor of Science in Computer Science'
             ],

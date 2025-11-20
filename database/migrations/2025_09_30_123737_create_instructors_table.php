@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('id', 20)->primary();
             $table->string('user_id', 20);
             $table->string('dept_id');
-            $table->integer('max_load')->default(12);
+            $table->enum('instructor_type', ['part-time', 'full-time'])->default('full-time');
+            $table->integer('max_load')->default(24);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -8,11 +8,12 @@ export interface User {
     instructor_id: string;
     instructor: {
       dept_id: string;
+      instructor_type: 'part-time' | 'full-time';
     }
     student: {
       section: string;
       program: Program;
-      year: string; 
+      year: string;
     }
     role: string;
     avatar?: string;

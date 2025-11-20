@@ -38,6 +38,7 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
     section: user?.student?.section ?? '',
     program_id: user?.student?.program_id?.toString() ?? '',
     department_id: user?.instructor?.dept_id?.toString() ?? '',
+    instructor_type: user?.instructor?.instructor_type ?? '',
     max_load: user?.instructor?.max_load ?? '',
     email: '',
     password: '',
@@ -141,8 +142,23 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
                 </Field>
 
                 <Field>
+                  <FieldLabel>Instructor Type</FieldLabel>
+                  <Select
+                    value={data.instructor_type}
+                    onValueChange={(val) => setData('instructor_type', val)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select Instructor Type" /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="part-time">Part-Time</SelectItem>
+                        <SelectItem value="full-time">Full-Time</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FieldError>{errors.instructor_type}</FieldError>
+                </Field>
+
+                <Field>
                   <FieldLabel>Max Load</FieldLabel>
-                  <Input type="number" value={data.max_load} placeholder='12' onChange={(e) => setData('max_load', e.target.value)} />
+                  <Input type="number" value={data.max_load} placeholder='24' onChange={(e) => setData('max_load', e.target.value)} />
                   <FieldError>{errors.max_load}</FieldError>
                 </Field>
               </>

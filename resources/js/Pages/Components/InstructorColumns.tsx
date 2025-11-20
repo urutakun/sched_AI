@@ -20,10 +20,6 @@ export const InstructorColumns = (
   setDeletingId: React.Dispatch<React.SetStateAction<string>>,
 ): ColumnDef<Instructor>[] => [
   {
-    accessorKey: "id",
-    header: () => <div className="font-bold uppercase">User ID</div>,
-  },
-  {
     accessorKey: "user.first_name",
     header: ({ column }) => {
       return(
@@ -51,6 +47,34 @@ export const InstructorColumns = (
         </div>
       )
     },
+  },
+  {
+    id: "instuctor_type",
+    header: ({ column }) => {
+      return(
+        <div
+        className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Instructor Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const color = {
+        'part-time': 'bg-yellow-200 text-yellow-600',
+        'full-time': 'bg-blue-200 text-blue-600',
+      }
+      return(
+        <div className={`
+        capitalize ${color[row.original.instructor_type]}
+        px-3 py-1 rounded-full max-w-[90px] text-center
+        `}>
+          {row.original.instructor_type}
+        </div>
+      )
+    }
   },
   {
     accessorKey: "department.name",

@@ -14,7 +14,8 @@ class Instructor extends Model
         'id',
         'user_id',
         'dept_id',
-        'max_load'
+        'max_load',
+        'instructor_type'
     ];
 
     public $incrementing = false;

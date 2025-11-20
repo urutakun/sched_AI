@@ -22,10 +22,6 @@ export const UserManagementColumns = (
   setManagingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<User>[] => [
   {
-    accessorKey: "id",
-    header: () => <div className="font-bold uppercase">User ID</div>,
-  },
-  {
     accessorKey: "first_name",
     header: ({ column }) => {
       return(

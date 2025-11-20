@@ -6,7 +6,8 @@ export interface Instructor {
   dept_id: string;
   first_name: string;
   last_name: string;
-  max_load: number; 
+  max_load: number;
+  instructor_type: 'part-time' | 'full-time';
   email: string;
   password: string;
   user: User;

@@ -16,18 +16,12 @@ class DeparmentSeeder extends Seeder
         Department::insert([
           [
             'id' => 'DEP_000000',
-            'code' => 'TVET',
-            'name' => 'Technical-Vocational Education & Training',
-            'head' => 'Gail E. Pacquiao'
-          ],
-          [
-            'id' => 'DEP_111111',
             'code' => 'CCE',
             'name' => 'College of Computer Education',
             'head' => 'Genda C. Necio'
           ],
           [
-            'id' => 'DEP_222222',
+            'id' => 'DEP_111111',
             'code' => 'CTE',
             'name' => 'College of Teacher Education',
             'head' => 'Rio Consigna'

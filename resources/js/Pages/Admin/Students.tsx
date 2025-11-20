@@ -11,7 +11,6 @@ interface StudentsProps {
 }
 
 const Students = ({ students }: StudentsProps) => {
-  console.log(students);
   const [studentList, setStudentList] = useState<Student[]>(students);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
@@ -28,7 +27,7 @@ const Students = ({ students }: StudentsProps) => {
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={StudentColumns(handleEdit, setIsOpen, setDeletingId)} data={studentList} filterLabel={"last name"} filterColumn={"user.last_name"} createUrl={'/admin/user-management/create'}/>
+      <DataTable columns={StudentColumns(handleEdit, setIsOpen, setDeletingId)} data={studentList} filterLabel={"last name"} filterColumn={"user.last_name"} importUrl={'/admin/students/create'}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

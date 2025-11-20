@@ -11,4 +11,5 @@ export interface User {
   password: string;
   student: Student;
   instructor: Instructor;
+  instructor_type: 'full-time' | 'part-time';
 }

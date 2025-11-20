@@ -81,6 +81,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 
   // Students' Dashboard
   Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
+  Route::get('/students/create', [StudentsController::class, 'create']);
+  Route::post('/students/import', [StudentsController::class, 'import']);
   Route::delete('/students/delete/{id}', [StudentsController::class, 'destroy']);
 
   // Courses

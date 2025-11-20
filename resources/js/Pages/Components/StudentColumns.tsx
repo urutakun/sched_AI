@@ -20,10 +20,6 @@ export const StudentColumns = (
   setDeletingId: React.Dispatch<React.SetStateAction<string>>,
 ): ColumnDef<Student>[] => [
   {
-    accessorKey: "id",
-    header: () => <div className="font-bold uppercase">Student ID</div>,
-  },
-  {
     accessorKey: "user.first_name",
     header: ({ column }) => {
       return(

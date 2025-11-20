@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Link } from '@inertiajs/react'
-import { CirclePlus } from 'lucide-react'
+import { CirclePlus, Import } from 'lucide-react'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   filterLabel: string;
   filterColumn: string;
   createUrl?: string;
+  importUrl?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -40,7 +41,8 @@ export function DataTable<TData, TValue>({
   data,
   filterLabel,
   filterColumn,
-  createUrl
+  createUrl,
+  importUrl
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -71,14 +73,23 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
           <div className="flex justify-end space-x-3 items-center">
-            {createUrl && (
+            {createUrl ? (
               <Link href={`${createUrl}`}>
                 <Button variant="default" type="button">
                   Create
                   <CirclePlus />
                 </Button>
               </Link>
-            )}
+            ):
+            (
+              <Link href={`${importUrl}`}>
+                <Button variant="default" type="button">
+                  Import
+                  <Import />
+                </Button>
+              </Link>
+            )
+          }
             <DataTableViewOptions table={table}/>
           </div>
       </div>
