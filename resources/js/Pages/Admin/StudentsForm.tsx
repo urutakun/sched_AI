@@ -23,42 +23,32 @@ import type { AcademicYear } from "../Interfaces/AcademicYear";
 
 
 const StudentsForm = () => {
-  const [file, setFile] =  useState<string | null>(null);
+  const [file, setFile] = useState<string | null>(null);
+  const { data, setData, post, errors } = useForm({
+    file: null as File | null,
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    setFile(selectedFile.name);
+    setFile(file.name);
+    setData('file', file);
   }
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
+      e.preventDefault();
 
-        if(trimester){
-          put(`/admin/trimesters/update/${trimester.id}`, {
-            onSuccess: () => toast.success('Trimester updated successfully'),
-            onError: () => toast.error('Failed to update trimester')
-          })
-        }
-        else{
-          post("/admin/trimesters/create", {
-              onSuccess: () => {
-                  toast.success("Trimester created successfully");
-                  reset();
-              },
-              onError: () => {
-                  toast.error("Failed to create trimester");
-                  reset();
-              },
-          });
-        }
+      post('/admin/students/import', {
+        onSuccess: () => toast.success('Upload successful!'),
+        onError: () => toast.error('Upload Failed')
+      });
     };
 
     return (
         <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
             <form
-                // onSubmit={handleFormSubmit}
+                onSubmit={handleFormSubmit}
                 action=""
                 className="w-full lg:w-[500px] font-dm lg:border border-custom-accent/50 lg:p-4 rounded-2xl"
             >
@@ -91,7 +81,7 @@ const StudentsForm = () => {
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Link href={"/admin/trimesters"}>
+                        <Link href={"/admin/students"}>
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>

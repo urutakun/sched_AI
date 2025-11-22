@@ -87,12 +87,12 @@ const Login = () => {
                     </FormInputField>
                     <FormInputField className="space-y-4 text-center">
                         <FormSubmitButton submit={"Log in"} />
-                        <span className="block font-light">
+                        {/* <span className="block font-light">
                             Don't have an account yet?{" "}
                             <Link href={"/auth/register"} className="underline">
                                 Register
                             </Link>
-                        </span>
+                        </span> */}
                     </FormInputField>
                 </form>
             </div>
