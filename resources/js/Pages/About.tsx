@@ -11,7 +11,7 @@ const About = () => {
           <Link className="flex items-center hover:text-custom-secondary ctransition w-fit" href="/"><ChevronLeft/>Home</Link>
           <div className="about_content grid lg:grid-cols-2 space-y-4 lg:space-y-0">
             <div className="title">
-              <h1 className='text-4xl lg:text-6xl font-bold tracking-tighter text-custom-secondary max-w-[700px]'>The People and Purpose Behind SchedAI</h1>
+              <h1 className='text-4xl lg:text-6xl font-bold tracking-tighter text-custom-secondary max-w-[700px]'>The Researchers and Purpose Behind SchedAI</h1>
             </div>
             <div className="body space-y-6">
               <p>SchedAI is a smart and reliable class scheduling system built to make school scheduling simple and stress-free. Instead of spending hours fixing conflicts between teachers, rooms, and subjects, SchedAI uses artificial intelligence to automatically create organized and efficient schedules.</p>

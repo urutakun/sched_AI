@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { getDefaultClassNames } from 'react-day-picker'
-import { router } from '@inertiajs/react'
+import { router, usePage } from '@inertiajs/react'
 
 interface Event {
   id: string;
@@ -29,6 +29,7 @@ interface DatePickerProps {
 }
 
 const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
+  const user = usePage().props.auth.user;
   const defaultClassNames = getDefaultClassNames();
   const [date, setDate] = useState<Date | undefined>(new Date());
 
@@ -89,16 +90,18 @@ const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
               year: "numeric",
             })}
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-6 hover:text-custom-secondary"
-            title="Add Event"
-            onClick={handleEventCreation}
-          >
-            <PlusIcon />
-            <span className="sr-only">Add Event</span>
-          </Button>
+          {user.role === 'admin' && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6 hover:text-custom-secondary"
+              title="Add Event"
+              onClick={handleEventCreation}
+            >
+              <PlusIcon />
+              <span className="sr-only">Add Event</span>
+            </Button>
+          )}
         </div>
         <div className="flex w-full flex-col gap-2">
           {eventsForSelectedDate.length > 0 ? (

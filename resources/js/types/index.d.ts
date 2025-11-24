@@ -19,6 +19,8 @@ export interface User {
     avatar?: string;
     email: string;
     email_verified_at?: string;
+    first_login_at: Date;
+    last_login_at: Date;
 }
 
 export type PageProps<

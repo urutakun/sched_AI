@@ -20,7 +20,8 @@ const breadcrumbMap:Record<string, string> = {
   'assign': 'Assign',
   'course-assignments': 'Course Assignments',
   'schedules': 'Schedules',
-  'profile': 'Profile'
+  'profile': 'Profile',
+  'change-password': 'Change Password'
 }
 
 

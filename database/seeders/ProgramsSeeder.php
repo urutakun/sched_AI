@@ -27,6 +27,18 @@ class ProgramsSeeder extends Seeder
               'code' => 'BSCS',
               'name' => 'Bachelor of Science in Computer Science'
             ],
+            [
+              'id' =>  'PROG_000003',
+              'dept_id' => 'DEP_111111',
+              'code' => 'BSSE',
+              'name' => 'Bachelor of Science in Secondary Education'
+            ],
+            [
+              'id' =>  'PROG_000004',
+              'dept_id' => 'DEP_111111',
+              'code' => 'BSEE',
+              'name' => 'Bachelor of Science in Elementary Education'
+            ],
           ]
       );
     }

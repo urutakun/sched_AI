@@ -25,6 +25,7 @@
 
     .wrapper {
       border: 1px solid var(--custom-gray);
+      max-width: 300px;
       padding: 30px;
       border-radius: 20px;
       box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;

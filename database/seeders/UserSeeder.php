@@ -22,41 +22,18 @@ class UserSeeder extends Seeder
               'last_name' => 'Admin',
               'role' => 'admin',
               'email' => 'admin@sched.ai',
-              'password' => Hash::make('schedai@123')
+              'password' => Hash::make('schedai@123'),
+              'must_change_password' => false,
             ],
-            // [
-            //   'id' => 'USR_000001',
-            //   'first_name' => 'Joel Miller',
-            //   'last_name' => 'Go',
-            //   'role' => 'instructor',
-            //   'dept_id' => 'DEP_111111',
-            //   'max_load' => 12,
-            //   'instructor_type' => 'part-time',
-            //   'email' => 'joel@example.com',
-            //   'password' => Hash::make('joel@123')
-            // ],
-            // [
-            //   'id' => 'USR_000002',
-            //   'first_name' => 'Leonardo',
-            //   'last_name' => 'Risma',
-            //   'role' => 'instructor',
-            //   'dept_id' => 'DEP_000000',
-            //   'max_load' => 12,
-            //   'instructor_type' => 'part-time',
-            //   'email' => 'leonardo@example.com',
-            //   'password' => Hash::make('leonardo@123')
-            // ],
-            // [
-            //   'id' => 'USR_000003',
-            //   'first_name' => 'Jane',
-            //   'last_name' => 'Doe',
-            //   'role' => 'instructor',
-            //   'dept_id' => 'DEP_111111',
-            //   'max_load' => 12,
-            //   'instructor_type' => 'full-time',
-            //   'email' => 'jane@example.com',
-            //   'password' => Hash::make('jane@123')
-            // ],
+            [
+              'id' => 'USR_111111',
+              'first_name' => 'Batman',
+              'last_name' => 'Deguzman',
+              'role' => 'admin',
+              'email' => 'batman@gotham.com',
+              'password' => Hash::make('batman@123'),
+              'must_change_password' => false,
+            ],
           ]
       );
     }

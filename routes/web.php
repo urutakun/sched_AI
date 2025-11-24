@@ -3,6 +3,7 @@
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CourseAssignmentController;
 use App\Http\Controllers\CourseController;
@@ -33,7 +34,6 @@ Route::get('/clear', function(){
 });
 
 // HOME
-
 Route::get('/', function () {
     return Inertia::render('Landing');
 });
@@ -54,7 +54,7 @@ Route::prefix('auth')->group(function(){
 Route::prefix('auth')->group(function(){
   Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
   Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-  Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+  Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
 // ADMIN
@@ -62,6 +62,11 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   // Admins' Dashboard
   Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
   Route::get('/dashboard/test', [AdminController::class, 'create']);
+
+
+  // Change Password
+  Route::get('/change-password', [PasswordController::class, 'create'])->name('admin.change-password');
+  Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('admin.change-password.update');
 
   // Profiles
   Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
@@ -135,6 +140,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
   Route::get('/user-management/edit/{id}', [UserManangementController::class, 'edit']);
   Route::put('/user-management/update/{id}', [UserManangementController::class, 'update']);
   Route::put('/user-management/updateCredentials/{id}', [UserManangementController::class, 'updateCredentials']);
+  Route::put('/user-management/updateStudentPassword/{id}', [UserManangementController::class, 'updateStudentPassword']);
   Route::delete('/user-management/delete/{id}', [UserManangementController::class, 'destroy']);
 
   // Academic Years
@@ -168,6 +174,10 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function(){
 
   // Profiles
   Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+
+  // Change Password
+  Route::get('/change-password', [PasswordController::class, 'create'])->name('instructor.change-password');
+  Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('instructor.change-password.update');
 });
 
 // STUDENT
@@ -176,4 +186,8 @@ Route::middleware(['student'])->prefix('student')->group(function(){
 
   // Profiles
   Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+
+  // Change Password
+  Route::get('/change-password', [PasswordController::class, 'create'])->name('student.change-password');
+  Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('student.change-password.update');
 });

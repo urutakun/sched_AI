@@ -71,6 +71,8 @@ class UserManangementController extends Controller
             ]);
         }
 
+        // send user their email and password through email
+
         return redirect()->route('user-management.index')
             ->with('message', 'User created successfully');
     }
@@ -156,6 +158,10 @@ class UserManangementController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Credentials updated successfully']);
+    }
+
+    public function updateStudentPassword(Request $request, $id){
+      dd($request);
     }
 
     public function destroy($id)
