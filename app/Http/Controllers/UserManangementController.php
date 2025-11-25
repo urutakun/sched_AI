@@ -160,10 +160,6 @@ class UserManangementController extends Controller
         return response()->json(['message' => 'Credentials updated successfully']);
     }
 
-    public function updateStudentPassword(Request $request, $id){
-      dd($request);
-    }
-
     public function destroy($id)
     {
         $user = User::find($id);
