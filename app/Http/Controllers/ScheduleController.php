@@ -15,6 +15,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use DB;
+use App\Models\User;
+use App\Notifications\ScheduleCreatedNotification;
+use Illuminate\Support\Facades\Notification;
+
 
 class ScheduleController extends Controller
 {
@@ -145,17 +149,17 @@ class ScheduleController extends Controller
 
         // Always include the conflict message
         if (!empty($result['message'])) {
-            $errors['conflict_message'] = $result['message'];
+          $errors['conflict_message'] = $result['message'];
         }
 
         // Include suggestions if available
         if (!empty($result['suggestions'])) {
-            $errors['suggestions_message'] = $result['suggestions'];
+          $errors['suggestions_message'] = $result['suggestions'];
         }
 
         // Fallback if no specific messages
         if (empty($errors)) {
-            $errors['message'] = 'Scheduling conflict detected.';
+          $errors['message'] = 'Scheduling conflict detected.';
         }
 
         return back()->withErrors($errors);
@@ -175,7 +179,20 @@ class ScheduleController extends Controller
         'end_time' => $validated['end_time'],
       ]);
 
-      // Create the schedule sessions
+      // Notify Instructor
+      $instructorUser = $courseAssignment->instructor->user;
+
+      $instructorUser->notify(new ScheduleCreatedNotification($schedule));
+
+      // Notify Students in the Program
+      $students = User::where('role', 'student')
+        ->whereHas('student', function ($q) use ($schedule) {
+          $q->where('program_id', $schedule->program_id);
+        })
+        ->get();
+
+      Notification::send($students, new ScheduleCreatedNotification($schedule));
+
 
       // Create day mapping
       $day_map = [

@@ -26,30 +26,40 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // CLEAR
-Route::get('/clear', function(){
+Route::get('/clear', function () {
   Artisan::call('optimize:clear');
   return '✔️ All caches (route, config, view, etc.) have been cleared!';
 });
 
 // HOME
 Route::get('/', function () {
-    return Inertia::render('Landing');
+  return Inertia::render('Landing');
 });
 
 // ABOUT
 Route::get('/about', function () {
-    return Inertia::render('About');
+  return Inertia::render('About');
 });
 
 // REGISTER
-
-Route::prefix('auth')->group(function(){
+Route::prefix('auth')->group(function () {
   Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
   Route::post('/register', [RegisteredUserController::class, 'store']);
 });
 
+// NOTIFICATIONS
+// AUTHENTICATED SHARED ROUTES
+Route::middleware(['auth'])->group(function () {
+
+  // Universal Notifications Endpoint
+  Route::get('/notifications', function () {
+    return auth()->user()->notifications;
+  });
+});
+
+
 // SESSION
-Route::prefix('auth')->group(function(){
+Route::prefix('auth')->group(function () {
   Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
   Route::post('/login', [AuthenticatedSessionController::class, 'store']);
   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -63,7 +73,7 @@ Route::prefix('auth')->group(function(){
 
 
 // ADMIN
-Route::middleware(['admin'])->prefix('admin')->group(function(){
+Route::middleware(['admin'])->prefix('admin')->group(function () {
   // Admins' Dashboard
   Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
   Route::get('/dashboard/test', [AdminController::class, 'create']);
@@ -174,7 +184,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 });
 
 // INSTRUCTOR
-Route::middleware(['instructor'])->prefix('instructor')->group(function(){
+Route::middleware(['instructor'])->prefix('instructor')->group(function () {
   Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
 
   // Profiles
@@ -186,7 +196,7 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function(){
 });
 
 // STUDENT
-Route::middleware(['student'])->prefix('student')->group(function(){
+Route::middleware(['student'])->prefix('student')->group(function () {
   Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 
   // Profiles
