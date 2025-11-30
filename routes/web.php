@@ -65,11 +65,14 @@ Route::prefix('auth')->group(function () {
   Route::post('/login', [AuthenticatedSessionController::class, 'store']);
   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
   Route::get('/forgot', [ForgotPasswordController::class, 'index'])->name('forgot');
-  Route::post('/forgot', [ForgotPasswordController::class, 'sendOtp']);
-  Route::get('/verify-otp', [ForgotPasswordController::class, 'submitOtp'])->name('submit.otp');
-  Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
-  Route::get('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset.password');
-  Route::post('/reset-password', [ForgotPasswordController::class, 'updatePassword']);
+
+  Route::middleware('check.forgot.flow')->group(function(){
+    Route::post('/forgot', [ForgotPasswordController::class, 'sendOtp']);
+    Route::get('/verify-otp', [ForgotPasswordController::class, 'submitOtp'])->name('submit.otp');
+    Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
+    Route::get('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset.password');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'updatePassword']);
+  });
 });
 
 

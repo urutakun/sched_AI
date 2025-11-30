@@ -6,6 +6,7 @@ use App\Http\Middleware\StudentMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use \App\Http\Middleware\ForgotPassword;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
           'instructor' => InstructorMiddleware::class,
           'student' => StudentMiddleware::class,
           'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
+          'check.forgot.flow' => ForgotPassword::class
         ]);
 
         //
