@@ -73,9 +73,9 @@ const StudentsForm = () => {
                                     <span>{file ?? 'Upload CSV file'}</span>
                                   </div>
                                 </FieldLabel>
-                                {/* <FieldError>
-                                    {errors.status ?? ""}
-                                </FieldError> */}
+                                <FieldError>
+                                    {errors.file ?? ""}
+                                </FieldError>
                             </Field>
                         </FieldGroup>
                     </FieldSet>

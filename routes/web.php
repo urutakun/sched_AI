@@ -10,8 +10,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\CancellationRequestController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\InstructorDashboardController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
@@ -50,11 +52,8 @@ Route::prefix('auth')->group(function () {
 // NOTIFICATIONS
 // AUTHENTICATED SHARED ROUTES
 Route::middleware(['auth'])->group(function () {
-
   // Universal Notifications Endpoint
-  Route::get('/notifications', function () {
-    return auth()->user()->notifications;
-  });
+  Route::get('/notifications', [NotificationsController::class, 'index']);
 });
 
 
@@ -132,6 +131,10 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::put('/schedules/update/{id}', [ScheduleController::class, 'update']);
   Route::delete('/schedules/delete/{id}', [ScheduleController::class, 'destroy']);
 
+  // Cancel Requests
+  Route::get('/schedules/cancel-request', [CancellationRequestController::class, 'index'])->name('cancel.request.index');
+
+
   // Sessions
   Route::put('/schedule-session/update/{id}', [ScheduleSessionController::class, 'update']);
 
@@ -196,6 +199,9 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function () {
   // Change Password
   Route::get('/change-password', [PasswordController::class, 'create'])->name('instructor.change-password');
   Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('instructor.change-password.update');
+
+  // Request cancellation
+  Route::post('/schedule-session/cancel/{id}', [CancellationRequestController::class, 'store']);
 });
 
 // STUDENT

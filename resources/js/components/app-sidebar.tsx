@@ -117,6 +117,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: "Create",
                 url: "/admin/schedules/create"
               },
+              {
+                title: "Cancel Requests",
+                url: "/admin/schedules/cancel-request"
+              },
             ]
         },
         {
