@@ -440,4 +440,8 @@ class ScheduleController extends Controller
 
     return response()->json(['message' => 'Schedule deleted successfully']);
   }
+
+  public function test(Request $request, $id){
+    dd($request);
+  }
 }

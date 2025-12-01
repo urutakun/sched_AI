@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CancellationRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\ScheduleSession;

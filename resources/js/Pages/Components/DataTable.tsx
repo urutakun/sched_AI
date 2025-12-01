@@ -73,23 +73,27 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
           <div className="flex justify-end space-x-3 items-center">
-            {createUrl ? (
-              <Link href={`${createUrl}`}>
-                <Button variant="default" type="button">
-                  Create
-                  <CirclePlus />
-                </Button>
-              </Link>
-            ):
-            (
-              <Link href={`${importUrl}`}>
-                <Button variant="default" type="button">
-                  Import
-                  <Import />
-                </Button>
-              </Link>
-            )
-          }
+            {(createUrl || importUrl) && (
+              <div>
+                {createUrl ? (
+                  <Link href={`${createUrl}`}>
+                    <Button variant="default" type="button">
+                      Create
+                      <CirclePlus />
+                    </Button>
+                  </Link>
+                ):
+                  (
+                    <Link href={`${importUrl}`}>
+                      <Button variant="default" type="button">
+                        Import
+                        <Import />
+                      </Button>
+                    </Link>
+                  )
+                }
+              </div>
+            )}
             <DataTableViewOptions table={table}/>
           </div>
       </div>

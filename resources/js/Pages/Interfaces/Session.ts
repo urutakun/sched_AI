@@ -1,3 +1,5 @@
+import { Schedule } from "./Schedule";
+
 export interface Session {
   id: string;
   title: string;
@@ -6,7 +8,7 @@ export interface Session {
   extendedProps: {
     instructor: string;
     instructor_id: string | any;
-    course_year_level: string; 
+    course_year_level: string;
     department_id: string;
     program_id: string;
     program_name: string;
@@ -15,4 +17,5 @@ export interface Session {
     room: string;
     status: 'upcoming' | 'completed' | 'cancelled' ;
   }
+  schedule: Schedule;
 }
