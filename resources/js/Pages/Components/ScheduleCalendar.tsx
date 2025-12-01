@@ -19,32 +19,9 @@ interface ScheduleCalendarProps {
   selectedDate?: Date | string;
   sessionList: Session[];
   filters?: React.ReactNode;
-  events: any[]
+  events: any[];
+  onSessionStatusChange?: (sessionId: string, newStatus: Status) => void;
 }
-
-// interface SessionModalEvent {
-//   title: string;
-//   eventType: 'session' | 'event',
-//   extendedProps: {
-//     instructor: string;
-//     room: string;
-//     program_name: string;
-//     section: string;
-//     status: string;
-//   }
-// }
-
-// interface EventModal {
-//   title: string;
-//   eventType: 'event' | 'occasion',
-//   extendedProps: {
-//     status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
-//     description: string;
-//     location: string;
-//     start: Date;
-//     end: Date;
-//   }
-// }
 
 type Status = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
@@ -55,16 +32,16 @@ const ScheduleCalendar = ({
   sessionList,
   events,
   filters,
+  onSessionStatusChange,
 }: ScheduleCalendarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedSession, setSelectedSession] = useState<SessionModalEvent | EventModal |null>(null);
-  const [sessions, setSessions] = useState<Session[]>(sessionList || []);
+  const [selectedSession, setSelectedSession] = useState<SessionModalEvent | EventModal | null>(null);
   const calendarRef = useRef<FullCalendar | null>(null);
 
   // Combine events and sessions with events taking priority
   const getCombinedCalendarEvents = useCallback(() => {
     // Convert sessions to calendar events
-    const sessionEvents = sessions.map(session => ({
+    const sessionEvents = sessionList.map(session => ({
       id: session.id,
       title: session.title,
       start: session.start,
@@ -97,16 +74,14 @@ const ScheduleCalendar = ({
         department: event.department,
         status: event.status
       },
-      backgroundColor: 'var(--event-color)', // Use a distinct color for events
+      backgroundColor: 'var(--event-color)',
       borderColor: 'var(--event-color)',
       textColor: '#ffffff',
-      // Make events appear on top by using a higher z-index through class names
       classNames: ['calendar-event-priority'],
     }));
 
-    // Return combined array (events will naturally overlay sessions due to rendering order)
     return [...sessionEvents, ...eventEvents];
-  }, [sessions, events]);
+  }, [sessionList, events]);
 
   // Update the getStatusColor function to handle events
   const getStatusColor = (status: string): string => {
@@ -115,7 +90,7 @@ const ScheduleCalendar = ({
       ongoing: "var(--light-blue)",
       completed: "var(--light-green)",
       cancelled: "var(--light-red)",
-      event: "var(--event-color)", // Add event color
+      event: "var(--event-color)",
     };
 
     return colors[status] || "#e5e7eb";
@@ -136,49 +111,16 @@ const ScheduleCalendar = ({
   }, [selectedView]);
 
   const handleStatusUpdate = (id: string, newStatus: Status): void => {
-    // Only update sessions, not events
-    if (!id.startsWith('event-')) {
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === id
-            ? {
-              ...session,
-              extendedProps: { ...session.extendedProps, status: newStatus },
-            } as Session
-            : session
-        )
-      );
-
-      // Update event color in calendar
-      if (calendarRef.current) {
-        const calendarAPI = calendarRef.current.getApi();
-        const event = calendarAPI.getEventById(id);
-        if (event && event.start) {
-          const eventData = {
-            id: event.id,
-            title: event.title,
-            start: event.start,
-            end: event.end || event.start,
-            extendedProps: { ...event.extendedProps, status: newStatus },
-            backgroundColor: getStatusColor(newStatus),
-            borderColor: getStatusColor(newStatus),
-          };
-
-          event.remove();
-          calendarAPI.addEvent(eventData);
-        }
-      }
+    if (onSessionStatusChange) {
+      onSessionStatusChange(id, newStatus);
     }
   };
 
   const handleEventClick = (evt: any) => {
     const event = evt.event;
-
     const eventType = event.extendedProps.type;
 
     if (eventType === 'event') {
-      // Handle event click - show event details
-      console.log(event);
       setSelectedSession({
         title: event.title,
         eventType: 'event',
@@ -191,7 +133,6 @@ const ScheduleCalendar = ({
         }
       });
     } else {
-      // Handle session click
       setSelectedSession({
         title: event.title,
         eventType: 'session',
@@ -245,7 +186,6 @@ const ScheduleCalendar = ({
           const eventType = extendedProps.type;
 
           if (eventType === 'event') {
-            // Render event differently
             return (
               <Occasion
                 id={evt.event.id}
@@ -260,7 +200,6 @@ const ScheduleCalendar = ({
             );
           }
 
-          // Render session normally
           return (
             <CalendarEvent
               id={evt.event.id}

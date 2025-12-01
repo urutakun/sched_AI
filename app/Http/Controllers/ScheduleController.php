@@ -55,31 +55,31 @@ class ScheduleController extends Controller
   }
 
   public function store(Request $request)
-  {
+{
     $validated = $request->validate([
-      'course_assignment_id' => 'required|exists:course_assignments,id',
-      'academic_year_id' => 'required|exists:academic_years,id',
-      'trimester_id' => 'required|exists:trimesters,id',
-      'department_id' => 'required|exists:departments,id',
-      'program_id' => 'required|exists:programs,id',
-      'section' => 'required|string|size:1',
-      'room_id' => 'required|exists:rooms,id',
-      'days' => 'required|array|min:1',
-      'start_time' => 'required|date_format:H:i',
-      'end_time' => 'required|date_format:H:i|after:start_time',
+        'course_assignment_id' => 'required|exists:course_assignments,id',
+        'academic_year_id' => 'required|exists:academic_years,id',
+        'trimester_id' => 'required|exists:trimesters,id',
+        'department_id' => 'required|exists:departments,id',
+        'program_id' => 'required|exists:programs,id',
+        'section' => 'required|string|size:1',
+        'room_id' => 'required|exists:rooms,id',
+        'days' => 'required|array|min:1',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i|after:start_time',
     ]);
 
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
 
     $courseAssignment = CourseAssignment::with(['course', 'instructor.user'])
-      ->findOrFail($validated['course_assignment_id']);
+        ->findOrFail($validated['course_assignment_id']);
 
     // Get instructor name safely for NEW schedule using first_name and last_name
     $instructorName = 'Unknown Instructor';
     if ($courseAssignment->instructor && $courseAssignment->instructor->user) {
-      $firstName = $courseAssignment->instructor->user->first_name ?? '';
-      $lastName = $courseAssignment->instructor->user->last_name ?? '';
-      $instructorName = trim("{$firstName} {$lastName}");
+        $firstName = $courseAssignment->instructor->user->first_name ?? '';
+        $lastName = $courseAssignment->instructor->user->last_name ?? '';
+        $instructorName = trim("{$firstName} {$lastName}");
     }
 
     // Get room name for NEW schedule
@@ -87,158 +87,151 @@ class ScheduleController extends Controller
     $roomName = $room ? $room->room_name : 'Unknown Room';
 
     $newSchedule = [
-      'id' => 'new',
-      'academic_year_id' => $validated['academic_year_id'],
-      'trimester_id' => $validated['trimester_id'],
-      'room_id' => $validated['room_id'],
-      'room_name' => $roomName, // ✅ Added room name
-      'instructor_id' => $courseAssignment->instructor_id,
-      'instructor_name' => $instructorName,
-      'days' => $validated['days'],
-      'start_time' => $validated['start_time'],
-      'end_time' => $validated['end_time'],
-    ];
-
-    $existingSchedules = Schedule::with(['courseAssignment.instructor.user', 'room'])
-      ->where('academic_year_id', $validated['academic_year_id'])
-      ->where('trimester_id', $validated['trimester_id'])
-      ->get()
-      ->map(function ($s) {
-        // Get instructor name safely for EXISTING schedules using first_name and last_name
-        $existingInstructorName = 'Unknown Instructor';
-        if ($s->courseAssignment && $s->courseAssignment->instructor && $s->courseAssignment->instructor->user) {
-          $firstName = $s->courseAssignment->instructor->user->first_name ?? '';
-          $lastName = $s->courseAssignment->instructor->user->last_name ?? '';
-          $existingInstructorName = trim("{$firstName} {$lastName}");
-        }
-
-        // Get room name for EXISTING schedules
-        $existingRoomName = $s->room ? $s->room->room_name : 'Unknown Room';
-
-        return [
-          'id' => $s->id,
-          'academic_year_id' => $s->academic_year_id,
-          'trimester_id' => $s->trimester_id,
-          'room_id' => $s->room_id,
-          'room_name' => $existingRoomName, // ✅ Added room name
-          'instructor_id' => $s->courseAssignment->instructor_id ?? null,
-          'instructor_name' => $existingInstructorName,
-          'days' => is_array($s->days) ? $s->days : json_decode($s->days, true),
-          'start_time' => $s->start_time,
-          'end_time' => $s->end_time,
-        ];
-      })
-      ->toArray();
-
-    try {
-      $response = Http::post("{$aiBaseURL}/check_schedule_conflict", [
-        'new_schedule' => $newSchedule,
-        'existing_schedules' => $existingSchedules,
-      ]);
-
-      if ($response->failed()) {
-        return redirect()->back()
-          ->withErrors(['error' => 'AI service is unreachable. Please try again later.']);
-      }
-
-      $result = $response->json();
-
-      if (!empty($result['conflict']) && $result['conflict'] === true) {
-        // ✅ FIXED: Return separate error keys for each message
-        $errors = [];
-
-        // Always include the conflict message
-        if (!empty($result['message'])) {
-          $errors['conflict_message'] = $result['message'];
-        }
-
-        // Include suggestions if available
-        if (!empty($result['suggestions'])) {
-          $errors['suggestions_message'] = $result['suggestions'];
-        }
-
-        // Fallback if no specific messages
-        if (empty($errors)) {
-          $errors['message'] = 'Scheduling conflict detected.';
-        }
-
-        return back()->withErrors($errors);
-      }
-
-      // Create the schedule
-      $schedule = Schedule::create([
-        'course_assignment_id' => $validated['course_assignment_id'],
+        'id' => 'new',
         'academic_year_id' => $validated['academic_year_id'],
         'trimester_id' => $validated['trimester_id'],
-        'department_id' => $validated['department_id'],
-        'program_id' => $validated['program_id'],
-        'section' => $validated['section'],
         'room_id' => $validated['room_id'],
+        'room_name' => $roomName,
+        'instructor_id' => $courseAssignment->instructor_id,
+        'instructor_name' => $instructorName,
         'days' => $validated['days'],
         'start_time' => $validated['start_time'],
         'end_time' => $validated['end_time'],
-      ]);
+    ];
 
-      // Notify Instructor
-      $instructorUser = $courseAssignment->instructor->user;
+    $existingSchedules = Schedule::with(['courseAssignment.instructor.user', 'room'])
+        ->where('academic_year_id', $validated['academic_year_id'])
+        ->where('trimester_id', $validated['trimester_id'])
+        ->get()
+        ->map(function ($s) {
+            // Get instructor name safely for EXISTING schedules using first_name and last_name
+            $existingInstructorName = 'Unknown Instructor';
+            if ($s->courseAssignment && $s->courseAssignment->instructor && $s->courseAssignment->instructor->user) {
+                $firstName = $s->courseAssignment->instructor->user->first_name ?? '';
+                $lastName = $s->courseAssignment->instructor->user->last_name ?? '';
+                $existingInstructorName = trim("{$firstName} {$lastName}");
+            }
 
-      $instructorUser->notify(new ScheduleCreatedNotification($schedule));
+            // Get room name for EXISTING schedules
+            $existingRoomName = $s->room ? $s->room->room_name : 'Unknown Room';
 
-      // Notify Students in the Program
-      $students = User::where('role', 'student')
-        ->whereHas('student', function ($q) use ($schedule) {
-          $q->where('program_id', $schedule->program_id);
-        })
-        ->get();
-
-      Notification::send($students, new ScheduleCreatedNotification($schedule));
-
-
-      // Create day mapping
-      $day_map = [
-        'Sun' => 0,
-        'Mon' => 1,
-        'Tue' => 2,
-        'Wed' => 3,
-        'Thu' => 4,
-        'Fri' => 5,
-        'Sat' => 6,
-      ];
-
-      $trimester = Trimester::find($schedule->trimester_id);
-      $start = Carbon::parse($trimester->start_date);
-      $end = Carbon::parse($trimester->end_date);
-
-      $dayNames  = $schedule->days;
-      $days = collect($dayNames)->map(fn($d) => $day_map[$d] ?? null)->filter()->toArray();
-
-      DB::transaction(function () use ($schedule, $start, $end, $days) {
-        $sessions = [];
-        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
-          if (in_array($date->dayOfWeek(), $days)) {
-            $sessions[] = [
-              'id' => 'SS_' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT),
-              'schedule_id' => $schedule->id,
-              'session_date' => $date->toDateString(),
-              'status' => 'upcoming',
-              'created_at' => now(),
-              'updated_at' => now(),
+            return [
+                'id' => $s->id,
+                'academic_year_id' => $s->academic_year_id,
+                'trimester_id' => $s->trimester_id,
+                'room_id' => $s->room_id,
+                'room_name' => $existingRoomName,
+                'instructor_id' => $s->courseAssignment->instructor_id ?? null,
+                'instructor_name' => $existingInstructorName,
+                'days' => is_array($s->days) ? $s->days : json_decode($s->days, true),
+                'start_time' => $s->start_time,
+                'end_time' => $s->end_time,
             ];
-          }
+        })
+        ->toArray();
+
+    try {
+        $response = Http::post("{$aiBaseURL}/check_schedule_conflict", [
+            'new_schedule' => $newSchedule,
+            'existing_schedules' => $existingSchedules,
+        ]);
+
+        if ($response->failed()) {
+            return redirect()->back()
+                ->withErrors(['error' => 'AI service is unreachable. Please try again later.']);
         }
 
-        if (!empty($sessions)) {
-          ScheduleSession::upsert($sessions, ['schedule_id', 'session_date'], ['status', 'updated_at']);
-        }
-      });
+        $result = $response->json();
 
-      return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
+        if (!empty($result['conflict']) && $result['conflict'] === true) {
+            $errors = [];
+
+            if (!empty($result['message'])) {
+                $errors['conflict_message'] = $result['message'];
+            }
+
+            if (!empty($result['suggestions'])) {
+                $errors['suggestions_message'] = $result['suggestions'];
+            }
+
+            if (empty($errors)) {
+                $errors['message'] = 'Scheduling conflict detected.';
+            }
+
+            return back()->withErrors($errors);
+        }
+
+        // Create the schedule
+        $schedule = Schedule::create([
+            'course_assignment_id' => $validated['course_assignment_id'],
+            'academic_year_id' => $validated['academic_year_id'],
+            'trimester_id' => $validated['trimester_id'],
+            'department_id' => $validated['department_id'],
+            'program_id' => $validated['program_id'],
+            'section' => $validated['section'],
+            'room_id' => $validated['room_id'],
+            'days' => $validated['days'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+        ]);
+
+        // ✅ FIX: Reload the schedule with relationships BEFORE using it in notification
+        $schedule->load([
+            'courseAssignment.course',
+            'courseAssignment.instructor.user'
+        ]);
+
+        // ✅ FIX: Get the instructor user from the reloaded schedule
+        $instructorUser = $schedule->courseAssignment->instructor->user;
+
+        // Notify Instructor
+        $instructorUser->notify(new ScheduleCreatedNotification($schedule));
+
+        // Create day mapping
+        $day_map = [
+            'Sun' => 0,
+            'Mon' => 1,
+            'Tue' => 2,
+            'Wed' => 3,
+            'Thu' => 4,
+            'Fri' => 5,
+            'Sat' => 6,
+        ];
+
+        $trimester = Trimester::find($schedule->trimester_id);
+        $start = Carbon::parse($trimester->start_date);
+        $end = Carbon::parse($trimester->end_date);
+
+        $dayNames  = $schedule->days;
+        $days = collect($dayNames)->map(fn($d) => $day_map[$d] ?? null)->filter()->toArray();
+
+        DB::transaction(function () use ($schedule, $start, $end, $days) {
+            $sessions = [];
+            for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+                if (in_array($date->dayOfWeek(), $days)) {
+                    $sessions[] = [
+                        'id' => 'SS_' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT),
+                        'schedule_id' => $schedule->id,
+                        'session_date' => $date->toDateString(),
+                        'status' => 'upcoming',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            if (!empty($sessions)) {
+                ScheduleSession::upsert($sessions, ['schedule_id', 'session_date'], ['status', 'updated_at']);
+            }
+        });
+
+        return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
     } catch (\Exception $e) {
-      return redirect()->back()->withErrors([
-        'message' => 'Failed to create schedule: ' . $e->getMessage()
-      ]);
+        return redirect()->back()->withErrors([
+            'message' => 'Failed to create schedule: ' . $e->getMessage()
+        ]);
     }
-  }
+}
 
   public function edit($id)
   {

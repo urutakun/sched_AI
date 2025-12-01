@@ -12,6 +12,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\InstructorDashboardController;
+use App\Http\Controllers\InstructorNotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoomController;
@@ -49,13 +50,13 @@ Route::prefix('auth')->group(function () {
 
 // NOTIFICATIONS
 // AUTHENTICATED SHARED ROUTES
-Route::middleware(['auth'])->group(function () {
+// Route::middleware(['auth'])->group(function () {
 
-  // Universal Notifications Endpoint
-  Route::get('/notifications', function () {
-    return auth()->user()->notifications;
-  });
-});
+//   // Universal Notifications Endpoint
+//   Route::get('/notifications', function () {
+//     return auth()->user()->notifications;
+//   });
+// });
 
 
 // SESSION
@@ -193,6 +194,11 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function () {
   // Change Password
   Route::get('/change-password', [PasswordController::class, 'create'])->name('instructor.change-password');
   Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('instructor.change-password.update');
+
+  // NOTIFICATIONS
+  Route::get('notifications', [InstructorNotificationsController::class, 'index'])->name('instructor.notifications');
+  Route::post('notifications/{id}/read', [InstructorNotificationsController::class, 'markAsRead'])->name('instructor.notifications.read');
+  Route::post('notifications/read-all', [InstructorNotificationsController::class, 'markAsRead'])->name('instructor.notifications.read-all');
 });
 
 // STUDENT

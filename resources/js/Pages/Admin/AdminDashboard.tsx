@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Layout from "@/Layouts/Layout"
 import StatusCard from '../Components/StatusCard'
 import {
@@ -25,6 +25,9 @@ interface AdminDashboardProps {
   departments: Department[];
   events: any[];
 }
+
+type Status = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+
 const AdminDashboard = ({
   department_count,
   instructor_count,
@@ -43,12 +46,19 @@ const AdminDashboard = ({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedView, setSelectedView] = useState<'timeGridWeek' | 'timeGridDay'>('timeGridDay');
 
-  const filteredSessionList = sessionList.filter((session) => {
-    const matchDept = selectedDepartment ? session.extendedProps.department_id === selectedDepartment : true;
-    const matchProg = selectedProgram ? session.extendedProps.program_id === selectedProgram : true;
+  // Use useMemo for efficient filtering
+  const filteredSessionList = useMemo(() => {
+    return sessionList.filter((session) => {
+      const matchDept = selectedDepartment
+        ? session.extendedProps.department_id === selectedDepartment
+        : true;
+      const matchProg = selectedProgram
+        ? session.extendedProps.program_id === selectedProgram
+        : true;
 
-    return matchDept && matchProg;
-  })
+      return matchDept && matchProg;
+    });
+  }, [sessionList, selectedDepartment, selectedProgram]);
 
   useEffect(() => {
     if (selectedDepartment) {
@@ -59,8 +69,21 @@ const AdminDashboard = ({
       setFilteredPrograms([]);
       setSelectedProgram(null);
     }
-  }, [selectedDepartment, departments])
+  }, [selectedDepartment, departments]);
 
+  const handleSessionStatusChange = (sessionId: string, newStatus: Status) => {
+    setSessionList(prev => prev.map(session =>
+      session.id === sessionId
+        ? {
+          ...session,
+          extendedProps: {
+            ...session.extendedProps,
+            status: newStatus
+          }
+        }
+        : session
+    ));
+  };
 
   return (
     <div className="wrapper space-y-8">
@@ -92,6 +115,7 @@ const AdminDashboard = ({
               onProgramChange={setSelectedProgram}
             />
           }
+          onSessionStatusChange={handleSessionStatusChange}
         />
       </div>
     </div>
