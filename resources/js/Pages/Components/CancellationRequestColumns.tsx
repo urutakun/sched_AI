@@ -15,10 +15,33 @@ import {
 import type { CancellationRequest } from "../Interfaces/CancellationRequest";
 
 export const CancellationRequestColumns = (
+    handleShow: (id: string) => void,
     handleEdit: (id: string) => void,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     setDeletingId: React.Dispatch<React.SetStateAction<string>>
 ): ColumnDef<CancellationRequest>[] => [
+    {
+        id: "date",
+        accessorFn: (row) => row.created_at,
+        header: ({ column }) => {
+            return (
+                <div
+                    className="font-bold uppercase flex cursor-pointer hover:text-black ctransition"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Request Date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </div>
+            );
+        },
+        cell: ({ row }) => {
+          const date = new Date(row.original.created_at);
+          const formattedDate = date.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+          return formattedDate;
+        }
+    },
     {
         id: "department",
         accessorFn: (row) => row.schedule_session.schedule.department.name,
@@ -126,20 +149,14 @@ export const CancellationRequestColumns = (
             );
         },
         cell: ({ row }) => {
-          const bg_colors: Record<string,string> = {
-            pending: 'bg-gray-200',
-            approved: 'bg-green-200',
-            denied: 'bg-red-200',
-          }
-
-          const text_colors: Record<string,string> = {
-            pending: 'bg-gray-200',
-            approved: 'bg-green-200',
-            denied: 'bg-red-200',
+          const colors: Record<string,string> = {
+            pending: 'bg-gray-200 text-gray-600',
+            approved: 'bg-green-200 text-green-600',
+            denied: 'bg-red-200 text-red-600',
           }
 
           return(
-            <div className={`${bg_colors[row.original.status]} ${text_colors[row.original.status]} max-w-[120px] px-4 py-1 rounded-2xl text-center`}>
+            <div className={`${colors[row.original.status]} max-w-[120px] px-4 py-1 rounded-2xl text-center`}>
               <span className="capitalize">{row.original.status}</span>
             </div>
           )
@@ -167,7 +184,7 @@ export const CancellationRequestColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>View</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShow(row.original.id)}>View</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
