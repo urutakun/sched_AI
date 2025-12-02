@@ -26,7 +26,8 @@ class Event extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
-    protected static function boot(){
+    protected static function boot()
+    {
         parent::boot();
 
         static::creating(function ($request) {
@@ -43,7 +44,8 @@ class Event extends Model
         return $uniqueId;
     }
 
-    public function department(){
-      return $this->belongsTo(Department::class, 'dept_id');
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dept_id');
     }
 }

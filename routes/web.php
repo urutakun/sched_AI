@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\CancellationRequestController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\InstructorDashboardController;
+use App\Http\Controllers\InstructorNotificationsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
@@ -64,7 +65,7 @@ Route::prefix('auth')->group(function () {
   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
   Route::get('/forgot', [ForgotPasswordController::class, 'index'])->name('forgot');
 
-  Route::middleware('check.forgot.flow')->group(function(){
+  Route::middleware('check.forgot.flow')->group(function () {
     Route::post('/forgot', [ForgotPasswordController::class, 'sendOtp']);
     Route::get('/verify-otp', [ForgotPasswordController::class, 'submitOtp'])->name('submit.otp');
     Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
@@ -73,13 +74,11 @@ Route::prefix('auth')->group(function () {
   });
 });
 
-
 // ADMIN
 Route::middleware(['admin'])->prefix('admin')->group(function () {
   // Admins' Dashboard
   Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
   Route::get('/dashboard/test', [AdminController::class, 'create']);
-
 
   // Change Password
   Route::get('/change-password', [PasswordController::class, 'create'])->name('admin.change-password');
@@ -135,7 +134,6 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::get('/schedules/cancel-request', [CancellationRequestController::class, 'index'])->name('cancel.request.index');
   Route::get('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'show']);
 
-
   // Sessions
   Route::put('/schedule-session/update/{id}', [ScheduleSessionController::class, 'update']);
 
@@ -188,6 +186,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::get('/events/edit/{id}', [EventController::class, 'edit']);
   Route::put('/events/update/{id}', [EventController::class, 'update']);
   Route::delete('/events/delete/{id}', [EventController::class, 'destroy']);
+
+  // Notifications
+  Route::get('/notifications', [InstructorNotificationsController::class, 'index']);
 });
 
 // INSTRUCTOR
@@ -197,12 +198,15 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function () {
   // Profiles
   Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
 
+  // Notifications
+  Route::get('/notifications', [InstructorNotificationsController::class, 'index']);
+
   // Change Password
   Route::get('/change-password', [PasswordController::class, 'create'])->name('instructor.change-password');
   Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('instructor.change-password.update');
 
   // Request cancellation
-  Route::post('/schedule-session/cancel/{id}', [CancellationRequestController::class, 'store']);
+  Route::post('/schedule-session/cancel/{id}', [CancellationRequestController::class, 'store'])->name('instructor.schedule-session');
 });
 
 // STUDENT

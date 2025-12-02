@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Event;
 use App\Models\Instructor;
+use App\Models\User;
+use App\Notifications\EventNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -33,6 +36,8 @@ class EventController extends Controller
       ]);
 
       $event = Event::create($validated);
+
+      Notification::send(User::all(), new EventNotification($event));
 
       if(!$event){
         return redirect()->back()->with([

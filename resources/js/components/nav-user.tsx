@@ -86,12 +86,12 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuGroup>
-            <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.visit(`/${role}/profile`)}>
                 <CircleUser />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.visit(`/${role}/notifications`)}>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
