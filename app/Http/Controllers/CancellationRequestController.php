@@ -44,5 +44,22 @@ class CancellationRequestController extends Controller
       }
 
       return back()->with('success', 'Cancellation request submitted successfully');
-    }
+  }
+
+  public function show($id){
+
+    $cancellationRequest = CancellationRequest::where('id', $id)
+    ->with(
+      'schedule_session',
+      'schedule_session.schedule',
+      'schedule_session.schedule.department',
+      'schedule_session.schedule.program',
+      'schedule_session.schedule.room',
+      'schedule_session.schedule.courseAssignment',
+      'schedule_session.schedule.courseAssignment.instructor.user',
+      'schedule_session.schedule.courseAssignment.course',
+    )->get();
+
+    return Inertia::render('Components/ShowCancellationRequest', ['cancellation_request' => $cancellationRequest]);
+  }
 }

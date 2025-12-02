@@ -18,4 +18,5 @@ export interface Session {
     status: 'upcoming' | 'completed' | 'cancelled' ;
   }
   schedule: Schedule;
+  session_date: Date;
 }

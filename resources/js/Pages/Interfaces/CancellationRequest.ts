@@ -8,4 +8,5 @@ export interface CancellationRequest {
   attachment: string;
   status: 'pending' | 'approved' | 'denied';
   schedule_session: Session;
+  created_at: Date; 
 }

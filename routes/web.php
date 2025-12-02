@@ -133,6 +133,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
   // Cancel Requests
   Route::get('/schedules/cancel-request', [CancellationRequestController::class, 'index'])->name('cancel.request.index');
+  Route::get('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'show']);
 
 
   // Sessions
