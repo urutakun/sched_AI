@@ -38,9 +38,9 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
         toDelete={toDelete}
         onDelete={onDelete}
         deletingId={deletingId}
-        url={'/admin/course-assignments/delete'}
+        url={'/admin/schedules/cancel-request'}
         nameField="schedule_session.schedule.course_assignment.course.name"
-        errorMessage="Failed to delete course assignment year"
+        errorMessage="Failed to delete cancellation request"
       />
     </div>
   )

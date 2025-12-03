@@ -12,7 +12,8 @@ class CancellationRequest extends Model
         'type',
         'reason',
         'status',
-        'attachment'
+        'attachment',
+        'denial_reason'
     ];
 
     public $incrementing = false;

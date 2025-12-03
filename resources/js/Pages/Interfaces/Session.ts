@@ -18,5 +18,8 @@ export interface Session {
     status: 'upcoming' | 'completed' | 'cancelled' ;
   }
   schedule: Schedule;
+<<<<<<< HEAD
   session_date: Date;
+=======
+>>>>>>> cd892ce (feat(cancellation_request): Added cancellation request to instructors)
 }
