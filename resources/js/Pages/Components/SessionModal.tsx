@@ -9,29 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import type { SessionModalEvent, EventModal, ModalSession } from '../Interfaces/ModalTypes';
-// interface SessionModalEvent {
-//   title: string;
-//   eventType: 'session' | 'event',
-//   extendedProps: {
-//     instructor: string;
-//     room: string;
-//     program_name: string;
-//     section: string;
-//     status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-//   }
-// }
-
-// interface EventModal {
-//   title: string;
-//   eventType: 'session' | 'event',
-//   extendedProps: {
-//     status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
-//     description: string;
-//     location: string;
-//     start: Date;
-//     end: Date;
-//   }
-// }
 
 interface SessionModalProps {
   isOpen: boolean;

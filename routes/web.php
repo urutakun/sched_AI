@@ -133,6 +133,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   // Cancel Requests
   Route::get('/schedules/cancel-request', [CancellationRequestController::class, 'index'])->name('cancel.request.index');
   Route::get('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'show']);
+  Route::put('/schedules/cancel-request/accept/{id}', [CancellationRequestController::class, 'accept']);
+  Route::post('/schedules/cancel-request/deny/{id}', [CancellationRequestController::class, 'deny']);
+  Route::delete('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'destroy']);
 
   // Sessions
   Route::put('/schedule-session/update/{id}', [ScheduleSessionController::class, 'update']);

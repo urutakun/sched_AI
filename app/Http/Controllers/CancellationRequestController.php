@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CancellationRequest;
+use App\Models\ScheduleSession;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class CancellationRequestController extends Controller
 {
@@ -61,5 +63,46 @@ class CancellationRequestController extends Controller
     )->get();
 
     return Inertia::render('Components/ShowCancellationRequest', ['cancellation_request' => $cancellationRequest]);
+  }
+
+  public function accept($id){
+    $request = CancellationRequest::where('id', $id)->with('schedule_session')->firstOrFail();
+
+    // Update request status
+    $request->update(['status' => 'approved']);
+
+    // Update schedule session status
+    $session = ScheduleSession::where('id', $request->schedule_session->id)->firstOrFail();
+    $session->update(['status' => 'cancelled']);
+
+    return redirect()->route('cancel.request.index')->with('message', 'Cancellation request approved');
+  }
+
+  public function deny(Request $request, $id){
+    $validated = $request->validate([
+      'denial_reason' =>  'string|max:500'
+    ]);
+
+    $request = CancellationRequest::where('id', $id)->with('schedule_session')->firstOrFail();
+
+    // Update request status
+    $request->update([
+      'status' => 'denied',
+      'denial_reason' => $validated['denial_reason']
+    ]);
+
+    return redirect()->route('cancel.request.index')->with('message', 'Cancellation denied');
+  }
+
+  public function destroy($id){
+    $request = CancellationRequest::where('id', $id)->firstOrFail();
+
+    if (!$request) {
+      return response()->json(['message' => 'Not found']);
+    }
+
+    $request->delete();
+
+    return response()->json(['message' => 'Cancellation request deleted successfully']);
   }
 }

@@ -7,6 +7,7 @@ export interface CancellationRequest {
   reason: string;
   attachment: string;
   status: 'pending' | 'approved' | 'denied';
+  denial_reason: string;
   schedule_session: Session;
   created_at: Date;
 }

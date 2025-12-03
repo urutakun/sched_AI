@@ -16,13 +16,9 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = cancellationRequestList?.find((item: CancellationRequest) => item.id === deletingId);
 
-<<<<<<< HEAD
   const handleShow = (id: string): void => {
     router.get(`/admin/schedules/cancel-request/${id}`);
   }
-=======
-  // console.log(cancellationRequestList);
->>>>>>> cd892ce (feat(cancellation_request): Added cancellation request to instructors)
 
   const handleEdit = (id: string): void => {
     router.get(`/admin/course-assignments/edit/${id}`);
@@ -35,11 +31,7 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-<<<<<<< HEAD
       <DataTable columns={CancellationRequestColumns(handleShow, handleEdit, setIsOpen, setDeletingId)} data={cancellationRequestList || []} filterLabel={"instructor"} filterColumn={"instructor"}/>
-=======
-      <DataTable columns={CancellationRequestColumns(handleEdit, setIsOpen, setDeletingId)} data={cancellationRequestList || []} filterLabel={"instructor"} filterColumn={"instructor"}/>
->>>>>>> cd892ce (feat(cancellation_request): Added cancellation request to instructors)
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -47,12 +39,8 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
         onDelete={onDelete}
         deletingId={deletingId}
         url={'/admin/course-assignments/delete'}
-<<<<<<< HEAD
         nameField="schedule_session.schedule.course_assignment.course.name"
-=======
-        nameField="course.name"
->>>>>>> cd892ce (feat(cancellation_request): Added cancellation request to instructors)
-        errorMessage="Failed to delete course assignment year"
+        errorMessage="Failed to delete cancellation request"
       />
     </div>
   )

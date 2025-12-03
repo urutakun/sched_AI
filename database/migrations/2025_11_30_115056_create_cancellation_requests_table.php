@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('reason');
             $table->string('attachment')->nullable();
             $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
+            $table->text('denial_reason')->nullable();
             $table->timestamps();
 
             $table->foreign('session_id')->references('id')->on('schedule_sessions')->onDelete('cascade');

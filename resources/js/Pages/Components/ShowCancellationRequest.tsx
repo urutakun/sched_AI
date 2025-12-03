@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Layout from "@/Layouts/Layout"
 import type { CancellationRequest } from "../Interfaces/CancellationRequest";
 import { Button } from '@/components/ui/button';
-import { Link } from '@inertiajs/react';
-
+import axios from 'axios';
+import { toast } from 'sonner';
+import { useForm } from '@inertiajs/react';
+import DenyModal from './DenyModal';
 interface ShowCancellationRequestProps {
   cancellation_request: CancellationRequest[];
 }
@@ -11,7 +13,11 @@ interface ShowCancellationRequestProps {
 const ShowCancellationRequest = ({
   cancellation_request
 }: ShowCancellationRequestProps) => {
+  const [isProcessed, setIsProcessed] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const request = cancellation_request[0];
+  const { put } = useForm();
+
 
   // DATE & TIME
   const date = new Date(request.schedule_session.session_date);
@@ -25,11 +31,30 @@ const ShowCancellationRequest = ({
 
   console.log(request);
 
+  useEffect(() => {
+    if (request?.status !== "pending") {
+      setIsProcessed(true);
+    }
+  }, [request]);
+
    const colors: Record<string,string> = {
       pending: 'bg-gray-200 text-gray-600',
       approved: 'bg-green-200 text-green-600',
       denied: 'bg-red-200 text-red-600',
-    }
+  }
+
+
+  const handleAccept = (id: string): void => {
+    put(`/admin/schedules/cancel-request/accept/${id}`, {
+      onSuccess: () => {
+        toast.success('Cancellation request approved');
+        setIsProcessed(true);
+      },
+      onError: () => {
+        toast.error('Failed to approve request!')
+      }
+    })
+  }
 
   return (
        <div className="h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center">
@@ -43,11 +68,17 @@ const ShowCancellationRequest = ({
                   <span className="label block font-bold">Status: </span>
                   <div className={`capitalize px-3 py-1 w-[100px] text-center rounded-full text-sm ${colors[request.status]}`}>{request.status}</div>
                 </div>
+                {request?.denial_reason && (
+                  <div className="field flex space-x-3 items-start">
+                    <span className="label block font-bold">Denial Reason: </span>
+                    <span className='capitalize'>{request.denial_reason}</span>
+                  </div>
+                )}
                 <div className="field flex space-x-3 items-center">
                   <span className="label block font-bold">Type: </span>
                   <span className='capitalize'>{request.type}</span>
                 </div>
-                <div className="field flex space-x-3 items-center">
+                <div className="field flex space-x-3 items-start">
                   <span className="label block font-bold">Reason: </span>
                   <p className='capitalize'>{request.reason}</p>
                 </div>
@@ -100,10 +131,20 @@ const ShowCancellationRequest = ({
                 </div>
               </div>
             </div>
-            <div className="btns space-x-3 mt-6">
-              <Button>Accept</Button>
-              <Button variant="outline">Deny</Button>
-            </div>
+            {!isProcessed && (
+              <>
+                <div className="btns space-x-3 mt-6">
+                  <Button onClick={() => handleAccept(request.id)}>Accept</Button>
+                  <Button variant="outline" onClick={() => setIsOpen(true)}>Deny</Button>
+                </div>
+                <DenyModal
+                  isOpen={isOpen}
+                  setIsOpen={setIsOpen}
+                  id={request.id}
+                />
+              </>
+
+            )}
           </div>
         </div>
   )
