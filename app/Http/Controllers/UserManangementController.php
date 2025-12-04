@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserCredentialsMail;
 use App\Models\Department;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class UserManangementController extends Controller
@@ -72,6 +74,7 @@ class UserManangementController extends Controller
         }
 
         // send user their email and password through email
+        Mail::to($user->email)->send(new UserCredentialsMail($user->first_name, $user->email, $validated['password']));
 
         return redirect()->route('user-management.index')
             ->with('message', 'User created successfully');

@@ -79,7 +79,7 @@ const CalendarEvent = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false);
   const [updatedStatus, setUpdatedStatus] = useState<string>("");
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<string | null>(null);
   const role = usePage().props.auth.user.role;
 
   const { data, setData, errors, post, reset } = useForm({

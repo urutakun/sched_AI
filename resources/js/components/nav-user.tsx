@@ -29,6 +29,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { router, usePage } from "@inertiajs/react"
+import { useState } from "react"
+import NotificationsModal from "@/Pages/Components/NotificationsModal"
 
 export function NavUser({
   user,
@@ -44,6 +46,8 @@ export function NavUser({
   const handleLogout = (): void => {
     router.post('/auth/logout');
   }
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const role = usePage().props.auth.user.role;
 
@@ -91,7 +95,7 @@ export function NavUser({
                 <CircleUser />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.visit(`/${role}/notifications`)}>
+              <DropdownMenuItem onClick={() => setIsOpen(true)}>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
@@ -104,6 +108,10 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <NotificationsModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </SidebarMenu>
   )
 }

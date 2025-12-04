@@ -11,13 +11,13 @@ class InstructorNotificationsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         // Get all notifications (or you can paginate)
         $notifications = $user->notifications()->get();
-        
+
         return Inertia::render('Instructor/Notification', [
             'notifications' => $notifications,
         ]);
     }
-    
+
 }
