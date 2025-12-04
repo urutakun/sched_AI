@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { usePage } from '@inertiajs/react';
+import axios from 'axios';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { BellRing } from 'lucide-react';
+import type { Notification } from '../Interfaces/Notifications';
+import { Button } from '@/components/ui/button';
 
 interface NotificationsModalProps {
   isOpen: boolean;
@@ -19,6 +23,26 @@ const NotificationsModal = ({
   isOpen,
   setIsOpen
 }: NotificationsModalProps) => {
+  const user = usePage().props.auth.user;
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+    console.log(notifications);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
+
+    const fetchNotifications = async () => {
+        try {
+            const response = await axios.get('/notifications');
+            setNotifications(response.data);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
+
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
@@ -29,7 +53,20 @@ const NotificationsModal = ({
           <DialogTitle className='text-xl'>Notifications</DialogTitle>
         </DialogHeader>
         <div className='space-y-4'>
-
+          {notifications.map((notification) => {
+            return(
+              <div key={notification.id} className='border border-gray-300 p-2 rounded-lg'>
+                <div className='text-gray-500'>
+                  <span className='font-bold text-lg'>{notification.data.title}</span>
+                  <p className='text-sm'>{notification.data.message.replace('r/\*/g', '')}</p>
+                </div>
+                <div className="btns space-x-2 mt-3">
+                  <Button size={'sm'} variant="outline">Mark as read</Button>
+                  <Button size={'sm'} variant="outline" type="button">View</Button>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </DialogContent>
     </Dialog>

@@ -23,9 +23,11 @@ class InstructorSubmittedCancellationRequestNotification extends Notification
 
     public function toDatabase($notifiable)
     {
+        $course = preg_replace('/\*/', '', $this->cancellationRequest->schedule_session->schedule->courseAssignment->course->name);
+
         return [
             'title' => 'Cancellation Request Submitted',
-            'message' => "You have submitted a cancellation request for the course: {$this->cancellationRequest->schedule_session->schedule->courseAssignment->course->name}.",
+            'message' => "You have submitted a cancellation request for the course: {$course}.",
             // 'url' => route('cancel.request.show', $this->cancellationRequest->id),
         ];
     }

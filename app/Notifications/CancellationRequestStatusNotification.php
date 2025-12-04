@@ -25,20 +25,20 @@ class CancellationRequestStatusNotification extends Notification
     {
         $status = ucfirst($this->cancellationRequest->status);
 
-        $instructor = $this->cancellationRequest
+        $instructor = preg_replace('/\*/', '', $this->cancellationRequest
             ->schedule_session
             ->schedule
             ->courseAssignment
             ->instructor
             ->user
-            ->first_name;
+            ->first_name);
 
-        $course = $this->cancellationRequest
+        $course = preg_replace('/\*/', '', $this->cancellationRequest
             ->schedule_session
             ->schedule
             ->courseAssignment
             ->course
-            ->name;
+            ->name);
 
         // Base message for all users
         $message = "The cancellation request submitted by Instructor {$instructor} "
@@ -52,7 +52,7 @@ class CancellationRequestStatusNotification extends Notification
         return [
             'title' => "Cancellation Request {$status}",
             'message' => $message,
-            // 'url' => route('cancel.request.show', $this->cancellationRequest->id),
+            'url' => route('cancel.request.show', $this->cancellationRequest->id),
         ];
     }
 }
