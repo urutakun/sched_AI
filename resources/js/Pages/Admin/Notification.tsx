@@ -50,7 +50,7 @@ const Notification = ({ }) => {
                             {notification.data.message}
                         </h1>
                         <button>
-                            <p>click here{notification.data.url}</p>
+                            <a href={notification.data.url}>Link here</a>
                         </button>
                     </div>
 
@@ -60,5 +60,5 @@ const Notification = ({ }) => {
     )
 }
 
-Notification.layout = (page: React.ReactNode) => <Layout title={'Instructor Notifications'}>{page}</Layout>
+Notification.layout = (page: React.ReactNode) => <Layout title={'Admin Notifications'}>{page}</Layout>
 export default Notification

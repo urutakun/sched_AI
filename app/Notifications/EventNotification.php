@@ -17,8 +17,7 @@ class EventNotification extends Notification
         $this->event = $event;
     }
 
-    public function via($notifiable)
-    {
+    public function via($notifiable)    {
         return ['database'];
     }
 
@@ -30,7 +29,7 @@ class EventNotification extends Notification
 
         return [
             'title' => 'New Event',
-            'message' => "A new event titled **{$this->event->title}** will take place at **{$this->event->location}** from **{$start}** to **{$end}**.",
+            'message' => "A new event titled {$this->event->title} will take place at {$this->event->location} from {$start} to {$end}.",
             // 'url' => route('')
         ];
     }

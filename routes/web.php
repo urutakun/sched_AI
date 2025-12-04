@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -132,7 +133,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
   // Cancel Requests
   Route::get('/schedules/cancel-request', [CancellationRequestController::class, 'index'])->name('cancel.request.index');
-  Route::get('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'show']);
+  Route::get('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'show'])->name('cancel.request.show');
   Route::put('/schedules/cancel-request/accept/{id}', [CancellationRequestController::class, 'accept']);
   Route::post('/schedules/cancel-request/deny/{id}', [CancellationRequestController::class, 'deny']);
   Route::delete('/schedules/cancel-request/{id}', [CancellationRequestController::class, 'destroy']);
@@ -191,7 +192,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::delete('/events/delete/{id}', [EventController::class, 'destroy']);
 
   // Notifications
-  Route::get('/notifications', [InstructorNotificationsController::class, 'index']);
+  Route::get('/notifications', [AdminNotificationController::class, 'index']);
 });
 
 // INSTRUCTOR
