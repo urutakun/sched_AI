@@ -56,6 +56,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
   // Universal Notifications Endpoint
   Route::get('/notifications', [NotificationsController::class, 'index']);
+  Route::post('/notifications/{id}/mark-as-read', [NotificationsController::class, 'markAsRead']);
 });
 
 

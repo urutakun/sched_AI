@@ -22,4 +22,26 @@ class NotificationsController extends Controller
 
     return response()->json($notifications);
   }
+
+  public function markAsRead($id)
+  {
+    $notification = Auth::user()->notifications()->where('id', $id)->first();
+
+    if (!$notification) {
+      return response()->json(['error' => 'Notification not found'], 404);
+    }
+
+    if (!$notification->read_at) {
+      $notification->update(['read_at' => now()]);
+    }
+
+    return response()->json([
+      'message' => 'Notification marked as read',
+      'notification' => [
+        'id' => $notification->id,
+        'read_at' => $notification->read_at,
+        'is_read' => true
+      ]
+    ]);
+  }
 }

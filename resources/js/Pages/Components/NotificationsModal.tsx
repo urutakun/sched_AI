@@ -27,41 +27,54 @@ const NotificationsModal = ({
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    console.log(notifications);
+  console.log(notifications);
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
-    const fetchNotifications = async () => {
-        try {
-            const response = await axios.get('/notifications');
-            setNotifications(response.data);
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
-        }
-    };
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('/notifications');
+      setNotifications(response.data);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
 
+  const markAsRead = async (id: string) => { // Change to string if your IDs are UUIDs
+    try {
+      await axios.post(`/notifications/${id}/mark-as-read`);
+      // Update local state instead of refetching all notifications
+      setNotifications(prev => prev.map(notification =>
+        notification.id === id
+          ? { ...notification, read_at: new Date().toISOString() }
+          : notification
+      ));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader className='flex-row items-start space-x-4'>
           <div className="icon bg-blue-200 text-white p-2 rounded-xl">
-            <BellRing className='text-blue-600'/>
+            <BellRing className='text-blue-600' />
           </div>
           <DialogTitle className='text-xl'>Notifications</DialogTitle>
         </DialogHeader>
         <div className='space-y-4'>
           {notifications.map((notification) => {
-            return(
+            return (
               <div key={notification.id} className='border border-gray-300 p-2 rounded-lg'>
                 <div className='text-gray-500'>
                   <span className='font-bold text-lg'>{notification.data.title}</span>
                   <p className='text-sm'>{notification.data.message.replace('r/\*/g', '')}</p>
                 </div>
                 <div className="btns space-x-2 mt-3">
-                  <Button size={'sm'} variant="outline">Mark as read</Button>
+                  <Button size={'sm'} variant="outline" onClick={() => markAsRead(notification.id)}>Mark as read</Button>
                   <Button size={'sm'} variant="outline" type="button">View</Button>
                 </div>
               </div>
