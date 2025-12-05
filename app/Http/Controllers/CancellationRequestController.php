@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\CancellationRequest;
 use App\Models\ScheduleSession;
+use App\Models\Student;
 use App\Models\User;
 use App\Notifications\CancellationRequestStatusNotification;
 use App\Notifications\InstructorCancellationRequestNotification;
+use App\Notifications\InstructorCancellationStatusNotification;
 use App\Notifications\InstructorSubmittedCancellationRequestNotification;
+use App\Notifications\StudentClassCancelledNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
@@ -97,51 +100,71 @@ class CancellationRequestController extends Controller
 
   public function accept($id)
   {
-    $request = CancellationRequest::where('id', $id)
-      ->with('schedule_session.schedule.courseAssignment.instructor.user')
-      ->firstOrFail();
+    $request = CancellationRequest::with(
+      'schedule_session.schedule.courseAssignment.instructor.user',
+      'schedule_session.schedule.department'
+    )->findOrFail($id);
 
-    // Update status
+    // Update request status
     $request->update(['status' => 'approved']);
 
-    // Cancel the session
-    $session = ScheduleSession::findOrFail($request->schedule_session->id);
+    // Cancel session
+    $session = $request->schedule_session;
     $session->update(['status' => 'cancelled']);
 
-    // Notify ALL users
-    Notification::send(
-      User::all(),
-      new CancellationRequestStatusNotification($request)
-    );
+    /** NOTIFY INSTRUCTOR */
+    $instructorUser = $request->schedule_session->schedule->courseAssignment->instructor->user;
+    $instructorUser->notify(new InstructorCancellationStatusNotification($request));
+
+    /** NOTIFY STUDENTS OF SAME DEPARTMENT */
+    $programId = $request->schedule_session->schedule->program->id;
+
+    $students = Student::where('program_id', $programId)
+      ->with('user')
+      ->get()
+      ->pluck('user');
+
+    Notification::send($students, new StudentClassCancelledNotification($request));
 
     return redirect()->route('cancel.request.index')
       ->with('message', 'Cancellation request approved');
   }
 
-  public function deny(Request $request, $id)
+
+  public function deny(Request $input, $id)
   {
-    $validated = $request->validate([
+    $validated = $input->validate([
       'denial_reason' => 'string|max:500'
     ]);
 
-    $cancellationRequest = CancellationRequest::where('id', $id)
-      ->with('schedule_session.schedule.courseAssignment.instructor.user')
-      ->firstOrFail();
+    $request = CancellationRequest::with(
+      'schedule_session.schedule.courseAssignment.instructor.user',
+      'schedule_session.schedule.department'
+    )->findOrFail($id);
 
-    $cancellationRequest->update([
+    $request->update([
       'status' => 'denied',
       'denial_reason' => $validated['denial_reason'] ?? null
     ]);
 
-    // Notify ALL users
-    Notification::send(
-      User::all(),
-      new CancellationRequestStatusNotification($cancellationRequest)
-    );
+    /** NOTIFY INSTRUCTOR */
+    $instructor = $request->schedule_session->schedule->courseAssignment->instructor->user;
+    $instructor->notify(new InstructorCancellationStatusNotification($request));
+
+    /** NOTIFY STUDENTS IN SAME DEPARTMENT */
+    $programId = $request->schedule_session->schedule->program->id;
+
+    $students = Student::where('program_id', $programId)
+      ->with('user')
+      ->get()
+      ->pluck('user');
+
+    Notification::send($students, new StudentClassCancelledNotification($request));
 
     return redirect()->route('cancel.request.index')
       ->with('message', 'Cancellation denied');
   }
+
 
   public function destroy($id)
   {

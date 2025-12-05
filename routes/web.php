@@ -215,7 +215,7 @@ Route::middleware(['instructor'])->prefix('instructor')->group(function () {
   // Request cancellation
   Route::post('/schedule-session/cancel/{id}', [CancellationRequestController::class, 'store'])->name('instructor.schedule-session');
   Route::get('/schedules/cancel-request', [InstructorCancellationRequestController::class, 'index'])->name('cancel.instructor.request.index');
-  Route::get('/schedules/cancel-request/{id}', [InstructorCancellationRequestController::class, 'show'])->name('cancel.request.show');
+  Route::get('/schedules/cancel-request/{id}', [InstructorCancellationRequestController::class, 'show'])->name('instructor.cancel.request.show');
 
 });
 
