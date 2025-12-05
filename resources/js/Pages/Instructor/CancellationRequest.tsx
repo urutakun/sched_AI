@@ -17,9 +17,10 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
   const toDelete = cancellationRequestList?.find((item: CancellationRequest) => item.id === deletingId);
 
   const role = usePage().props.auth.user.role;
+  console.log('role => ', typeof(role));
 
   const handleShow = (id: string): void => {
-      router.get(`/admin/schedules/cancel-request/${id}`);
+    router.get(`/instructor/schedules/cancel-request/${id}`);
   }
 
   const handleEdit = (id: string): void => {
@@ -33,7 +34,7 @@ const CancellationRequest = ({ cancellation_request }: CancellationRequestProps)
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={CancellationRequestColumns(handleShow, handleEdit, setIsOpen, setDeletingId)} data={cancellationRequestList || []} filterLabel={"instructor"} filterColumn={"instructor"}/>
+      <DataTable columns={CancellationRequestColumns(handleShow, handleEdit, setIsOpen, setDeletingId, role)} data={cancellationRequestList || []} filterLabel={"instructor"} filterColumn={"instructor"}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

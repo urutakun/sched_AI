@@ -29,8 +29,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { router, usePage } from "@inertiajs/react"
-import { useState } from "react"
 import NotificationsModal from "@/Pages/Components/NotificationsModal"
+import axios from "axios"
+import { useState, useEffect } from "react"
 
 export function NavUser({
   user,
@@ -48,8 +49,24 @@ export function NavUser({
   }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
 
   const role = usePage().props.auth.user.role;
+
+  useEffect(() => {
+    fetchUnreadCount();
+  }, [])
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await axios.get('/notifications/unread-count');
+      setUnreadCount(response.data);
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+    }
+  };
+
+  console.log('Unread ' + unreadCount);
 
   return (
     <SidebarMenu>
@@ -98,6 +115,11 @@ export function NavUser({
               <DropdownMenuItem onClick={() => setIsOpen(true)}>
                 <Bell />
                 Notifications
+                {unreadCount > 0 && (
+                  <div className="count bg-red-600 min-w-6 text-center text-red-200 rounded-full ml-auto">
+                    {unreadCount}
+                  </div>
+                )}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -111,6 +133,7 @@ export function NavUser({
       <NotificationsModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        refreshUnreadCount={fetchUnreadCount}
       />
     </SidebarMenu>
   )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { usePage } from '@inertiajs/react';
+import { usePage, Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import {
   Dialog,
@@ -17,11 +17,13 @@ import { Button } from '@/components/ui/button';
 interface NotificationsModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshUnreadCount: () => void;
 }
 
 const NotificationsModal = ({
   isOpen,
-  setIsOpen
+  setIsOpen,
+  refreshUnreadCount
 }: NotificationsModalProps) => {
   const user = usePage().props.auth.user;
   const [notificationCount, setNotificationCount] = useState(0);
@@ -42,7 +44,7 @@ const NotificationsModal = ({
     }
   };
 
-  const markAsRead = async (id: string) => { // Change to string if your IDs are UUIDs
+  const markAsRead = async (id: string) => {
     try {
       await axios.post(`/notifications/${id}/mark-as-read`);
       // Update local state instead of refetching all notifications
@@ -51,9 +53,15 @@ const NotificationsModal = ({
           ? { ...notification, read_at: new Date().toISOString() }
           : notification
       ));
+      refreshUnreadCount();
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
+  }
+
+  const handleView = (url: string): void => {
+    router.visit(url);
+    setIsOpen(false);
   }
 
   return (
@@ -65,17 +73,24 @@ const NotificationsModal = ({
           </div>
           <DialogTitle className='text-xl'>Notifications</DialogTitle>
         </DialogHeader>
-        <div className='space-y-4'>
+        <div className='space-y-4 max-h-[600px] overflow-y-auto pr-2'>
           {notifications.map((notification) => {
             return (
               <div key={notification.id} className='border border-gray-300 p-2 rounded-lg'>
-                <div className='text-gray-500'>
+                <div className={`${notification.read_at ? 'text-gray-400' : 'text-black'}`}>
                   <span className='font-bold text-lg'>{notification.data.title}</span>
                   <p className='text-sm'>{notification.data.message.replace('r/\*/g', '')}</p>
                 </div>
-                <div className="btns space-x-2 mt-3">
-                  <Button size={'sm'} variant="outline" onClick={() => markAsRead(notification.id)}>Mark as read</Button>
-                  <Button size={'sm'} variant="outline" type="button">View</Button>
+                <div className={`btns space-x-2 mt-3 ${notification.read_at ? 'text-gray-400' : 'text-black'}`}>
+                  {!notification.read_at && (
+                    <Button size={'sm'} variant="outline" onClick={() => markAsRead(notification.id)} className='outline-none'>Mark as read</Button>
+                  )}
+                  {notification.data.url && (
+                      <Button size={'sm'} variant="outline" type="button"
+                      className='outline-none'
+                      onClick={() => handleView(notification.data.url)}
+                      >View</Button>
+                  )}
                 </div>
               </div>
             )

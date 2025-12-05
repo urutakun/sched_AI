@@ -17,10 +17,15 @@ class NotificationsController extends Controller
         return [
           'id' => $notification->id,
           'data' => $notification->data,
+          'read_at' => $notification->read_at
         ];
       });
 
     return response()->json($notifications);
+  }
+
+  public function count(){
+    return Auth::user()->unreadNotifications()->count();
   }
 
   public function markAsRead($id)

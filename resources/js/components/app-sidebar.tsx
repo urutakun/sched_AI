@@ -10,7 +10,8 @@ import {
     GraduationCap,
     BookHeart,
     School,
-    CalendarCheck
+    CalendarCheck,
+    CalendarOff
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -202,6 +203,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Dashboard",
         url: '/instructor/dashboard',
         icon: House
+      },
+      {
+        title: "Cancellation Requests",
+        url: '/instructor/schedules/cancel-request',
+        icon: CalendarOff
       }
     ]
 

@@ -4,7 +4,7 @@ import type { CancellationRequest } from "../Interfaces/CancellationRequest";
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import DenyModal from './DenyModal';
 interface ShowCancellationRequestProps {
   cancellation_request: CancellationRequest[];
@@ -29,7 +29,7 @@ const ShowCancellationRequest = ({
   const instructor = request.schedule_session.schedule.course_assignment.instructor.user;
   const fullName = instructor.first_name + ' ' + instructor.last_name;
 
-  console.log(request);
+  const role = usePage().props.auth.user.role;
 
   useEffect(() => {
     if (request?.status !== "pending") {
@@ -131,7 +131,7 @@ const ShowCancellationRequest = ({
                 </div>
               </div>
             </div>
-            {!isProcessed && (
+            {role === 'instructor' || !isProcessed && (
               <>
                 <div className="btns space-x-3 mt-6">
                   <Button onClick={() => handleAccept(request.id)}>Accept</Button>
