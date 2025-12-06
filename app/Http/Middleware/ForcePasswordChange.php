@@ -13,7 +13,7 @@ class ForcePasswordChange
     public function handle(Request $request, Closure $next): Response
     {
         // Skip middleware for logout and login
-        if($request->routeIs('logout') || $request->routeIs('login')){
+        if($request->routeIs('logout') || $request->routeIs('login') || $request->routeIs('notification') ){
             return $next($request);
         }
 

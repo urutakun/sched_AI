@@ -26,18 +26,25 @@ const NotificationsModal = ({
   refreshUnreadCount
 }: NotificationsModalProps) => {
   const user = usePage().props.auth.user;
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   console.log(notifications);
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    if(isOpen){
+      fetchNotifications();
+    }
+  }, [isOpen]);
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('/notifications');
+      const response = await axios.get('/notifications', {
+         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      });
       setNotifications(response.data);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -74,7 +81,7 @@ const NotificationsModal = ({
           <DialogTitle className='text-xl'>Notifications</DialogTitle>
         </DialogHeader>
         <div className='space-y-4 max-h-[600px] overflow-y-auto pr-2'>
-          {notifications.map((notification) => {
+          {notifications?.map((notification) => {
             return (
               <div key={notification.id} className='border border-gray-300 p-2 rounded-lg'>
                 <div className={`${notification.read_at ? 'text-gray-400' : 'text-black'}`}>

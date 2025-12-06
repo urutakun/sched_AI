@@ -66,8 +66,6 @@ export function NavUser({
     }
   };
 
-  console.log('Unread ' + unreadCount);
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

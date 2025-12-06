@@ -56,7 +56,7 @@ Route::prefix('auth')->group(function () {
 // AUTHENTICATED SHARED ROUTES
 Route::middleware(['auth'])->group(function () {
   // Universal Notifications Endpoint
-  Route::get('/notifications', [NotificationsController::class, 'index']);
+  Route::get('/notifications', [NotificationsController::class, 'index'])->name('notification');
   Route::get('/notifications/unread-count', [NotificationsController::class, 'count']);
   Route::post('/notifications/{id}/mark-as-read', [NotificationsController::class, 'markAsRead']);
 });
