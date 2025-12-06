@@ -355,7 +355,7 @@ export const CancellationRequestColumns = (
 
               {role !== "instructor" && (
                 <>
-                  <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem>
+                  {/* <DropdownMenuItem onClick={() => handleEdit(row.original.id)}>Edit</DropdownMenuItem> */}
                   <DropdownMenuItem onClick={() => handleDelete(row.original.id)}>Delete</DropdownMenuItem>
                 </>
               )}
