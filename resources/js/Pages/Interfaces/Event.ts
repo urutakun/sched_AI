@@ -9,6 +9,6 @@ export interface Event {
   type: 'school' | 'department';
   dept_id: string;
   location: string;
-  status: 'upcoming' | 'ongoing' | 'finished' | 'cancelled';
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   department: Department;
 }

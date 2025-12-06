@@ -218,7 +218,7 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                                   <Select
                                       value={data.status}
                                       onValueChange={(value) =>
-                                          setData("status", value as 'upcoming' | 'ongoing' | 'finished' | 'cancelled')
+                                          setData("status", value as 'upcoming' | 'ongoing' | 'completed' | 'cancelled')
                                       }
                                   >
                                       <SelectTrigger className="w-[180px]">
@@ -227,7 +227,7 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                                       <SelectContent>
                                           <SelectItem value="upcoming" className="capitalize">Upcoming</SelectItem>
                                           <SelectItem value="ongoing" className="capitalize">Ongoing</SelectItem>
-                                          <SelectItem value="finished" className="capitalize">Finished</SelectItem>
+                                          <SelectItem value="completed" className="capitalize">Completed</SelectItem>
                                           <SelectItem value="cancelled" className="capitalize">Cancelled</SelectItem>
                                       </SelectContent>
                                   </Select>

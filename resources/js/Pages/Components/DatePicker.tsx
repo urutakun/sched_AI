@@ -56,9 +56,39 @@ const DatePicker = ({ setSelectedDate, events }: DatePickerProps) => {
   });
 
   // Format event date range for display
+  // const formatEventTime = (start: string, end: string) => {
+  //   return formatDateRange(new Date(start), new Date(end));
+  // }
+
   const formatEventTime = (start: string, end: string) => {
-    return formatDateRange(new Date(start), new Date(end));
-  }
+    const s = new Date(start);
+    const e = new Date(end);
+
+    const format = (d: Date) =>
+      d.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+    const formatDate = (d: Date) =>
+      d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+    // If same day → Show short format
+    const sameDay =
+      s.toDateString() === e.toDateString();
+
+    if (sameDay) {
+      return `${format(s)} - ${format(e)}`;
+    }
+
+    // If multi-day → include date
+    return `${formatDate(s)} ${format(s)} → ${formatDate(e)} ${format(e)}`;
+  };
 
   const handleEventCreation = (): void => {
     router.get('/admin/events/create');

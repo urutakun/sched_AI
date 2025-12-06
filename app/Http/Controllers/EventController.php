@@ -65,7 +65,7 @@ class EventController extends Controller
         'type' => 'nullable|in:school,department',
         'dept_id' => 'nullable|string|exists:departments,id',
         'location' => 'nullable|string|max:255',
-        'status' => 'nullable|in:upcoming,ongoing,finished,cancelled',
+        'status' => 'nullable|in:upcoming,ongoing,completed,cancelled',
       ]);
 
       // Clean up

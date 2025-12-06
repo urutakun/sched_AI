@@ -157,14 +157,14 @@ export const EventColumns = (
         upcoming: 'bg-gray-200',
         ongoing: 'bg-blue-200',
         cancelled: 'bg-red-200',
-        finished: 'bg-green-200'
+        completed: 'bg-green-200'
       }
 
       const text_colors: Record<string,string> = {
         upcoming: 'text-gray-600',
         ongoing: 'text-blue-600',
         cancelled: 'text-red-600',
-        finished: 'text-green-600'
+        completed: 'text-green-600'
       }
 
       return(

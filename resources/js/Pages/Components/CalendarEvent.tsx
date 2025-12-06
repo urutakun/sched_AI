@@ -156,7 +156,7 @@ const CalendarEvent = ({
         )}
       </div>
 
-      { role !== 'student' && (
+      {/* { role !== 'student' && (
         <div className="actions absolute right-1 top-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -171,7 +171,7 @@ const CalendarEvent = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      )}
+      )} */}
 
       { role === 'instructor' && (
         <div className="actions absolute right-1 top-2">
