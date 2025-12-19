@@ -1,5 +1,6 @@
 import { Student } from './Student';
 import { Instructor } from './Instructor';
+import { Dean } from './Dean';
 export interface User {
   id: string;
   first_name: string;
@@ -11,5 +12,6 @@ export interface User {
   password: string;
   student: Student;
   instructor: Instructor;
+  dean: Dean;
   instructor_type: 'full-time' | 'part-time';
 }

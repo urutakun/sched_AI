@@ -12,6 +12,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\CancellationRequestController;
+use App\Http\Controllers\DeanController;
 use App\Http\Controllers\InstructorCancellationRequestController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\InstructorDashboardController;
@@ -98,6 +99,11 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::get('/departments/edit/{id}', [DepartmentController::class, 'edit']);
   Route::put('/departments/update/{id}', [DepartmentController::class, 'update']);
   Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
+
+  // Dean's Dashboard
+  Route::get('/deans', [DeanController::class, 'index'])->name('admin.index');
+  Route::delete('/deans/delete/{id}', [DeanController::class, 'destroy']);
+
 
   // Instructors' Dashboard
   Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');

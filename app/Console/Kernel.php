@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // Run your session status update command every 10 minutes
-        $schedule->command('app:update-schedule-session-status')->everyMinute();
+        $schedule->command('app:update-schedule-session-status')->everyThirtyMinutes();
     }
 
     /**

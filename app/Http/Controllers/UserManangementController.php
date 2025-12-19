@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\UserCredentialsMail;
+use App\Models\Dean;
 use App\Models\Department;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -36,7 +37,7 @@ class UserManangementController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'role' => 'required|in:admin,instructor,student',
+            'role' => 'required|in:admin,dean,instructor,student',
             'department_id' => 'nullable|exists:departments,id',
             'instructor_type' => 'nullable|string|in:full-time,part-time',
             'max_load' => 'nullable|numeric|min:3|max:24',
@@ -54,6 +55,13 @@ class UserManangementController extends Controller
             'email' => strtolower($validated['email']),
             'password' => Hash::make($validated['password']),
         ]);
+
+        if ($user->role === 'dean') {
+            Dean::create([
+                'user_id' => $user->id,
+                'dept_id' => $validated['department_id'],
+            ]);
+        }
 
         if ($user->role === 'instructor') {
             Instructor::create([
@@ -82,7 +90,7 @@ class UserManangementController extends Controller
 
     public function edit($id)
     {
-        $user = User::with(['student', 'instructor'])->findOrFail($id);
+        $user = User::with(['student', 'instructor', 'dean'])->findOrFail($id);
 
         return Inertia::render('Admin/UserManagementForm', [
             'user' => $user,
@@ -98,7 +106,7 @@ class UserManangementController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'role' => 'required|in:admin,instructor,student',
+            'role' => 'required|in:admin,dean,instructor,student',
             'department_id' => 'nullable|exists:departments,id',
             'instructor_type' => 'nullable|string|in:full-time,part-time',
             'max_load' => 'nullable|numeric|min:3|max:24',
@@ -117,12 +125,18 @@ class UserManangementController extends Controller
 
         Instructor::where('user_id', $user->id)->delete();
         Student::where('user_id', $user->id)->delete();
+        Dean::where('user_id', $user->id)->delete();
 
         // Clean existing role-related models
         Instructor::where('user_id', $user->id)->delete();
         Student::where('user_id', $user->id)->delete();
 
-        if ($validated['role'] === 'instructor') {
+        if($validated['role'] === 'dean'){
+          Dean::create([
+            'user_id' => $user->id,
+            'dept_id' => $validated['department_id']
+          ]);
+        } elseif($validated['role'] === 'instructor') {
             Instructor::create([
                 'user_id' => $user->id,
                 'dept_id' => $validated['department_id'],

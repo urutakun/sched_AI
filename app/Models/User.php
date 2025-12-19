@@ -72,6 +72,10 @@ class User extends Authenticatable
         return $uniqueId;
     }
 
+    public function dean(){
+      return $this->hasOne(Dean::class, 'user_id', 'id');
+    }
+
     public function instructor(){
       return $this->hasOne(Instructor::class, 'user_id', 'id');
     }

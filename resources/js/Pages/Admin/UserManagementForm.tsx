@@ -1,5 +1,5 @@
 import Layout from '@/Layouts/Layout'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, Link } from '@inertiajs/react'
 import {
   Field,
@@ -30,6 +30,8 @@ interface UserFormProps {
 }
 
 const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
+  console.log("EDITING: ");
+  console.log(user);
   const { data, setData, errors, post, put, reset } = useForm({
     first_name: user?.first_name ?? '',
     last_name: user?.last_name ?? '',
@@ -37,7 +39,7 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
     year: user?.student?.year ?? '',
     section: user?.student?.section ?? '',
     program_id: user?.student?.program_id?.toString() ?? '',
-    department_id: user?.instructor?.dept_id?.toString() ?? '',
+    department_id: user?.instructor?.dept_id?.toString() ?? user?.dean?.dept_id?.toString()  ?? '',
     instructor_type: user?.instructor?.instructor_type ?? '',
     max_load: user?.instructor?.max_load ?? '',
     email: '',
@@ -86,12 +88,31 @@ const UserManagementForm = ({ user, departments, programs }: UserFormProps) => {
                 <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="dean">Dean</SelectItem>
                   <SelectItem value="instructor">Instructor</SelectItem>
                   <SelectItem value="student">Student</SelectItem>
                 </SelectContent>
               </Select>
               <FieldError>{errors.role}</FieldError>
             </Field>
+
+            {data.role === 'dean' && (
+                <Field>
+                  <FieldLabel>Department</FieldLabel>
+                  <Select
+                    value={data.department_id}
+                    onValueChange={(val) => setData('department_id', val)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select Department" /></SelectTrigger>
+                    <SelectContent>
+                      {departments?.map((d) => (
+                        <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError>{errors.department_id}</FieldError>
+                </Field>
+            )}
 
             {data.role === 'student' && (
               <>

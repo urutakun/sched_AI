@@ -11,7 +11,8 @@ import {
     BookHeart,
     School,
     CalendarCheck,
-    CalendarOff
+    CalendarOff,
+    UserRound
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -66,6 +67,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: "Create",
                 url: "/admin/programs/create"
               }
+            ]
+        },
+        {
+            title: "Deans",
+            icon: UserRound,
+            items: [
+              {
+                title: "Deans List",
+                url: "/admin/deans"
+              },
             ]
         },
         {
