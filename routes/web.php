@@ -13,6 +13,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\CancellationRequestController;
 use App\Http\Controllers\DeanController;
+use App\Http\Controllers\DeanDashboardController;
 use App\Http\Controllers\InstructorCancellationRequestController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\InstructorDashboardController;
@@ -202,6 +203,18 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
   // Notifications
   Route::get('/notifications', [AdminNotificationController::class, 'index']);
+});
+
+// DEAN
+Route::middleware(['dean'])->prefix('dean')->group(function(){
+  Route::get('/dashboard', [DeanDashboardController::class, 'index'])->name('dean.dashboard');
+
+  // Change Password
+  Route::get('/change-password', [PasswordController::class, 'create'])->name('dean.change-password');
+  Route::put('/change-password/{id}', [PasswordController::class, 'update'])->name('dean.change-password.update');
+
+  // Profiles
+  Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
 });
 
 // INSTRUCTOR

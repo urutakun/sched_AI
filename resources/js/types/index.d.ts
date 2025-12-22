@@ -1,3 +1,4 @@
+import { Dean } from "@/Pages/Interfaces/Dean";
 import { Program } from "@/Pages/Interfaces/Program";
 import { Student } from "@/Pages/Interfaces/Student";
 
@@ -15,6 +16,9 @@ export interface User {
       program: Program;
       year: string;
     }
+    dean: {
+      dept_id: string;
+    },
     role: string;
     avatar?: string;
     email: string;

@@ -20,7 +20,6 @@ interface ProfilesProps {
 }
 
 const Profiles = ({ auth_user }: ProfilesProps) => {
-  console.log(auth_user);
   const fullName = `${auth_user?.first_name} ${auth_user?.last_name}`
   return (
     <div className='h-full lg:min-h-[500px] w-full bg-white shadow-sm rounded-2xl p-6 flex justify-center items-center'>
@@ -88,11 +87,26 @@ const Profiles = ({ auth_user }: ProfilesProps) => {
                         </Field>
                       </>
                     )}
+                    {auth_user.role === 'dean' && (
+                      <>
+                        <Field>
+                            <FieldLabel htmlFor="code">
+                                Department
+                            </FieldLabel>
+                            <Input
+                                id="code"
+                                disabled
+                                value={auth_user.dean.department.name}
+                            />
+                        </Field>
+                      </>
+                    )}
+
                     {auth_user.role === 'instructor' && (
                       <>
                         <Field>
                             <FieldLabel htmlFor="code">
-                                Program
+                                Department
                             </FieldLabel>
                             <Input
                                 id="code"

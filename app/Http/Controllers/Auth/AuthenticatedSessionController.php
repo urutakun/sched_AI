@@ -45,6 +45,7 @@ class AuthenticatedSessionController extends Controller
 
         $redirectTo = match($user->role){
           'admin' => 'admin.dashboard',
+          'dean' => 'dean.dashboard',
           'instructor' => 'instructor.dashboard',
           default => 'student.dashboard'
         };

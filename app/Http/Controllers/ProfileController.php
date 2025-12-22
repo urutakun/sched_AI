@@ -15,7 +15,7 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function index(){
-      $auth_user = User::where('id', Auth::id())->with(['student.program.department', 'instructor.department'])->firstOrFail();
+      $auth_user = User::where('id', Auth::id())->with(['student.program.department', 'instructor.department', 'dean.department'])->firstOrFail();
       return Inertia::render('Components/Profiles', ['auth_user' => $auth_user]);
     }
 }

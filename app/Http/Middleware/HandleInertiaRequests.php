@@ -39,6 +39,10 @@ class HandleInertiaRequests extends Middleware
                   return null;
                 }
 
+                if($user->role === 'dean'){
+                  return $user->load('dean');
+                }
+
                 if($user->role === 'instructor'){
                   return $user->load('instructor');
                 }

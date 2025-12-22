@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\DeanMiddleware;
 use App\Http\Middleware\InstructorMiddleware;
 use App\Http\Middleware\StudentMiddleware;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
           'admin' => AdminMiddleware::class,
+          'dean' => DeanMiddleware::class,
           'instructor' => InstructorMiddleware::class,
           'student' => StudentMiddleware::class,
           'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
