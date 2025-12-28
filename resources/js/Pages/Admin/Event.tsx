@@ -3,7 +3,7 @@ import Layout from "@/Layouts/Layout"
 import { DataTable } from '../Components/DataTable';
 import type { Event as EventType} from '../Interfaces/Event';
 import { EventColumns } from '../Components/EventColumns';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import DeleteModal from '../Components/DeleteModal';
 
 interface EventProps {
@@ -11,14 +11,14 @@ interface EventProps {
 }
 
 const Event = ({ events }: EventProps) => {
+  const role = usePage().props.auth.user.role;
   const [eventList, setEventList] = useState<EventType[]>(events);
-  console.log(events);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = eventList?.find((item: EventType) => item.id === deletingId);
 
   const handleEdit = (id: string): void => {
-    router.get(`/admin/events/edit/${id}`);
+    router.get(`/${role}/events/edit/${id}`);
   }
 
   const onDelete = (id: string): void => {
@@ -28,14 +28,14 @@ const Event = ({ events }: EventProps) => {
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={EventColumns(handleEdit, setIsOpen, setDeletingId)} data={eventList || []} filterLabel={"title"} filterColumn={"title"} createUrl={'/admin/events/create'}/>
+      <DataTable columns={EventColumns(handleEdit, setIsOpen, setDeletingId)} data={eventList || []} filterLabel={"title"} filterColumn={"title"} createUrl={`/${role}/events/create`}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         toDelete={toDelete}
         onDelete={onDelete}
         deletingId={deletingId}
-        url={'/admin/events/delete'}
+        url={`/${role}/events/delete`}
         nameField="title"
         errorMessage="Failed to delete event"
       />

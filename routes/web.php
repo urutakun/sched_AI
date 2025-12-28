@@ -101,24 +101,24 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::put('/departments/update/{id}', [DepartmentController::class, 'update']);
   Route::delete('/departments/delete/{id}', [DepartmentController::class, 'destroy']);
 
-  // Dean's Dashboard
+  // Deans
   Route::get('/deans', [DeanController::class, 'index'])->name('admin.index');
   Route::delete('/deans/delete/{id}', [DeanController::class, 'destroy']);
 
 
-  // Instructors' Dashboard
+  // Instructors
   Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index');
   Route::get('/instructors/create', [InstructorController::class, 'create']);
   Route::delete('/instructors/delete/{id}', [InstructorController::class, 'destroy']);
 
-  // Students' Dashboard
+  // Students
   Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
   Route::get('/students/create', [StudentsController::class, 'create']);
   Route::post('/students/import', [StudentsController::class, 'import']);
   Route::delete('/students/delete/{id}', [StudentsController::class, 'destroy']);
 
   // Courses
-  Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+  Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses.index');
   Route::get('/courses/create', [CourseController::class, 'create']);
   Route::post('/courses/create', [CourseController::class, 'store']);
   Route::get('/courses/edit/{id}', [CourseController::class, 'edit']);
@@ -127,7 +127,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::get('/courses/assign/{id}', [CourseAssignmentController::class, 'create']);
 
   // Course Assignments
-  Route::get('/course-assignments', [CourseAssignmentController::class, 'index'])->name('course-assignments.index');
+  Route::get('/course-assignments', [CourseAssignmentController::class, 'index'])->name('admin.course-assignments.index');
   Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
   Route::get('/course-assignments/edit/{id}', [CourseAssignmentController::class, 'edit']);
   Route::put('/course-assignments/update/{id}', [CourseAssignmentController::class, 'update']);
@@ -194,7 +194,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::delete('/trimesters/delete/{id}', [TrimesterController::class, 'destroy']);
 
   // Events
-  Route::get('/events', [EventController::class, 'index'])->name('events.index');
+  Route::get('/events', [EventController::class, 'index'])->name('admin.events.index');
   Route::get('/events/create', [EventController::class, 'create']);
   Route::post('/events/create', [EventController::class, 'store']);
   Route::get('/events/edit/{id}', [EventController::class, 'edit']);
@@ -215,6 +215,45 @@ Route::middleware(['dean'])->prefix('dean')->group(function(){
 
   // Profiles
   Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+
+  // Instructors
+  Route::get('/instructors', [DeanDashboardController::class, 'instructors'])->name('dean.instructors.index');
+
+  // Students
+  Route::get('/students', [DeanDashboardController::class, 'students'])->name('dean.students.index');
+
+  // Courses
+  Route::get('/courses', [CourseController::class, 'index'])->name('dean.courses.index');
+  Route::get('/courses/create', [CourseController::class, 'create']);
+  Route::post('/courses/create', [CourseController::class, 'store']);
+  Route::get('/courses/edit/{id}', [CourseController::class, 'edit']);
+  Route::put('/courses/update/{id}', [CourseController::class, 'update']);
+  Route::delete('/courses/delete/{id}', [CourseController::class, 'destroy']);
+  Route::get('/courses/assign/{id}', [CourseAssignmentController::class, 'create']);
+
+  // Course Assignments
+  Route::get('/course-assignments', [CourseAssignmentController::class, 'index'])->name('dean.course-assignments.index');
+  Route::post('/course-assignments/create', [CourseAssignmentController::class, 'store']);
+  Route::get('/course-assignments/edit/{id}', [CourseAssignmentController::class, 'edit']);
+  Route::put('/course-assignments/update/{id}', [CourseAssignmentController::class, 'update']);
+  Route::delete('/course-assignments/delete/{id}', [CourseAssignmentController::class, 'destroy']);
+
+  // Schedules
+  Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+  Route::get('/schedules/create', [ScheduleController::class, 'create']);
+  Route::post('/schedules/create', [ScheduleController::class, 'store']);
+  Route::get('/schedules/edit/{id}', [ScheduleController::class, 'edit']);
+  Route::put('/schedules/update/{id}', [ScheduleController::class, 'update']);
+  Route::delete('/schedules/delete/{id}', [ScheduleController::class, 'destroy']);
+
+  // Events
+  Route::get('/events', [EventController::class, 'index'])->name('dean.events.index');
+  Route::get('/events/create', [EventController::class, 'create']);
+  Route::post('/events/create', [EventController::class, 'store']);
+  Route::get('/events/edit/{id}', [EventController::class, 'edit']);
+  Route::put('/events/update/{id}', [EventController::class, 'update']);
+  Route::delete('/events/delete/{id}', [EventController::class, 'destroy']);
+
 });
 
 // INSTRUCTOR

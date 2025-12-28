@@ -3,7 +3,7 @@ import Layout from "@/Layouts/Layout";
 import { DataTable } from "../Components/DataTable";
 import { ScheduleColumns } from "../Components/ScheduleColumns";
 import type { Schedule as ScheduleType } from "../Interfaces/Schedule";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import DeleteModal from '../Components/DeleteModal';
 
 interface ScheduleProps {
@@ -11,14 +11,14 @@ interface ScheduleProps {
 }
 
 const Schedule = ({ schedules }: ScheduleProps) => {
+  const role = usePage().props.auth.user.role;
   const [scheduleList, setScheduleList] = useState<ScheduleType[]>(schedules || []);
-  console.log(scheduleList);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [deletingId, setDeletingId] = useState<string>('');
     const toDelete = scheduleList?.find((item: ScheduleType) => item.id === deletingId);
 
     const handleEdit = (id: string): void => {
-      router.get(`/admin/schedules/edit/${id}`);
+      router.get(`/${role}/schedules/edit/${id}`);
     }
 
     const onDelete = (id: string): void => {
@@ -33,7 +33,7 @@ const Schedule = ({ schedules }: ScheduleProps) => {
                 data={scheduleList || []}
                 filterLabel={"department"}
                 filterColumn={"department_name"}
-                createUrl={"/admin/schedules/create"}
+                createUrl={`/${role}/schedules/create`}
             />
             <DeleteModal
               isOpen={isOpen}
@@ -41,7 +41,7 @@ const Schedule = ({ schedules }: ScheduleProps) => {
               toDelete={toDelete}
               onDelete={onDelete}
               deletingId={deletingId}
-              url={'/admin/schedules/delete'}
+              url={`/${role}/schedules/delete`}
               nameField="course_assignment.course.name"
               errorMessage="Failed to delete schedule"
             />

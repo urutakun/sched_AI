@@ -201,6 +201,84 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
     ]
 
+    const deanNav = [
+      {
+        title: "Dashboard",
+        url: '/dean/dashboard',
+        icon: House
+      },
+      {
+          title: "Instructors",
+          icon: Users,
+          items: [
+            {
+              title: "Instructor List",
+              url: "/dean/instructors"
+            },
+          ]
+      },
+      {
+          title: "Students",
+          icon: GraduationCap,
+          items: [
+            {
+              title: "Student List",
+              url: "/dean/students"
+            },
+          ]
+      },
+      {
+          title: "Courses",
+          icon: Book,
+          items: [
+            {
+              title: "Course List",
+              url: "/dean/courses"
+            },
+            {
+              title: "Create",
+              url: "/dean/courses/create"
+            },
+            {
+              title: "Course Assignments",
+              url: "/dean/course-assignments/"
+            }
+          ]
+      },
+      {
+          title: "Schedule",
+          icon: CalendarCheck,
+          items: [
+            {
+              title: "Schedule List",
+              url: "/dean/schedules"
+            },
+            {
+              title: "Create",
+              url: "/dean/schedules/create"
+            },
+            {
+              title: "Cancel Requests",
+              url: "/dean/schedules/cancel-request"
+            },
+          ]
+      },
+      {
+          title: "Events",
+          icon: Calendar1,
+          items: [
+            {
+              title: "Event List",
+              url: "/dean/events"
+            },
+            {
+              title: "Create",
+              url: "/dean/events/create"
+            }
+          ]
+      },
+    ]
+
     const studentNav = [
       {
         title: "Dashboard",
@@ -224,6 +302,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const roleNavMap: Record<string, any[]> = {
       admin: adminNav,
+      dean: deanNav,
       student: studentNav,
       instructor: InstructorNav
     }

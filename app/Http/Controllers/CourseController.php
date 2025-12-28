@@ -6,17 +6,41 @@ use App\Models\AcademicYear;
 use App\Models\Course;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CourseController extends Controller
 {
     public function index(){
-      $courses = Course::with(['academic_year', 'trimester', 'department'])->get();
+      $user = Auth::user();
+      $role = $user->role;
+      $deptId = optional($user->dean)->dept_id;
+
+      $courses = [];
+      if($role === 'dean'){
+        $courses = Course::with(['academic_year', 'trimester', 'department'])->whereHas('department', function($q) use ($deptId){
+          $q->where('id', $deptId);
+        })->get();
+      }
+      else{
+        $courses = Course::with(['academic_year', 'trimester', 'department'])->get();
+      }
       return Inertia::render('Admin/Course', ['courses' => $courses]);
     }
 
     public function create(){
-      $departments = Department::all();
+      $user = Auth::user();
+      $role = $user->role;
+      $deptId = optional($user->dean)->dept_id;
+
+      $departments = [];
+      if($role === 'dean'){
+        $departments = Department::where('id', $deptId)->get();
+      }
+      else{
+        $departments = Department::all();
+      }
+
       $academic_years = AcademicYear::with('trimesters')->get();
       return Inertia::render('Admin/CourseForm', [
         'departments' => $departments,
@@ -25,6 +49,7 @@ class CourseController extends Controller
     }
 
     public function store(Request $request){
+      $role = Auth::user()->role;
       $validated = $request->validate([
         'academic_years_id'   => 'required|exists:academic_years,id',
         'trimester_id'   => 'required|exists:trimesters,id',
@@ -44,13 +69,23 @@ class CourseController extends Controller
         ]);
       }
 
-      return redirect()->route('courses.index')->with('message', 'Course created successfully');
+      return redirect()->route($role . '.courses.index')->with('message', 'Course created successfully');
     }
 
     public function edit( $id ){
+      $user = Auth::user();
+      $role = $user->role;
+      $deptId = optional($user->dean)->dept_id;
       $course = Course::where('id', $id)->with(['academic_year', 'trimester', 'department'])->firstOrFail();
-      $departments = Department::all();
       $academic_years = AcademicYear::with('trimesters')->get();
+
+      $departments = [];
+      if($role === 'dean'){
+        $departments = Department::where('id', $deptId)->get();
+      }
+      else{
+        $departments = Department::all();
+      }
 
       return Inertia::render('Admin/CourseForm', [
         'departments' => $departments,
@@ -60,6 +95,7 @@ class CourseController extends Controller
     }
 
     public function update(Request $request, $id){
+      $role = Auth::user()->role;
       $course = Course::where('id', $id)->firstOrFail();
 
       $validated = $request->validate([
@@ -75,7 +111,7 @@ class CourseController extends Controller
       ]);
 
       $course->update($validated);
-      return redirect('/admin/courses')->with('success', 'Course updated successfully');
+      return redirect()->route($role . '.courses.index')->with('success', 'Course updated successfully');
     }
 
     public function destroy($id){

@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout";
 import React, { useEffect, useState } from "react";
-import { useForm, Link } from "@inertiajs/react";
+import { useForm, Link, usePage } from "@inertiajs/react";
 import {
     Field,
     FieldContent,
@@ -36,6 +36,7 @@ interface CourseFormProps {
 }
 
 const CourseForm = ({ departments, academic_years, course }: CourseFormProps) => {
+    const role = usePage().props.auth.user.role;
     const [departmentList, setDepartmentList] =useState<DepartmentType[]>(departments ?? []);
     const [academicYearList, setAcademicYearList] =useState<AcademicYear[]>(academic_years ?? []);
     const [trimesterList, setTrimesterList] =useState<Trimester[]>([]);
@@ -74,13 +75,13 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
         e.preventDefault();
 
         if(course){
-           put(`/admin/courses/update/${course.id}`, {
+           put(`/${role}/courses/update/${course.id}`, {
               onSuccess: () => toast.success('Course updated successfully'),
               onError: () => toast.error('Failed to update course')
             });
         }
         else{
-          post("/admin/courses/create", {
+          post(`/${role}/courses/create`, {
               onSuccess: () => {
                   toast.success("Course created successfully");
                   reset();
@@ -312,7 +313,7 @@ const CourseForm = ({ departments, academic_years, course }: CourseFormProps) =>
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Link href={"/admin/courses"}>
+                        <Link href={`/${role}/courses`}>
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>

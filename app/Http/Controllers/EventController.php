@@ -8,6 +8,7 @@ use App\Models\Instructor;
 use App\Models\User;
 use App\Notifications\EventNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
@@ -24,7 +25,7 @@ class EventController extends Controller
     }
 
     public function store(Request $request){
-      // dd($request);
+      $role = Auth::user()->role;
       $validated = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
@@ -45,7 +46,7 @@ class EventController extends Controller
         ]);
       }
 
-      return redirect()->route('events.index')->with('message', 'Event created successfully');
+      return redirect()->route($role . '.events.index')->with('message', 'Event created successfully');
     }
 
     public function edit($id){
@@ -55,6 +56,7 @@ class EventController extends Controller
     }
 
     public function update(Request $request, $id){
+      $role = Auth::user()->role;
       $event = Event::where('id', $id)->firstOrFail();
 
       $validated = $request->validate([
@@ -74,7 +76,7 @@ class EventController extends Controller
       }
 
       $event->update($validated);
-      return redirect('/admin/events')->with('success', 'Event updated successfully');
+      return redirect()->route($role . '.events.index')->with('success', 'Event updated successfully');
     }
 
     public function destroy($id){

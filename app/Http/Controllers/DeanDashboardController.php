@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\ScheduleSession;
 use App\Models\Program;
 use App\Models\Event;
+use App\Models\Instructor;
+use App\Models\Student;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DeanDashboardController extends Controller
@@ -67,5 +70,25 @@ class DeanDashboardController extends Controller
         'programs' => $programs,
         'events' => $events
       ]);
+    }
+
+    public function instructors(){
+      $user = Auth::user();
+      $role = $user->role;
+      $dean = $user->load('dean');
+      $deptId = optional($user->dean)->dept_id;
+      $instructors = Instructor::with(['user', 'department'])->where('dept_id', $deptId)->get();
+      return Inertia::render('Dean/Instructor', ['instructors' => $instructors]);
+    }
+
+    public function students(){
+      $user = Auth::user();
+      $role = $user->role;
+      $dean = $user->load('dean');
+      $deptId = optional($user->dean)->dept_id;
+      $students = Student::with(['user', 'program.department'])->whereHas('program.department', function($q) use($deptId) {
+        $q->where('id', $deptId);
+      })->get();
+      return Inertia::render('Dean/Students', ['students' => $students]);
     }
 }

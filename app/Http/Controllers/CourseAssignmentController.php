@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\CourseAssignment;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
@@ -97,6 +98,8 @@ class CourseAssignmentController extends Controller
 
   public function store(Request $request)
   {
+      $role = Auth::user()->role;
+
       $validated = $request->validate([
         'course_id' => 'required|exists:courses,id',
         'instructor_id' => 'required|exists:instructors,id',
@@ -117,7 +120,7 @@ class CourseAssignmentController extends Controller
       $course->save();
 
       return redirect()
-        ->route('course-assignments.index')
+        ->route($role . '.course-assignments.index')
         ->with('success', 'Course assignment created successfully.');
   }
 
@@ -217,6 +220,7 @@ class CourseAssignmentController extends Controller
   }
 
   public function update(Request $request, $id){
+    $role = Auth::user()->role;
     $course_assignment = CourseAssignment::where('id', $id)->firstOrFail();
 
     $validated = $request->validate([
@@ -226,7 +230,7 @@ class CourseAssignmentController extends Controller
     ]);
 
     $course_assignment->update($validated);
-    return redirect('/admin/course-assignments')->with('success', 'Course assignment updated successfully');
+    return redirect()->route($role . '.course-assignments.index')->with('success', 'Course assignment updated successfully');
   }
 
 

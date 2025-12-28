@@ -17,6 +17,7 @@ use Inertia\Inertia;
 use DB;
 use App\Models\User;
 use App\Notifications\ScheduleCreatedNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 
@@ -37,9 +38,23 @@ class ScheduleController extends Controller
 
   public function create()
   {
+    $user = Auth::user();
+    $role = $user->role;
+    $dean = $user->load('dean');
+    $deptId = optional($user->dean)->dept_id;
+    $departments = [];
+    $programs = [];
+
+    if($role === 'dean'){
+      $departments = Department::where('id', $deptId)->get();
+      $programs = Program::with('department')->where('dept_id', $deptId)->get();
+    }
+    else{
+      $departments = Department::all();
+      $programs = Program::with('department')->get();
+    }
+
     $course_assignments = CourseAssignment::with(['course', 'instructor.user'])->get();
-    $departments = Department::all();
-    $programs = Program::with('department')->get();
     $academic_years = AcademicYear::with('trimesters')->get();
     $rooms = Room::all();
     $schedules = Schedule::with('courseAssignment')->get();

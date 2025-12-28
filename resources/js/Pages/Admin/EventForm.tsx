@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout";
 import React, { useState } from "react";
-import { useForm, Link } from "@inertiajs/react";
+import { useForm, Link, usePage } from "@inertiajs/react";
 import {
     Field,
     FieldContent,
@@ -36,6 +36,7 @@ interface EventFormProps {
 }
 
 const EventForm = ({ event, departments }: EventFormProps) => {
+    const role = usePage().props.auth.user.role;
     const [departmentList, setDepartmentList] = useState<DepartmentType[]>(departments);
     const { data, setData, errors, post, put, reset } = useForm({
       title: event?.title ?? "",
@@ -52,13 +53,13 @@ const EventForm = ({ event, departments }: EventFormProps) => {
         e.preventDefault();
 
         if(event){
-          put(`/admin/events/update/${event.id}`, {
+          put(`/${role}/events/update/${event.id}`, {
             onSuccess: () => toast.success('Event updated successfully'),
             onError: () => toast.error('Failed to update event')
           })
         }
         else{
-          post("/admin/events/create", {
+          post(`/${role}/events/create`, {
               onSuccess: () => {
                   toast.success("Event created successfully");
                   reset();
@@ -240,7 +241,7 @@ const EventForm = ({ event, departments }: EventFormProps) => {
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Link href={"/admin/events"}>
+                        <Link href={`/${role}/events`}>
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>

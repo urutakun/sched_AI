@@ -2,16 +2,15 @@ import React, { useState } from 'react'
 import Layout from "@/Layouts/Layout"
 import { DataTable } from '../Components/DataTable';
 import type { Instructor as InstructorType} from '../Interfaces/Instructor';
-import { InstructorColumns } from '../Components/InstructorColumns';
 import DeleteModal from '../Components/DeleteModal';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { DeanInstructorColumns } from '../Components/DeanInstructorColumns';
 
 interface InstructorProps {
   instructors: InstructorType[];
 }
 
 const Instructor = ({ instructors }: InstructorProps) => {
-  const role = usePage().props.auth.user.role;
   const [instructorList, setInstructorList] = useState<InstructorType[]>(instructors);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
@@ -28,7 +27,7 @@ const Instructor = ({ instructors }: InstructorProps) => {
 
   return (
     <div className='w-full h-full bg-white shadow-sm rounded-2xl p-4'>
-      <DataTable columns={InstructorColumns(handleEdit, setIsOpen, setDeletingId, role)} data={instructorList || []} filterLabel={"last name"} filterColumn={"user.last_name"} createUrl={'/admin/user-management/create'}/>
+      <DataTable columns={DeanInstructorColumns(handleEdit, setIsOpen, setDeletingId)} data={instructorList || []} filterLabel={"last name"} filterColumn={"user.last_name"}/>
       <DeleteModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

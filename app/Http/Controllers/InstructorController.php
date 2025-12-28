@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 class InstructorController extends Controller
 {
@@ -26,7 +27,7 @@ class InstructorController extends Controller
       }
 
       if($instructor->user){
-        $instructor->user->delete(); 
+        $instructor->user->delete();
       }
 
       $instructor->delete();

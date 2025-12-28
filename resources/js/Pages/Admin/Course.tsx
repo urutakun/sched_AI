@@ -3,7 +3,7 @@ import Layout from "@/Layouts/Layout";
 import { DataTable } from "../Components/DataTable";
 import { CourseColumns } from "../Components/CourseColumns";
 import type { Course as CourseType } from "../Interfaces/Course";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import DeleteModal from '../Components/DeleteModal';
 
 interface DepartmentProps {
@@ -11,17 +11,18 @@ interface DepartmentProps {
 }
 
 const Course = ({ courses }: DepartmentProps) => {
+    const role = usePage().props.auth.user.role;
     const [courseList, setCourseList] = useState<CourseType[]>(courses);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [deletingId, setDeletingId] = useState<string>('');
     const toDelete = courseList?.find((item: CourseType) => item.id === deletingId);
 
     const handleEdit = (id: string): void => {
-      router.get(`/admin/courses/edit/${id}`);
+      router.get(`/${role}/courses/edit/${id}`);
     }
 
     const handleAssign = (id: string): void => {
-      router.get(`/admin/courses/assign/${id}`);
+      router.get(`/${role}/courses/assign/${id}`);
     }
 
     const onDelete = (id: string): void => {
@@ -36,7 +37,7 @@ const Course = ({ courses }: DepartmentProps) => {
                 data={courseList || []}
                 filterLabel={"course name"}
                 filterColumn={"name"}
-                createUrl={"/admin/courses/create"}
+                createUrl={`/${role}/courses/create`}
             />
             <DeleteModal
               isOpen={isOpen}
@@ -44,7 +45,7 @@ const Course = ({ courses }: DepartmentProps) => {
               toDelete={toDelete}
               onDelete={onDelete}
               deletingId={deletingId}
-              url={'/admin/courses/delete'}
+              url={`/${role}/courses/delete`}
               nameField="name"
               errorMessage="Failed to delete course"
             />

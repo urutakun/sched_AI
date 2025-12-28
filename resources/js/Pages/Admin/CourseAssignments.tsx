@@ -3,7 +3,7 @@ import Layout from "@/Layouts/Layout"
 import { DataTable } from '../Components/DataTable';
 import type { AssignCourse as AssignCourseType } from '../Interfaces/AssignCourse';
 import { CourseAssignmentColumns } from '../Components/CourseAssignmentColumns';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import DeleteModal from '../Components/DeleteModal';
 
 interface CourseAssignmentsProps {
@@ -11,14 +11,14 @@ interface CourseAssignmentsProps {
 }
 
 const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
+  const role =  usePage().props.auth.user.role;
   const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourseType[]>(course_assignments);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string>('');
   const toDelete = courseAssignmentList?.find((item: AssignCourseType) => item.id === deletingId);
-  console.log(toDelete);
 
   const handleEdit = (id: string): void => {
-    router.get(`/admin/course-assignments/edit/${id}`);
+    router.get(`/${role}/course-assignments/edit/${id}`);
   }
 
   const onDelete = (id: string): void => {
@@ -35,7 +35,7 @@ const CourseAssignments = ({ course_assignments }: CourseAssignmentsProps) => {
         toDelete={toDelete}
         onDelete={onDelete}
         deletingId={deletingId}
-        url={'/admin/course-assignments/delete'}
+        url={`/${role}/course-assignments/delete`}
         nameField="course.name"
         errorMessage="Failed to delete course assignment year"
       />
