@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout";
 import React, { useState, useEffect } from "react";
-import { useForm, Link } from "@inertiajs/react";
+import { useForm, Link, usePage } from "@inertiajs/react";
 import {
     Field,
     FieldContent,
@@ -53,6 +53,7 @@ const ScheduleForm = ({
     programs,
     schedules,
 }: RoomFormProps) => {
+    const role = usePage().props.auth.user.role;
     const [courseAssignmentList, setCourseAssignmentList] = useState<AssignCourse[]>(course_assignments);
     const [departmentList, setDepartmentList] = useState<Department[]>(departments ?? []);
     const [programtList, setProgramList] = useState<Program[]>(programs ?? []);
@@ -130,7 +131,7 @@ const ScheduleForm = ({
         e.preventDefault();
 
         if (schedule) {
-            put(`/admin/schedules/update/${schedule.id}`, {
+            put(`/${role}/schedules/update/${schedule.id}`, {
                 onSuccess: () => toast.success('Schedule updated successfully'),
                 onError: (errors: any) => {
                     // Handle Inertia validation errors properly
@@ -141,7 +142,7 @@ const ScheduleForm = ({
                 },
             });
         } else {
-            post("/admin/schedules/create", {
+            post(`/${role}/schedules/create`, {
                 onSuccess: (page) => {
                     const message = (page?.props?.flash?.success ?? "Schedule created successfully");
                     toast.success(message);

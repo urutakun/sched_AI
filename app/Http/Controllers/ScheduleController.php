@@ -84,6 +84,8 @@ class ScheduleController extends Controller
         'end_time' => 'required|date_format:H:i|after:start_time',
     ]);
 
+    $role = Auth::user()->role;
+
     $aiBaseURL = env('AI_SERVICE_URL', 'http://127.0.0.1:9000');
 
     $courseAssignment = CourseAssignment::with(['course', 'instructor.user'])
@@ -240,7 +242,7 @@ class ScheduleController extends Controller
             }
         });
 
-        return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
+        return redirect()->route($role . '.schedules.index')->with('success', 'Schedule created successfully.');
     } catch (\Exception $e) {
         return redirect()->back()->withErrors([
             'message' => 'Failed to create schedule: ' . $e->getMessage()
@@ -270,6 +272,7 @@ class ScheduleController extends Controller
   public function update(Request $request, $id)
   {
     $schedule = Schedule::where('id', $id)->first();
+    $role = Auth::user()->role;
 
     if (!$schedule) {
       return redirect()->back()->with('error', 'Schedule not found');
@@ -388,7 +391,7 @@ class ScheduleController extends Controller
       // Update schedule sessions
       $this->updateScheduleSessions($schedule);
 
-      return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
+      return redirect()->route($role . '.schedules.index')->with('success', 'Schedule updated successfully.');
     } catch (\Exception $e) {
       return redirect()->back()->withErrors([
         'message' => 'Failed to update schedule: ' . $e->getMessage()
@@ -454,9 +457,5 @@ class ScheduleController extends Controller
     $schedule->delete();
 
     return response()->json(['message' => 'Schedule deleted successfully']);
-  }
-
-  public function test(Request $request, $id){
-    dd($request);
   }
 }

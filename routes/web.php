@@ -134,7 +134,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
   Route::delete('/course-assignments/delete/{id}', [CourseAssignmentController::class, 'destroy']);
 
   // Schedules
-  Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+  Route::get('/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
   Route::get('/schedules/create', [ScheduleController::class, 'create']);
   Route::post('/schedules/create', [ScheduleController::class, 'store']);
   Route::get('/schedules/edit/{id}', [ScheduleController::class, 'edit']);
@@ -239,7 +239,7 @@ Route::middleware(['dean'])->prefix('dean')->group(function(){
   Route::delete('/course-assignments/delete/{id}', [CourseAssignmentController::class, 'destroy']);
 
   // Schedules
-  Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+  Route::get('/schedules', [ScheduleController::class, 'index'])->name('dean.schedules.index');
   Route::get('/schedules/create', [ScheduleController::class, 'create']);
   Route::post('/schedules/create', [ScheduleController::class, 'store']);
   Route::get('/schedules/edit/{id}', [ScheduleController::class, 'edit']);
