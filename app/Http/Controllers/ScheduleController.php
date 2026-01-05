@@ -25,14 +25,33 @@ class ScheduleController extends Controller
 {
   public function index()
   {
-    $schedules = Schedule::with([
+    $user = Auth::user();
+    $role = $user->role;
+    $dean = $user->load('dean');
+    $deptId = optional($user->dean)->dept_id;
+
+    if($role === 'dean'){
+      $schedules = Schedule::with([
       'courseAssignment.course',
       'courseAssignment.instructor.user',
       'academicYear',
       'trimester',
       'department',
       'room'
-    ])->get();
+    ])->whereHas('department', function($q) use($deptId) {
+      $q->where('id', $deptId);
+    })->get();
+    }
+    else{
+      $schedules = Schedule::with([
+        'courseAssignment.course',
+        'courseAssignment.instructor.user',
+        'academicYear',
+        'trimester',
+        'department',
+        'room'
+      ])->get();
+    }
     return Inertia::render('Admin/Schedule', ['schedules' => $schedules]);
   }
 

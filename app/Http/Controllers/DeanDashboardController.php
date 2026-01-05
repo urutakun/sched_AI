@@ -9,11 +9,17 @@ use App\Models\Event;
 use App\Models\Instructor;
 use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Department;
+use App\Models\Room;
 use Inertia\Inertia;
+
+
 
 class DeanDashboardController extends Controller
 {
     public function index(){
+      $user = Auth::user();
+      $deptId = optional($user->dean)->dept_id;
       $sessionsRec = ScheduleSession::with([
         'schedule',
         'schedule.courseAssignment.course',
@@ -21,8 +27,17 @@ class DeanDashboardController extends Controller
         'schedule.room',
         'schedule.program',
         'schedule.department',
-      ])->get();
+      ])->whereHas('schedule.department', function($q) use($deptId){
+        $q->where('id', $deptId);
+      })->get();
       $programs = Program::all();
+
+      // Admin status
+      $department_count = Department::count();
+      $instructor_count = Instructor::count();
+      $student_count = Student::count();
+      $rooms_count = Room::count();
+      $event_count = Event::count();
 
       $sessions = $sessionsRec->map(function ($session) {
         $courseAssignment = $session->schedule->courseAssignment;
@@ -66,6 +81,11 @@ class DeanDashboardController extends Controller
       });
 
       return Inertia::render('Dean/DeanDashboard', [
+        'department_count' => $department_count,
+        'instructor_count' => $instructor_count,
+        'student_count' => $student_count,
+        'room_count' => $rooms_count,
+        'event_count' => $event_count,
         'sessions' => $sessions,
         'programs' => $programs,
         'events' => $events
